@@ -1,26 +1,4 @@
-import React, { useState } from 'react';
-import { Container } from 'react-bootstrap';
-import Contacts from './components/Contacts';
-import Header from './components/Header';
-
-
-
-// dev manager
-// CRUD
-// form handling
-// remote api server connection and handling
-// routing
-// context api
-// authentication (registration, login, logout)
-// advance login (forgot password, reset password, email sending)
-// image upload, pagination
-// securely data dealing
-// sass / scss
-// search functionality
-
-
-
-const initialContacts = [
+[
   {
     "id": 1,
     "first_name": "Ingaborg",
@@ -132,19 +110,3 @@ const initialContacts = [
     "bio": "sem fusce consequat nulla nisl nunc nisl duis bibendum felis"
   }
 ]
-
-
-const App = () => {
-  const [contacts, setContacts] = useState(initialContacts);
-
-  return (
-    <>
-      <Container>
-        <Header />
-        <Contacts contacts={contacts} />
-      </Container>
-    </>
-  );
-};
-
-export default App;
