@@ -6,13 +6,13 @@ import Contact from './Contact';
 
 
 
-const Contacts = ({contacts}) => {
+const Contacts = ({contacts, deleteContact}) => {
     return (
         <>
             <h2 className='text-center'>All Contacts</h2>
             <Row className='g-3'>
                 {
-                    contacts.map((contact) => <Contact key={contact.id} contact={contact} />)
+                    contacts.map((contact) => <Contact key={contact.id} contact={contact} deleteContact={deleteContact} />)
                 }
             </Row>
         </>

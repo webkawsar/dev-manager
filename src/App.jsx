@@ -137,11 +137,18 @@ const initialContacts = [
 const App = () => {
   const [contacts, setContacts] = useState(initialContacts);
 
+  const deleteContact = (id) => {
+    
+    const filteredContacts = contacts.filter(contact => contact.id !== id);
+    setContacts(filteredContacts);
+  }
+
+
   return (
     <>
       <Header />
       <Container style={{margin: '0 auto'}} className='mt-3'>
-        <Contacts contacts={contacts} />
+        <Contacts contacts={contacts} deleteContact={deleteContact} />
       </Container>
     </>
   );
