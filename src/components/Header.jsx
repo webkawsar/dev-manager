@@ -5,12 +5,14 @@ import { Button, Container, Form, Nav, Navbar } from 'react-bootstrap';
 
 
 const Header = () => {
+
+    
     
     return (
         <>
             <Navbar bg="light" expand="lg">
-                <Container fluid>
-                    <Navbar.Brand href="#">Navbar scroll</Navbar.Brand>
+                <Container>
+                    <Navbar.Brand href="#" className='brand'>Dev Manager</Navbar.Brand>
                     <Navbar.Toggle aria-controls="navbarScroll" />
                     <Navbar.Collapse id="navbarScroll">
                     <Nav
@@ -18,8 +20,9 @@ const Header = () => {
                         style={{ maxHeight: '100px' }}
                         navbarScroll
                     >
-                        <Nav.Link href="#action1">Home</Nav.Link>
-                        <Nav.Link href="#action2">Link</Nav.Link>
+                        <Nav.Link href="#action1">Contacts</Nav.Link>
+                        <Nav.Link href="#action2">Register</Nav.Link>
+                        <Nav.Link href="#action2">Login</Nav.Link>
                         
                     </Nav>
                     <Form className="d-flex">

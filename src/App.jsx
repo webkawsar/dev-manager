@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Container } from 'react-bootstrap';
+import './App.css';
 import Contacts from './components/Contacts';
 import Header from './components/Header';
-
 
 
 // dev manager
@@ -139,8 +139,8 @@ const App = () => {
 
   return (
     <>
-      <Container>
-        <Header />
+      <Header />
+      <Container style={{margin: '0 auto'}} className='mt-3'>
         <Contacts contacts={contacts} />
       </Container>
     </>
