@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Container } from 'react-bootstrap';
 import './App.css';
 import AddContact from './contacts/AddContact';
+import Contacts from './contacts/Contacts';
 import Header from './layouts/Header';
-
 
 // dev manager
 // CRUD
@@ -143,14 +143,19 @@ const App = () => {
     setContacts(filteredContacts);
   }
 
+  const addContact = (contact) => {
+    
+    setContacts([contact, ...contacts]);
+  }
+
 
   return (
     <>
       <Header />
       <Container style={{margin: '0 auto'}} className='mt-3'>
         
-        <AddContact />
-        {/* <Contacts contacts={contacts} deleteContact={deleteContact} /> */}
+        <AddContact addContact={addContact} />
+        <Contacts contacts={contacts} deleteContact={deleteContact} />
 
       </Container>
     </>
