@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Col, Form, Row } from 'react-bootstrap';
+import DatePicker from "react-datepicker";
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -15,7 +16,7 @@ const AddContact = ({addContact}) => {
         gender: '',
         profession: '',
         image: '',
-        dob: new Date().getFullYear(),
+        dob: new Date(),
         bio: ''
     }
     
@@ -93,10 +94,20 @@ const AddContact = ({addContact}) => {
                     </Form.Group>
 
 
-                    <Form.Group className="mb-3" as={Col} md={6} controlId="Birth of Date">
+                    {/* <Form.Group className="mb-3" as={Col} md={6} controlId="Birth of Date">
                         <Form.Label>Birth of Date</Form.Label>
                         <Form.Control type="date" placeholder="birth of Date" name="dob" onChange={handleInputChange} value={dob} />
-                    </Form.Group>
+                    </Form.Group> */}
+                    
+                    <Col md={6} >
+                        <DatePicker selected={dob} onChange={(date) => setContact({...contact, dob: date})} maxDate={new Date()} showYearDropdown />
+                    </Col>
+
+
+
+
+
+                    
 
                     <Form.Group className="mb-3" as={Col} md={12} controlId="bio">
                         <Form.Label>BIO</Form.Label>
@@ -112,7 +123,9 @@ const AddContact = ({addContact}) => {
                     </Form.Group>
 
 
-                </Row>    
+                </Row> 
+
+                
 
 
                 {/* <Form.Group className="mb-3" controlId="formBasicCheckbox">
