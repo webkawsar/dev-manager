@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Col, Form, Row } from 'react-bootstrap';
+import ReactDatePicker from 'react-datepicker';
 import { useForm } from "react-hook-form";
 
 
@@ -9,38 +10,7 @@ import { useForm } from "react-hook-form";
 
 const AddContact = ({addContact}) => {
 
-    // const initialState = {
-    //     id: uuidv4(),
-    //     first_name: '',
-    //     last_name: '',
-    //     email: '',
-    //     gender: '',
-    //     profession: '',
-    //     image: '',
-    //     dob: new Date(),
-    //     bio: ''
-    // }
-    
-    // const [contact, setContact] = useState(initialState)
-
-    // const handleInputChange = (e) => {
-
-    //     setContact({...contact, [e.target.name]: e.target.value})
-    // }
-
-    // const handleSubmit = (e) => {
-    //     e.preventDefault();
-
-    //     // checking validation
-
-    //     // form submission
-    //     addContact(contact);
-
-    //     // reset input data
-    //     setContact(initialState);
-    // }
-
-
+    const [birthDate, setBirthDate] = useState(new Date());
     const { register, handleSubmit, formState:{ errors } } = useForm();
     const onSubmit = data => {
 
@@ -50,8 +20,6 @@ const AddContact = ({addContact}) => {
     console.log(errors, 'errors');
     
 
-    
-    // const {first_name, last_name, email, gender, profession, image, dob, bio} = contact;
     return (
         <div>
             <h2 className='text-center'>Add Contact</h2>
@@ -72,7 +40,97 @@ const AddContact = ({addContact}) => {
                         }
                     </Form.Group>
                     
+                    <Form.Group className="mb-3" as={Col} md={6} controlId="lastName">
+                        <Form.Label>Last name</Form.Label>
+                        <Form.Control type="text" placeholder="Last name" {...register('lastName', {
+                            required: 'Last name is required',
+                            minLength: {value: 3, message: 'Last name at least 3 character'}
+                        })} />
+
+                        {
+                            errors?.lastName?.message && <Form.Text className="text-danger">
+                                {errors?.lastName?.message}
+                            </Form.Text>
+                        }
+                    </Form.Group>
                     
+                    <Form.Group className="mb-3" as={Col} md={6} controlId="email">
+                        <Form.Label>Email</Form.Label>
+                        <Form.Control type="email" placeholder="Email address" {...register('email', {
+                            required: 'Email is required',
+                            minLength: {value: 10, message: 'Please add valid email'}
+                        })} />
+
+                        {
+                            errors?.email?.message && <Form.Text className="text-danger">
+                                {errors?.email?.message}
+                            </Form.Text>
+                        }
+                    </Form.Group>
+                    
+                    <Form.Group className="mb-3" as={Col} md={6} controlId="profession">
+                        <Form.Label>Profession</Form.Label>
+
+                        <Form.Select {...register('profession', {
+                            required: 'Profession is required'
+                        })}>
+                            <option value="">Select your profession</option>
+                            <option value="software_engineer">Software Engineer</option>
+                            <option value="web_developer">Web Developer</option>
+                            <option value="js_developer">JS Developer</option>
+                        </Form.Select>
+
+                        {
+                            errors?.profession?.message && <Form.Text className="text-danger">
+                                {errors?.profession?.message}
+                            </Form.Text>
+                        }
+                    </Form.Group>
+
+                    <Form.Group className="mb-3" as={Col} md={6} controlId="Image">
+                        <Form.Label>Image</Form.Label>
+                        
+                        <Form.Control type="text" placeholder="Link of image URL" {...register('image', {
+                            required: 'Image link is required',
+                            minLength: {value: 3, message: 'Image link at least 3 character'}
+                        })} />
+
+                        {
+                            errors?.image?.message && <Form.Text className="text-danger">
+                                {errors?.image?.message}
+                            </Form.Text>
+                        }
+                    </Form.Group>
+
+
+                 
+                    
+                    <Col md={6} >
+                        <ReactDatePicker selected={birthDate} onChange={(date) => setBirthDate({ dob: date})} maxDate={new Date()} showYearDropdown />
+                    </Col>
+
+
+                    <Form.Group className="mb-3" as={Col} md={6} controlId="bio">
+                        <Form.Label>BIO</Form.Label>
+                        <Form.Control as="textarea" rows={3} placeholder="Write your bio" {...register('bio', {
+                            required: 'BIO is required',
+                            minLength: {value: 3, message: 'BIO at least 10 character'}
+                        })} />
+
+                        {
+                            errors?.bio?.message && <Form.Text className="text-danger">
+                                {errors?.bio?.message}
+                            </Form.Text>
+                        }
+                    </Form.Group>
+
+
+
+                    <Form.Group className="mb-3" as={Col} md={6} controlId="gender">
+                        <Form.Check type="radio" inline label="Male" id="male" value="male" {...register('gender')} defaultChecked={true} />
+                        <Form.Check type="radio" inline label="Female" id="female" value="female" {...register('gender')} />
+
+                    </Form.Group>
 
 
                 </Row> 
