@@ -49,7 +49,6 @@ const AddContact = ({addContact}) => {
                     <Form.Group className="mb-3" as={Col} md={6} controlId="firstName">
                         <Form.Label>First name</Form.Label>
                         <Form.Control type="text" placeholder="First name" name="first_name" value={first_name} onChange={handleInputChange} />
-
                         
                         {/* <Form.Text className="text-muted">
                             First name is required
@@ -89,24 +88,14 @@ const AddContact = ({addContact}) => {
                     </Form.Group>
 
                     <Form.Group className="mb-3" as={Col} md={6} controlId="Image">
-                        <Form.Label>Image URL</Form.Label>
-                        <Form.Control type="text" placeholder="Image URL" name="image" onChange={handleInputChange} value={image} />
+                        <Form.Label>Image</Form.Label>
+                        <Form.Control type="text" placeholder="Link of image URL" name="image" onChange={handleInputChange} value={image} />
                     </Form.Group>
 
 
-
-                    <Form.Group className="mb-3" as={Col} md={6} controlId="gender">
-                        <Form.Label>Gender</Form.Label>
-
-                        <Form.Select name="gender" onChange={handleInputChange} value={gender}>
-                            <option value="">Select gender</option>
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                        </Form.Select>
-
-                        {/* <Form.Text className="text-muted">
-                            We'll never share your email with anyone else.
-                        </Form.Text> */}
+                    <Form.Group className="mb-3" as={Col} md={6} controlId="Birth of Date">
+                        <Form.Label>Birth of Date</Form.Label>
+                        <Form.Control type="date" placeholder="birth of Date" name="dob" onChange={handleInputChange} value={dob} />
                     </Form.Group>
 
                     <Form.Group className="mb-3" as={Col} md={12} controlId="bio">
@@ -117,12 +106,18 @@ const AddContact = ({addContact}) => {
                         </Form.Text> */}
                     </Form.Group>
 
+                    <Form.Group className="mb-3" as={Col} md={6} controlId="gender">
+                        <Form.Check type="radio" inline label="Male" name="gender" id="male" onChange={handleInputChange} value="male" checked={gender === 'male'} />
+                        <Form.Check type="radio" inline label="Female" name="gender" id="female" onChange={handleInputChange} value="female" checked={gender === 'female'} />
+                    </Form.Group>
+
+
                 </Row>    
 
 
-                <Form.Group className="mb-3" controlId="formBasicCheckbox">
+                {/* <Form.Group className="mb-3" controlId="formBasicCheckbox">
                     <Form.Check type="checkbox" label="Agreed to Dev Manager terms & conditions" name="agreedPolicy" />
-                </Form.Group>
+                </Form.Group> */}
 
                 <Button variant="primary" type="submit">
                     Submit
