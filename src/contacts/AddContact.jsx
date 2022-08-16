@@ -4,8 +4,10 @@ import { Button, Col, Form, Row } from 'react-bootstrap';
 import ReactDatePicker from 'react-datepicker';
 import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { v4 as uuidV4 } from 'uuid';
 import * as yup from "yup";
+
 
 
 
@@ -22,12 +24,26 @@ const schema = yup.object({
 
 const AddContact = ({addContact}) => {
 
+    const defaultValue = {
+        first_name: '',
+        last_name: '',
+        email: '',
+        profession: '',
+        image: '',
+        bio: '',
+        gender: ''
+    }
+    
     const [birthDate, setBirthDate] = useState(new Date());
     const { register, handleSubmit, setValue, reset, formState:{ errors, isSubmitting, isSubmitSuccessful } } = useForm({resolver: yupResolver(schema)});
     const navigate = useNavigate();
     
     const onSubmit = data => {
 
+        // show flash message
+        toast.success('Contact added successfully')
+
+        // adding contact
         addContact({...data, id: uuidV4()});
         navigate('/contacts');
     }
@@ -57,6 +73,11 @@ const AddContact = ({addContact}) => {
 
     }, [isSubmitSuccessful])
 
+
+
+
+    const {first_name, last_name, email, profession, image, bio, gender} = defaultValue;
+
     return (
         <div>
             <h2 className='text-center'>Add Contact</h2>
@@ -65,7 +86,7 @@ const AddContact = ({addContact}) => {
                 <Row>
                     <Form.Group className="mb-3" as={Col} md={6} controlId="firstName">
                         <Form.Label>First name</Form.Label>
-                        <Form.Control type="text" placeholder="First name" {...register('first_name')} />
+                        <Form.Control type="text" placeholder="First name" {...register('first_name')} defaultValue={first_name} />
 
                         {
                             errors?.firstName?.message && <Form.Text className="text-danger">
@@ -76,7 +97,7 @@ const AddContact = ({addContact}) => {
                     
                     <Form.Group className="mb-3" as={Col} md={6} controlId="lastName">
                         <Form.Label>Last name</Form.Label>
-                        <Form.Control type="text" placeholder="Last name" {...register('last_name')} />
+                        <Form.Control type="text" placeholder="Last name" {...register('last_name')} defaultValue={last_name} />
 
                         {
                             errors?.lastName?.message && <Form.Text className="text-danger">
@@ -87,7 +108,7 @@ const AddContact = ({addContact}) => {
                     
                     <Form.Group className="mb-3" as={Col} md={6} controlId="email">
                         <Form.Label>Email</Form.Label>
-                        <Form.Control type="email" placeholder="Email address" {...register('email')} />
+                        <Form.Control type="email" placeholder="Email address" {...register('email')} defaultValue={email} />
 
                         {
                             errors?.email?.message && <Form.Text className="text-danger">
@@ -99,7 +120,7 @@ const AddContact = ({addContact}) => {
                     <Form.Group className="mb-3" as={Col} md={6} controlId="profession">
                         <Form.Label>Profession</Form.Label>
 
-                        <Form.Select {...register('profession')}>
+                        <Form.Select {...register('profession')} defaultValue={profession}>
                             <option value="">Select your profession</option>
                             <option value="software_engineer">Software Engineer</option>
                             <option value="web_developer">Web Developer</option>
@@ -116,7 +137,7 @@ const AddContact = ({addContact}) => {
                     <Form.Group className="mb-3" as={Col} md={6} controlId="Image">
                         <Form.Label>Image</Form.Label>
                         
-                        <Form.Control type="text" placeholder="Link of image URL" {...register('image')} />
+                        <Form.Control type="text" placeholder="Link of image URL" {...register('image')} defaultValue={image} />
 
                         {
                             errors?.image?.message && <Form.Text className="text-danger">
@@ -131,7 +152,7 @@ const AddContact = ({addContact}) => {
 
                     <Form.Group className="mb-3" as={Col} md={6} controlId="bio">
                         <Form.Label>BIO</Form.Label>
-                        <Form.Control as="textarea" rows={3} placeholder="Write your bio" {...register('bio')} />
+                        <Form.Control as="textarea" rows={3} placeholder="Write your bio" {...register('bio')} defaultValue={bio} />
 
                         {
                             errors?.bio?.message && <Form.Text className="text-danger">

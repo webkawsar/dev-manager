@@ -2,10 +2,15 @@ import { format } from 'date-fns';
 import React from 'react';
 import { Button, Card, Col, ListGroup, Row } from 'react-bootstrap';
 import { FaEye, FaRegTrashAlt } from "react-icons/fa";
-
+import { Link, useParams } from 'react-router-dom';
 
 
 const Contact = ({contact, deleteContact}) => {
+
+
+    const {contactId} = useParams();
+
+    console.log(contactId, 'params');
 
     const {id, first_name, last_name, email, gender, profession, image, dob, bio} = contact;
     
@@ -30,13 +35,17 @@ const Contact = ({contact, deleteContact}) => {
                             <ListGroup variant="flush">
                                 <ListGroup.Item>Email: {email}</ListGroup.Item>
                                 <ListGroup.Item>Gender: {gender}</ListGroup.Item>
-                                <ListGroup.Item>Date of Birth: {dob instanceof Object ? format(dob, 'MMM') : dob}</ListGroup.Item>
+                                <ListGroup.Item>Date of Birth: {dob instanceof Object ? format(dob, 'd-MMM-yyyy') : dob}</ListGroup.Item>
                             </ListGroup>
 
                             <Card.Footer>
-                                <Button variant="warning">
-                                    <FaEye />
-                                </Button>
+                                
+                                <Link to={`/contacts/${id}`}>
+                                    <Button variant="warning">
+                                        <FaEye />
+                                    </Button>
+                                </Link>
+                                
                                 <Button variant="danger ms-3" onClick={()=> deleteContact(id)}>
                                     <FaRegTrashAlt />
                                 </Button>

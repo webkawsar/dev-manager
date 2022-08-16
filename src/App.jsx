@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Container } from 'react-bootstrap';
-import {
-  BrowserRouter, Route, Routes
-} from "react-router-dom";
+import { BrowserRouter, Route, Routes} from "react-router-dom";
 import './App.css';
 import AddContact from './contacts/AddContact';
+import Contact from './contacts/Contact';
 import Contacts from './contacts/Contacts';
 import Header from './layouts/Header';
 import Home from './pages/Home';
+import { ToastContainer } from 'react-toastify';
+
 
 
 // dev manager
@@ -157,6 +158,19 @@ const App = () => {
   return (
     <>
       <BrowserRouter>
+
+        <ToastContainer
+          position="top-right"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
+
         <Header />
           <Container style={{margin: '0 auto'}} className='mt-3'>
             <Routes>
@@ -164,6 +178,7 @@ const App = () => {
               <Route path='/home' element={<Home />}></Route>
               <Route path='/contacts' element={<Contacts contacts={contacts} deleteContact={deleteContact} />}></Route>
               <Route path='/new/contacts' element={<AddContact addContact={addContact} />}></Route>
+              <Route path='/contacts/:contactId' element={<Contact />}></Route>
             </Routes>
           </Container>
       </BrowserRouter>
