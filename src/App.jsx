@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import { Container } from 'react-bootstrap';
+import {
+  BrowserRouter, Route, Routes
+} from "react-router-dom";
 import './App.css';
 import AddContact from './contacts/AddContact';
 import Contacts from './contacts/Contacts';
 import Header from './layouts/Header';
+import Home from './pages/Home';
+
 
 // dev manager
 // CRUD
@@ -151,13 +156,20 @@ const App = () => {
 
   return (
     <>
-      <Header />
-      <Container style={{margin: '0 auto'}} className='mt-3'>
-        
-        <AddContact addContact={addContact} />
-        <Contacts contacts={contacts} deleteContact={deleteContact} />
+      
 
-      </Container>
+      <BrowserRouter>
+        <Header />
+          <Container style={{margin: '0 auto'}} className='mt-3'>
+            <Routes>
+              <Route index element={<Home />}></Route>
+              <Route path='/home' element={<Home />}></Route>
+              <Route path='/contacts' element={<Contacts contacts={contacts} deleteContact={deleteContact} />}></Route>
+              <Route path='/new/contacts' element={<AddContact addContact={addContact} />}></Route>
+            </Routes>
+          </Container>
+
+      </BrowserRouter>
     </>
   );
 };
