@@ -1,14 +1,14 @@
+import { format } from 'date-fns';
 import React from 'react';
 import { Button, Card, Col, ListGroup, Row } from 'react-bootstrap';
 import { FaEye, FaRegTrashAlt } from "react-icons/fa";
 
 
 
-
 const Contact = ({contact, deleteContact}) => {
 
     const {id, first_name, last_name, email, gender, profession, image, dob, bio} = contact;
-
+    
     return (
         <>
             <Col md={6}>
@@ -21,23 +21,16 @@ const Contact = ({contact, deleteContact}) => {
                         <Col md={7}>
                             <Card.Body>
                                 <Card.Title>{first_name} {last_name}</Card.Title>
-                                <Card.Subtitle className="mb-4 text-muted">{profession}</Card.Subtitle>
+                                <Card.Subtitle className="mb-2 text-muted">{profession}</Card.Subtitle>
                                 <Card.Text>
-                                    <blockquote className="blockquote mb-0">
-                                        <footer className="blockquote-footer overflow-hidden">
-                                            {bio}
-                                        </footer>
-                                    </blockquote>
+                                    {bio}
                                 </Card.Text>
-
-                                
-
                             </Card.Body>
                             
                             <ListGroup variant="flush">
                                 <ListGroup.Item>Email: {email}</ListGroup.Item>
                                 <ListGroup.Item>Gender: {gender}</ListGroup.Item>
-                                <ListGroup.Item>Date of Birth: {dob}</ListGroup.Item>
+                                <ListGroup.Item>Date of Birth: {dob instanceof Object ? format(dob, 'MMM') : dob}</ListGroup.Item>
                             </ListGroup>
 
                             <Card.Footer>

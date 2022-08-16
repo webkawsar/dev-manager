@@ -3,12 +3,15 @@ import React, { useEffect, useState } from 'react';
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import ReactDatePicker from 'react-datepicker';
 import { useForm } from "react-hook-form";
+import { useNavigate } from 'react-router-dom';
+import { v4 as uuidV4 } from 'uuid';
 import * as yup from "yup";
 
 
+
 const schema = yup.object({
-    firstName: yup.string().required("First name is Required").min(3, 'First name at least 3 character'),
-    lastName: yup.string().required('Last name is Required').min(3, 'Last name at least 3 character'),
+    first_name: yup.string().required("First name is Required").min(3, 'First name at least 3 character'),
+    last_name: yup.string().required('Last name is Required').min(3, 'Last name at least 3 character'),
     email: yup.string().required('Email is Required').email('Must be a valid email'),
     profession: yup.string().required('Profession is required'),
     image: yup.string().required('Image link is required').url('Please add valid url link'),
@@ -21,9 +24,12 @@ const AddContact = ({addContact}) => {
 
     const [birthDate, setBirthDate] = useState(new Date());
     const { register, handleSubmit, setValue, reset, formState:{ errors, isSubmitting, isSubmitSuccessful } } = useForm({resolver: yupResolver(schema)});
+    const navigate = useNavigate();
+    
     const onSubmit = data => {
 
-        console.log(data, 'data');
+        addContact({...data, id: uuidV4()});
+        navigate('/contacts');
     }
 
     useEffect(() => {
@@ -37,8 +43,8 @@ const AddContact = ({addContact}) => {
         if(isSubmitSuccessful) {
 
             reset({
-                firstName: '',
-                lastName: '',
+                first_name: '',
+                last_name: '',
                 email: '',
                 profession: '',
                 image: '',
@@ -51,8 +57,6 @@ const AddContact = ({addContact}) => {
 
     }, [isSubmitSuccessful])
 
-
-
     return (
         <div>
             <h2 className='text-center'>Add Contact</h2>
@@ -61,7 +65,7 @@ const AddContact = ({addContact}) => {
                 <Row>
                     <Form.Group className="mb-3" as={Col} md={6} controlId="firstName">
                         <Form.Label>First name</Form.Label>
-                        <Form.Control type="text" placeholder="First name" {...register('firstName')} />
+                        <Form.Control type="text" placeholder="First name" {...register('first_name')} />
 
                         {
                             errors?.firstName?.message && <Form.Text className="text-danger">
@@ -72,7 +76,7 @@ const AddContact = ({addContact}) => {
                     
                     <Form.Group className="mb-3" as={Col} md={6} controlId="lastName">
                         <Form.Label>Last name</Form.Label>
-                        <Form.Control type="text" placeholder="Last name" {...register('lastName')} />
+                        <Form.Control type="text" placeholder="Last name" {...register('last_name')} />
 
                         {
                             errors?.lastName?.message && <Form.Text className="text-danger">
@@ -121,13 +125,9 @@ const AddContact = ({addContact}) => {
                         }
                     </Form.Group>
 
-
-                 
-                    
                     <Col md={6} >
                         <ReactDatePicker selected={birthDate} onChange={(date) => setBirthDate(date)} maxDate={new Date()} showYearDropdown />
                     </Col>
-
 
                     <Form.Group className="mb-3" as={Col} md={6} controlId="bio">
                         <Form.Label>BIO</Form.Label>
@@ -140,8 +140,6 @@ const AddContact = ({addContact}) => {
                         }
                     </Form.Group>
 
-
-
                     <Form.Group className="mb-3" as={Col} md={6} controlId="gender">
                         <Form.Check type="radio" inline label="Male" id="male" value="male" {...register('gender')} defaultChecked={true} />
                         <Form.Check type="radio" inline label="Female" id="female" value="female" {...register('gender')} />
@@ -152,12 +150,7 @@ const AddContact = ({addContact}) => {
                             </Form.Text>
                         }
                     </Form.Group>
-
-
                 </Row> 
-
-                
-
 
                 {/* <Form.Group className="mb-3" controlId="formBasicCheckbox">
                     <Form.Check type="checkbox" label="Agreed to Dev Manager terms & conditions" name="agreedPolicy" />

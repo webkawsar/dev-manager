@@ -27,7 +27,7 @@ import Home from './pages/Home';
 
 const initialContacts = [
   {
-    "id": 1,
+    "id": '1',
     "first_name": "Ingaborg",
     "last_name": "Kimberley",
     "email": "ikimberley0@goo.ne.jp",
@@ -38,7 +38,7 @@ const initialContacts = [
     "bio": "et magnis dis parturient montes nascetur ridiculus mus vivamus vestibulum"
   },
   {
-    "id": 2,
+    "id": '2',
     "first_name": "Corbett",
     "last_name": "Crossman",
     "email": "ccrossman1@upenn.edu",
@@ -49,7 +49,7 @@ const initialContacts = [
     "bio": "maecenas ut massa quis augue luctus tincidunt nulla mollis molestie"
   },
   {
-    "id": 3,
+    "id": '3',
     "first_name": "Edithe",
     "last_name": "Bleby",
     "email": "ebleby2@europa.eu",
@@ -60,7 +60,7 @@ const initialContacts = [
     "bio": "nulla mollis molestie lorem quisque ut erat curabitur gravida nisi"
   },
   {
-    "id": 4,
+    "id": '4',
     "first_name": "Teena",
     "last_name": "Picard",
     "email": "tpicard3@weather.com",
@@ -71,7 +71,7 @@ const initialContacts = [
     "bio": "augue aliquam erat volutpat in congue etiam justo etiam pretium"
   },
   {
-    "id": 5,
+    "id": '5',
     "first_name": "Colin",
     "last_name": "Matskevich",
     "email": "cmatskevich4@gov.uk",
@@ -82,7 +82,7 @@ const initialContacts = [
     "bio": "rhoncus aliquam lacus morbi quis tortor id nulla ultrices aliquet maecenas"
   },
   {
-    "id": 6,
+    "id": '6',
     "first_name": "Lazarus",
     "last_name": "Couvet",
     "email": "lcouvet5@thetimes.co.uk",
@@ -93,7 +93,7 @@ const initialContacts = [
     "bio": "sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus"
   },
   {
-    "id": 7,
+    "id": '7',
     "first_name": "Ruy",
     "last_name": "Volk",
     "email": "rvolk6@addthis.com",
@@ -104,7 +104,7 @@ const initialContacts = [
     "bio": "eu sapien cursus vestibulum proin eu mi nulla ac enim in tempor"
   },
   {
-    "id": 8,
+    "id": '8',
     "first_name": "Caroljean",
     "last_name": "Malloch",
     "email": "cmalloch7@1688.com",
@@ -115,7 +115,7 @@ const initialContacts = [
     "bio": "felis donec semper sapien a libero nam dui proin leo odio"
   },
   {
-    "id": 9,
+    "id": '9',
     "first_name": "Lorette",
     "last_name": "Olexa",
     "email": "lolexa8@istockphoto.com",
@@ -126,7 +126,7 @@ const initialContacts = [
     "bio": "tincidunt eu felis fusce posuere felis sed lacus morbi sem mauris laoreet"
   },
   {
-    "id": 10,
+    "id": '10',
     "first_name": "Rhona",
     "last_name": "Ewebank",
     "email": "rewebank9@wsj.com",
@@ -156,8 +156,6 @@ const App = () => {
 
   return (
     <>
-      
-
       <BrowserRouter>
         <Header />
           <Container style={{margin: '0 auto'}} className='mt-3'>
@@ -168,7 +166,6 @@ const App = () => {
               <Route path='/new/contacts' element={<AddContact addContact={addContact} />}></Route>
             </Routes>
           </Container>
-
       </BrowserRouter>
     </>
   );
