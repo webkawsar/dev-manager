@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { Container } from 'react-bootstrap';
-import { BrowserRouter, Route, Routes} from "react-router-dom";
-import './App.css';
-import AddContact from './contacts/AddContact';
-import Contact from './contacts/Contact';
-import Contacts from './contacts/Contacts';
-import Header from './layouts/Header';
-import Home from './pages/Home';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
+import './App.css';
+import Header from './layouts/Header';
+import AddContact from './pages/AddContact';
+import ContactDetails from './pages/ContactDetails';
+import Contacts from './pages/Contacts';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import NotFound from './pages/NotFound';
+import Register from './pages/Register';
 
 
 
@@ -32,7 +35,7 @@ const initialContacts = [
     "first_name": "Ingaborg",
     "last_name": "Kimberley",
     "email": "ikimberley0@goo.ne.jp",
-    "gender": "Female",
+    "gender": "female",
     "profession": "Structural Engineer",
     "image": "https://robohash.org/delenitisaepedolor.png?size=200x200&set=set1",
     "dob": "16/05/2022",
@@ -43,7 +46,7 @@ const initialContacts = [
     "first_name": "Corbett",
     "last_name": "Crossman",
     "email": "ccrossman1@upenn.edu",
-    "gender": "Male",
+    "gender": "male",
     "profession": "Senior Quality Engineer",
     "image": "https://robohash.org/rationenatuseum.png?size=200x200&set=set1",
     "dob": "30/01/2022",
@@ -54,7 +57,7 @@ const initialContacts = [
     "first_name": "Edithe",
     "last_name": "Bleby",
     "email": "ebleby2@europa.eu",
-    "gender": "Female",
+    "gender": "female",
     "profession": "Dental Hygienist",
     "image": "https://robohash.org/autiureoccaecati.png?size=200x200&set=set1",
     "dob": "29/08/2021",
@@ -65,7 +68,7 @@ const initialContacts = [
     "first_name": "Teena",
     "last_name": "Picard",
     "email": "tpicard3@weather.com",
-    "gender": "Female",
+    "gender": "female",
     "profession": "Assistant Professor",
     "image": "https://robohash.org/earumsapientecumque.png?size=200x200&set=set1",
     "dob": "15/10/2021",
@@ -76,7 +79,7 @@ const initialContacts = [
     "first_name": "Colin",
     "last_name": "Matskevich",
     "email": "cmatskevich4@gov.uk",
-    "gender": "Male",
+    "gender": "male",
     "profession": "Tax Accountant",
     "image": "https://robohash.org/eossedharum.png?size=200x200&set=set1",
     "dob": "23/06/2022",
@@ -87,7 +90,7 @@ const initialContacts = [
     "first_name": "Lazarus",
     "last_name": "Couvet",
     "email": "lcouvet5@thetimes.co.uk",
-    "gender": "Male",
+    "gender": "male",
     "profession": "Data Coordiator",
     "image": "https://robohash.org/solutaeostemporibus.png?size=200x200&set=set1",
     "dob": "15/04/2022",
@@ -98,7 +101,7 @@ const initialContacts = [
     "first_name": "Ruy",
     "last_name": "Volk",
     "email": "rvolk6@addthis.com",
-    "gender": "Male",
+    "gender": "male",
     "profession": "Design Engineer",
     "image": "https://robohash.org/quisdoloremquedoloribus.png?size=200x200&set=set1",
     "dob": "30/03/2022",
@@ -109,7 +112,7 @@ const initialContacts = [
     "first_name": "Caroljean",
     "last_name": "Malloch",
     "email": "cmalloch7@1688.com",
-    "gender": "Bigender",
+    "gender": "female",
     "profession": "Computer Systems Analyst I",
     "image": "https://robohash.org/omnisveniameaque.png?size=200x200&set=set1",
     "dob": "20/07/2022",
@@ -120,7 +123,7 @@ const initialContacts = [
     "first_name": "Lorette",
     "last_name": "Olexa",
     "email": "lolexa8@istockphoto.com",
-    "gender": "Female",
+    "gender": "female",
     "profession": "Quality Control Specialist",
     "image": "https://robohash.org/fugitevenietet.png?size=200x200&set=set1",
     "dob": "28/08/2021",
@@ -131,7 +134,7 @@ const initialContacts = [
     "first_name": "Rhona",
     "last_name": "Ewebank",
     "email": "rewebank9@wsj.com",
-    "gender": "Female",
+    "gender": "female",
     "profession": "Administrative Assistant III",
     "image": "https://robohash.org/quasiaspernaturaccusantium.png?size=200x200&set=set1",
     "dob": "15/02/2022",
@@ -143,15 +146,33 @@ const initialContacts = [
 const App = () => {
   const [contacts, setContacts] = useState(initialContacts);
 
+  const addContact = (contact) => {
+    
+    setContacts([contact, ...contacts]);
+  }
+
+  const updateContact = (updatedContactValue) => {
+   
+    const contactWithUpdate = contacts.map(contact => {
+      if(contact.id === updatedContactValue.id) {
+
+        return {
+          ...updatedContactValue
+        }
+
+      } else {
+        return contact;
+      }
+    })
+
+    setContacts(contactWithUpdate);
+
+  }
+
   const deleteContact = (id) => {
     
     const filteredContacts = contacts.filter(contact => contact.id !== id);
     setContacts(filteredContacts);
-  }
-
-  const addContact = (contact) => {
-    
-    setContacts([contact, ...contacts]);
   }
 
 
@@ -176,9 +197,25 @@ const App = () => {
             <Routes>
               <Route index element={<Home />}></Route>
               <Route path='/home' element={<Home />}></Route>
-              <Route path='/contacts' element={<Contacts contacts={contacts} deleteContact={deleteContact} />}></Route>
-              <Route path='/new/contacts' element={<AddContact addContact={addContact} />}></Route>
-              <Route path='/contacts/:contactId' element={<Contact />}></Route>
+              <Route path='/login' element={<Login />}></Route>
+              <Route path='/register' element={<Register />}></Route>
+
+              {/* /contacts
+              /contacts/new
+              /contacts/:contactId 
+              /contacts/:contactId/edit */}
+
+              <Route path='/contacts' element={<Contacts contacts={contacts} deleteContact={deleteContact} />}>
+                <Route index element={<Home />}></Route>
+                <Route path='new' element={<AddContact addContact={addContact} />}></Route>
+                <Route path=':contactId' element={<ContactDetails contacts={contacts} deleteContact={deleteContact} />}></Route>
+              </Route>
+
+              
+              
+              
+              {/* <Route path='/edit/contacts/:contactId' element={<EditContact contacts={contacts} updateContact={updateContact} />}></Route> */}
+              <Route path='*' element={<NotFound />}></Route>
             </Routes>
           </Container>
       </BrowserRouter>

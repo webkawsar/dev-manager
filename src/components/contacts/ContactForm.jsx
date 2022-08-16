@@ -22,16 +22,16 @@ const schema = yup.object({
   }).required();
 
 
-const AddContact = ({addContact}) => {
+const ContactForm = ({addContact, contact, updateContact}) => {
 
     const defaultValue = {
-        first_name: '',
-        last_name: '',
-        email: '',
-        profession: '',
-        image: '',
-        bio: '',
-        gender: ''
+        first_name: contact?.first_name || 'Kawsar',
+        last_name: contact?.last_name || 'Ahmed',
+        email: contact?.email || 'web.kawsarahmed@gmail.com',
+        profession: contact?.profession || 'web_developer',
+        image: contact?.image || 'https://facebook.com',
+        bio: contact?.bio || 'Hi, This is Kawsar Ahmed',
+        gender: contact?.gender || 'male'
     }
     
     const [birthDate, setBirthDate] = useState(new Date());
@@ -40,11 +40,25 @@ const AddContact = ({addContact}) => {
     
     const onSubmit = data => {
 
-        // show flash message
-        toast.success('Contact added successfully')
+        
 
-        // adding contact
-        addContact({...data, id: uuidV4()});
+        if(contact.id) {
+            
+            // update contact
+            updateContact({...data, id: contact.id});
+            
+            // show flash message
+            toast.success('Contact updated successfully');
+            
+        } else {
+            
+            // adding contact
+            addContact({...data, id: uuidV4()});
+
+            // show flash message
+            toast.success('Contact added successfully');
+        }
+        
         navigate('/contacts');
     }
 
@@ -80,7 +94,7 @@ const AddContact = ({addContact}) => {
 
     return (
         <div>
-            <h2 className='text-center'>Add Contact</h2>
+            <h2 className='text-center'>{contact?.id ? 'Edit Contact' : 'Add Contact'}</h2>
 
             <Form onSubmit={handleSubmit(onSubmit)} noValidate>
                 <Row>
@@ -162,8 +176,8 @@ const AddContact = ({addContact}) => {
                     </Form.Group>
 
                     <Form.Group className="mb-3" as={Col} md={6} controlId="gender">
-                        <Form.Check type="radio" inline label="Male" id="male" value="male" {...register('gender')} defaultChecked={true} />
-                        <Form.Check type="radio" inline label="Female" id="female" value="female" {...register('gender')} />
+                        <Form.Check type="radio" inline label="Male" id="male" value="male" {...register('gender')} defaultChecked={gender === 'male'} />
+                        <Form.Check type="radio" inline label="Female" id="female" value="female" {...register('gender')} defaultChecked={gender === 'female'} />
 
                         {
                             errors?.gender?.message && <Form.Text className="text-danger">
@@ -178,11 +192,11 @@ const AddContact = ({addContact}) => {
                 </Form.Group> */}
 
                 <Button variant="primary" type="submit" disabled={isSubmitting ? 'disabled' : ''}>
-                    Add Contact
+                    {contact?.id ? 'Update Contact' : 'Add Contact'}
                 </Button>
             </Form>
         </div>
     );
 };
 
-export default AddContact;
+export default ContactForm;

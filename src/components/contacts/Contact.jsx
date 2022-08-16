@@ -2,17 +2,22 @@ import { format } from 'date-fns';
 import React from 'react';
 import { Button, Card, Col, ListGroup, Row } from 'react-bootstrap';
 import { FaEye, FaRegTrashAlt } from "react-icons/fa";
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 
 const Contact = ({contact, deleteContact}) => {
 
-
-    const {contactId} = useParams();
-
-    console.log(contactId, 'params');
-
     const {id, first_name, last_name, email, gender, profession, image, dob, bio} = contact;
+
+    const handleDelete = (id) => {
+
+        deleteContact(id);
+
+        // show flash message
+        toast.success('Contact delete successfully');
+        
+    }
     
     return (
         <>
@@ -46,7 +51,7 @@ const Contact = ({contact, deleteContact}) => {
                                     </Button>
                                 </Link>
                                 
-                                <Button variant="danger ms-3" onClick={()=> deleteContact(id)}>
+                                <Button variant="danger ms-3" onClick={()=> handleDelete(id)}>
                                     <FaRegTrashAlt />
                                 </Button>
                             </Card.Footer>
