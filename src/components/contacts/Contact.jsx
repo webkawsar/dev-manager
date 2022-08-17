@@ -16,7 +16,6 @@ const Contact = ({contact, deleteContact}) => {
 
         // show flash message
         toast.success('Contact delete successfully');
-        
     }
     
     return (

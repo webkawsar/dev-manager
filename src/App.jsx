@@ -157,9 +157,7 @@ const App = () => {
     const contactWithUpdate = contacts.map(contact => {
       if(contact.id === updatedContactValue.id) {
 
-        return {
-          ...updatedContactValue
-        }
+        return updatedContactValue;
 
       } else {
         return contact;
@@ -167,7 +165,6 @@ const App = () => {
     })
 
     setContacts(contactWithUpdate);
-
   }
 
   const deleteContact = (id) => {
@@ -176,7 +173,7 @@ const App = () => {
     setContacts(filteredContacts);
   }
 
-
+  
   return (
     <>
       <BrowserRouter>
