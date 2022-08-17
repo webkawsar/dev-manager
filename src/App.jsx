@@ -7,6 +7,7 @@ import Header from './layouts/Header';
 import AddContact from './pages/AddContact';
 import ContactDetails from './pages/ContactDetails';
 import Contacts from './pages/Contacts';
+import EditContact from './pages/EditContact';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
@@ -170,7 +171,7 @@ const App = () => {
   }
 
   const deleteContact = (id) => {
-    
+
     const filteredContacts = contacts.filter(contact => contact.id !== id);
     setContacts(filteredContacts);
   }
@@ -200,21 +201,10 @@ const App = () => {
               <Route path='/login' element={<Login />}></Route>
               <Route path='/register' element={<Register />}></Route>
 
-              {/* /contacts
-              /contacts/new
-              /contacts/:contactId 
-              /contacts/:contactId/edit */}
-
-              <Route path='/contacts' element={<Contacts contacts={contacts} deleteContact={deleteContact} />}>
-                <Route index element={<Home />}></Route>
-                <Route path='new' element={<AddContact addContact={addContact} />}></Route>
-                <Route path=':contactId' element={<ContactDetails contacts={contacts} deleteContact={deleteContact} />}></Route>
-              </Route>
-
-              
-              
-              
-              {/* <Route path='/edit/contacts/:contactId' element={<EditContact contacts={contacts} updateContact={updateContact} />}></Route> */}
+              <Route path='/new/contacts' element={<AddContact addContact={addContact} />}></Route>
+              <Route path='/contacts' element={<Contacts contacts={contacts} deleteContact={deleteContact} />}></Route>
+              <Route path='/contacts/:contactId' element={<ContactDetails contacts={contacts} deleteContact={deleteContact} />}></Route>
+              <Route path='/edit/contacts/:contactId' element={<EditContact contacts={contacts} updateContact={updateContact} />}></Route>
               <Route path='*' element={<NotFound />}></Route>
             </Routes>
           </Container>

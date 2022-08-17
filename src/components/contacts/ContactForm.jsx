@@ -40,12 +40,10 @@ const ContactForm = ({addContact, contact, updateContact}) => {
     
     const onSubmit = data => {
 
-        
-
-        if(contact.id) {
+        if(contact?.id) {
             
             // update contact
-            updateContact({...data, id: contact.id});
+            updateContact({...data, id: contact?.id});
             
             // show flash message
             toast.success('Contact updated successfully');
