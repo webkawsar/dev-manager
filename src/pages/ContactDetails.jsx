@@ -1,14 +1,17 @@
 import { format } from 'date-fns';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Button, Card, Col, ListGroup, Row } from 'react-bootstrap';
 import { FaPencilAlt, FaRegTrashAlt } from "react-icons/fa";
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { ContactContext } from '../context/Contact.context';
 
 
 
 
-const ContactDetails = ({contacts, deleteContact}) => {
+const ContactDetails = () => {
+
+    const {contacts, deleteContact} = useContext(ContactContext);
 
     const {contactId} = useParams();
     const [contact, setContact] = useState({});

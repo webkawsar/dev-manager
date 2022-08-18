@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import ReactDatePicker from 'react-datepicker';
 import { useForm } from "react-hook-form";
@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { v4 as uuidV4 } from 'uuid';
 import * as yup from "yup";
+import { ContactContext } from '../../context/Contact.context';
 
 
 
@@ -22,8 +23,10 @@ const schema = yup.object({
   }).required();
 
 
-const ContactForm = ({addContact, contact, updateContact}) => {
+const ContactForm = ({contact}) => {
 
+    const {addContact, updateContact} = useContext(ContactContext);
+    
     const defaultValue = {
         first_name: contact?.first_name || 'Kawsar',
         last_name: contact?.last_name || 'Ahmed',

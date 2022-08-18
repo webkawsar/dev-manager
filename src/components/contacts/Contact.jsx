@@ -1,12 +1,15 @@
 import { format } from 'date-fns';
-import React from 'react';
+import React, { useContext } from 'react';
 import { Button, Card, Col, ListGroup, Row } from 'react-bootstrap';
 import { FaEye, FaRegTrashAlt } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { ContactContext } from '../../context/Contact.context';
 
 
-const Contact = ({contact, deleteContact}) => {
+const Contact = ({contact}) => {
+
+    const {deleteContact} = useContext(ContactContext);
 
     const {id, first_name, last_name, email, gender, profession, image, dob, bio} = contact;
 

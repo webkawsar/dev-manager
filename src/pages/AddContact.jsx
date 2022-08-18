@@ -4,10 +4,11 @@ import ContactForm from '../components/contacts/ContactForm';
 
 
 
-const AddContact = ({addContact}) => {
+const AddContact = () => {
+    
     return (
         <div>
-            <ContactForm addContact={addContact} />
+            <ContactForm />
         </div>
     );
 };
