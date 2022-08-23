@@ -1,4 +1,6 @@
 import { createContext, useReducer } from "react";
+import { ADD_CONTACT, DELETE_CONTACT, UPDATE_CONTACT } from "./action.types";
+import contactsReducer from "./reducer";
 
 
 
@@ -118,87 +120,37 @@ const initialContacts = [
       "bio": "sem fusce consequat nulla nisl nunc nisl duis bibendum felis"
     }
   ]
-
-
-const ADD_CONTACT = 'ADD_CONTACT';
-const UPDATE_CONTACT = 'UPDATE_CONTACT';
-const DELETE_CONTACT = 'DELETE_CONTACT';
-
-const contactsReducer = (state, action) => {
-
-  const {type, payload} = action;
   
-  switch (type) {
-    case ADD_CONTACT:
-      return [contact, ...state];
-  
-    case UPDATE_CONTACT:
-      const updatedContact = state.map(contact => {
-        if(contact.id === payload.id) {
-            return payload;
-        } else {
-            return contact;
-        }
-      })
-      return [...updatedContact];
-  
-    case DELETE_CONTACT:
-      const filteredContacts = state.filter(contact => contact.id !== payload);
-      return [...filteredContacts];
-
-    default:
-      return state;
-  }
-}
   
 // create a provider
 export const ContactProvider = ({children}) => {
 
-    // const [contacts, setContacts] = useState(initialContacts);
-    const [contacts, dispatch] = useReducer(contactsReducer, initialContacts);
+  const [contacts, dispatch] = useReducer(contactsReducer, initialContacts);
 
-    const addContact = (contact) => {
-        // setContacts([contact, ...contacts]);
-        dispatch({type: ADD_CONTACT, payload: contact});
-    }
+  const addContact = (contact) => {
+      dispatch({type: ADD_CONTACT, payload: contact});
+  }
 
-    const updateContact = (updatedContactValue) => {
-    
-        // const contactWithUpdate = contacts.map(contact => {
-        // if(contact.id === updatedContactValue.id) {
+  const updateContact = (updatedContactValue) => {
+      dispatch({type: UPDATE_CONTACT, payload: updatedContactValue});
+  }
 
-        //     return updatedContactValue;
+  const deleteContact = (id) => {
+      dispatch({type: DELETE_CONTACT, payload: id});
+  }
 
-        // } else {
-        //     return contact;
-        // }
-        // })
+  const value = {
+      contacts,
+      addContact,
+      updateContact,
+      deleteContact
+  }
 
-        // setContacts(contactWithUpdate);
-
-
-        dispatch({type: UPDATE_CONTACT, payload: updatedContactValue});
-    }
-
-    const deleteContact = (id) => {
-
-        // const filteredContacts = contacts.filter(contact => contact.id !== id);
-        // setContacts(filteredContacts);
-        dispatch({type: DELETE_CONTACT, payload: id});
-    }
-
-    const value = {
-        contacts,
-        addContact,
-        updateContact,
-        deleteContact
-    }
-
-    return (
-        <ContactContext.Provider value={value}>
-            {children}
-        </ContactContext.Provider>
-    )
+  return (
+    <ContactContext.Provider value={value}>
+        {children}
+    </ContactContext.Provider>
+  )
 }
 
 
