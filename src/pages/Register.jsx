@@ -1,8 +1,9 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import React from "react";
+import React, { useContext } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
+import { AuthContext } from "../context/Auth.context";
 
 const schema = yup
   .object({
@@ -13,20 +14,26 @@ const schema = yup
   })
   .required();
 
+
+
+
 const Register = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm({
+  const {registerUser} = useContext(AuthContext);
+  const { register, handleSubmit, formState: { errors, isSubmitting }} = useForm({
     resolver: yupResolver(schema),
   });
 
   const onSubmit = (data) => {
-    console.log(data, "data");
+    
+    // register user
+    registerUser({
+      username: data.username,
+      password: data.password,
+      email: data.email
+    })
   };
-  console.log(errors, "errors");
 
+  
   return (
     <div>
       <h1 className="text-center mb-3">Register</h1>
@@ -40,7 +47,7 @@ const Register = () => {
               <Form.Control
                 type="text"
                 placeholder="Enter your username"
-                defaultValue=""
+                defaultValue="webkawsar"
                 {...register("username")}
                 isInvalid={!!errors.username}
               />
@@ -58,7 +65,7 @@ const Register = () => {
               <Form.Control
                 type="email"
                 placeholder="Enter email"
-                defaultValue=""
+                defaultValue="web.kawsarahmed@gmail.com"
                 {...register("email")}
                 isInvalid={!!errors.email}
               />
@@ -76,7 +83,7 @@ const Register = () => {
               <Form.Control
                 type="password"
                 placeholder="Enter password"
-                defaultValue=""
+                defaultValue="123456@Ka"
                 {...register("password")}
                 isInvalid={!!errors.password}
               />
@@ -94,7 +101,7 @@ const Register = () => {
               <Form.Control
                 type="password"
                 placeholder="Enter confirm password"
-                defaultValue=""
+                defaultValue="123456@Ka"
                 {...register("confirm_password")}
                 isInvalid={!!errors.confirm_password}
               />
