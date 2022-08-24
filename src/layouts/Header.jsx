@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Button, Container, Form, Nav, Navbar } from 'react-bootstrap';
 import { Link, NavLink } from 'react-router-dom';
+import { AuthContext } from '../context/Auth.context';
 
 
 
 const Header = () => {
 
-    
+    const {logout} = useContext(AuthContext);
     
     return (
         <>
@@ -23,6 +24,7 @@ const Header = () => {
                         <Nav.Link as={NavLink} to="/contacts">Contacts</Nav.Link>
                         <Nav.Link as={NavLink} to="/register">Register</Nav.Link>
                         <Nav.Link as={NavLink} to="/login">Login</Nav.Link>
+                        <Nav.Link onClick={logout}>Logout</Nav.Link>
                         
                     </Nav>
                     <Form className="d-flex">

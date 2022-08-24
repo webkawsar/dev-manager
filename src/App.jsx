@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container } from 'react-bootstrap';
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
 import './App.css';
 import Header from './layouts/Header';
@@ -37,36 +37,33 @@ const App = () => {
   
   return (
     <>
-      <BrowserRouter>
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
 
-        <ToastContainer
-          position="top-right"
-          autoClose={2000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
+      <Header />
+        <Container style={{margin: '0 auto'}} className='mt-3'>
+          <Routes>
+            <Route index element={<Home />}></Route>
+            <Route path='/home' element={<Home />}></Route>
+            <Route path='/login' element={<Login />}></Route>
+            <Route path='/register' element={<Register />}></Route>
 
-        <Header />
-          <Container style={{margin: '0 auto'}} className='mt-3'>
-            <Routes>
-              <Route index element={<Home />}></Route>
-              <Route path='/home' element={<Home />}></Route>
-              <Route path='/login' element={<Login />}></Route>
-              <Route path='/register' element={<Register />}></Route>
-
-              <Route path='/new/contacts' element={<AddContact />}></Route>
-              <Route path='/contacts' element={<Contacts />}></Route>
-              <Route path='/contacts/:contactId' element={<ContactDetails />}></Route>
-              <Route path='/edit/contacts/:contactId' element={<EditContact />}></Route>
-              <Route path='*' element={<NotFound />}></Route>
-            </Routes>
-          </Container>
-      </BrowserRouter>
+            <Route path='/new/contacts' element={<AddContact />}></Route>
+            <Route path='/contacts' element={<Contacts />}></Route>
+            <Route path='/contacts/:contactId' element={<ContactDetails />}></Route>
+            <Route path='/edit/contacts/:contactId' element={<EditContact />}></Route>
+            <Route path='*' element={<NotFound />}></Route>
+          </Routes>
+        </Container>
     </>
   );
 };

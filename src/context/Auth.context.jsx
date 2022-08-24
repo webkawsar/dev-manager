@@ -1,4 +1,5 @@
 import { createContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { axiosInstance } from "../config/axios";
 
@@ -12,6 +13,7 @@ export const AuthProvider = ({children}) => {
 
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(null);
+    const navigate = useNavigate();
 
     const registerUser = async(data) => {
 
@@ -27,18 +29,51 @@ export const AuthProvider = ({children}) => {
             localStorage.setItem('user', JSON.stringify(user));
             localStorage.setItem('token', JSON.stringify(jwt));
 
+            // show success msg
+            toast.success('Registration is successful');
+
+            // redirect the user
+            navigate('/contacts');
+
         } catch (error) {
             toast.error(error?.response?.data?.error?.message)
         }
     }
 
-    const login = (data) => {
+    const login = async(data) => {
+
+        try {
+            const response = await axiosInstance.post('/auth/local', data);
+            const {jwt, user} = response.data;
+
+            // update state
+            setUser(user);
+            setToken(jwt);
+
+            // set data to local storage
+            localStorage.setItem('user', JSON.stringify(user));
+            localStorage.setItem('token', JSON.stringify(jwt));
+
+            // show success msg
+            toast.success('Login successful');
+
+            // redirect the user
+            navigate('/contacts');
+
+        } catch (error) {
+            console.log(error.response.data, 'error');
+            toast.error(error?.response?.data?.error?.message)
+        }
 
     }
 
     const logout = () => {
 
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
 
+        // show logout msg
+        toast.success('Logout successful');
     }
 
     const value = {
