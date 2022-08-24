@@ -6,10 +6,10 @@ import * as yup from "yup";
 
 const schema = yup
   .object({
-    username: yup.string().required(),
-    email: yup.string().email().required(),
-    password: yup.string().required(),
-    confirm_password: yup.string().required(),
+    username: yup.string().trim().required('Username is required').min(3, 'Username must be at least 3 character'),
+    email: yup.string().trim().email('Must be a valid email').required('Email is required').lowercase(),
+    password: yup.string().trim().required('Password is required').matches(/[a-z0-9]{6}/, 'Must contain letter and number'),
+    confirm_password: yup.string().trim().required('Confirm password is required').oneOf([yup.ref('password')], 'Confirm password don\'t match'),
   })
   .required();
 
@@ -17,7 +17,7 @@ const Register = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: yupResolver(schema),
   });
@@ -95,7 +95,7 @@ const Register = () => {
                 type="password"
                 placeholder="Enter confirm password"
                 defaultValue=""
-                {...register("confirmPassword")}
+                {...register("confirm_password")}
                 isInvalid={!!errors.confirm_password}
               />
               
@@ -111,7 +111,7 @@ const Register = () => {
               <Form.Check type="checkbox" label="Check me out" />
             </Form.Group>
 
-            <Button variant="primary" type="submit">
+            <Button variant="primary" type="submit" disabled={isSubmitting ? true : false}>
               Submit
             </Button>
           </Form>
