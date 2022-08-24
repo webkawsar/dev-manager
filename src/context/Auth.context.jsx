@@ -8,11 +8,13 @@ import { axiosInstance } from "../config/axios";
 
 export const AuthContext = createContext();
 
+const storageUser = JSON.parse(localStorage.getItem('user'));
+const storageToken = JSON.parse(localStorage.getItem('token'));
 
 export const AuthProvider = ({children}) => {
 
-    const [user, setUser] = useState(null);
-    const [token, setToken] = useState(null);
+    const [user, setUser] = useState(storageUser ? storageUser : null);
+    const [token, setToken] = useState(storageToken ? storageToken : null);
     const navigate = useNavigate();
 
     const registerUser = async(data) => {
@@ -61,7 +63,7 @@ export const AuthProvider = ({children}) => {
             navigate('/contacts');
 
         } catch (error) {
-            console.log(error.response.data, 'error');
+            
             toast.error(error?.response?.data?.error?.message)
         }
 
@@ -69,11 +71,19 @@ export const AuthProvider = ({children}) => {
 
     const logout = () => {
 
+        //remove data from storage
         localStorage.removeItem('user');
         localStorage.removeItem('token');
 
+        // remove data from state
+        setUser(null);
+        setToken(null);
+
         // show logout msg
         toast.success('Logout successful');
+
+        // redirect the user
+        navigate('/login');
     }
 
     const value = {
