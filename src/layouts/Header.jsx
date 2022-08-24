@@ -7,7 +7,7 @@ import { AuthContext } from '../context/Auth.context';
 
 const Header = () => {
 
-    const {logout} = useContext(AuthContext);
+    const {user, logout} = useContext(AuthContext);
     
     return (
         <>
@@ -19,13 +19,20 @@ const Header = () => {
                     <Nav
                         className="me-auto my-2 my-lg-0"
                     >
-                        {/* <Nav.Link as={NavLink} to="/home">Home</Nav.Link> */}
-                        <Nav.Link as={NavLink} to="/new/contacts">Add Contact</Nav.Link>
-                        <Nav.Link as={NavLink} to="/contacts">Contacts</Nav.Link>
-                        <Nav.Link as={NavLink} to="/register">Register</Nav.Link>
-                        <Nav.Link as={NavLink} to="/login">Login</Nav.Link>
-                        <Nav.Link onClick={logout}>Logout</Nav.Link>
-                        
+                        {
+                            user ? 
+                                <>
+                                    <Nav.Link as={NavLink} to="/home">Home</Nav.Link>
+                                    <Nav.Link as={NavLink} to="/contacts">Contacts</Nav.Link>
+                                    <Nav.Link as={NavLink} to="/new/contacts">Add Contact</Nav.Link>
+                                    <Nav.Link onClick={logout}>Logout</Nav.Link>
+                                </>
+                                :
+                                <>
+                                    <Nav.Link as={NavLink} to="/register">Register</Nav.Link>
+                                    <Nav.Link as={NavLink} to="/login">Login</Nav.Link>
+                                </>
+                        }                        
                     </Nav>
                     <Form className="d-flex">
                         <Form.Control
