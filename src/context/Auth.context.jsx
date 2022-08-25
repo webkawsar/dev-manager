@@ -1,5 +1,5 @@
 import { createContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { axiosInstance } from "../config/axios";
 
@@ -16,6 +16,7 @@ export const AuthProvider = ({children}) => {
     const [user, setUser] = useState(storageUser ? storageUser : null);
     const [token, setToken] = useState(storageToken ? storageToken : null);
     const navigate = useNavigate();
+    const location = useLocation();
 
     const registerUser = async(data) => {
 
@@ -60,7 +61,7 @@ export const AuthProvider = ({children}) => {
             toast.success('Login successful');
 
             // redirect the user
-            navigate('/contacts');
+            navigate(location?.state?.from ? location?.state?.from : '/contacts');
 
         } catch (error) {
             

@@ -2,16 +2,18 @@ import React from 'react';
 import { Container } from 'react-bootstrap';
 import { Route, Routes } from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
-import './App.css';
-import Header from './layouts/Header';
-import AddContact from './pages/AddContact';
-import ContactDetails from './pages/ContactDetails';
-import Contacts from './pages/Contacts';
-import EditContact from './pages/EditContact';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import NotFound from './pages/NotFound';
-import Register from './pages/Register';
+import '../App.css';
+import Header from '../layouts/Header';
+import AddContact from '../pages/AddContact';
+import ContactDetails from '../pages/ContactDetails';
+import Contacts from '../pages/Contacts';
+import Dashboard from '../pages/Dashboard';
+import EditContact from '../pages/EditContact';
+import Home from '../pages/Home';
+import Login from '../pages/Login';
+import NotFound from '../pages/NotFound';
+import Register from '../pages/Register';
+import PrivateRoute from './PrivateRoute';
 
 
 
@@ -54,13 +56,15 @@ const App = () => {
           <Routes>
             <Route index element={<Home />}></Route>
             <Route path='/home' element={<Home />}></Route>
-            <Route path='/login' element={<Login />}></Route>
             <Route path='/register' element={<Register />}></Route>
+            <Route path='/login' element={<Login />}></Route>
 
-            <Route path='/new/contacts' element={<AddContact />}></Route>
-            <Route path='/contacts' element={<Contacts />}></Route>
-            <Route path='/contacts/:contactId' element={<ContactDetails />}></Route>
-            <Route path='/edit/contacts/:contactId' element={<EditContact />}></Route>
+            <Route path='/new/contacts' element={<PrivateRoute><AddContact /></PrivateRoute>}></Route>
+            <Route path='/contacts' element={<PrivateRoute><Contacts /></PrivateRoute>}></Route>
+            <Route path='/contacts/:contactId' element={<PrivateRoute><ContactDetails /></PrivateRoute>}></Route>
+            <Route path='/edit/contacts/:contactId' element={<PrivateRoute><EditContact /></PrivateRoute>}></Route>
+
+            <Route path='/dashboard' element={<PrivateRoute><Dashboard /></PrivateRoute>}></Route>
             <Route path='*' element={<NotFound />}></Route>
           </Routes>
         </Container>
