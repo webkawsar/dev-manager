@@ -14,6 +14,7 @@ import Login from '../pages/Login';
 import NotFound from '../pages/NotFound';
 import Register from '../pages/Register';
 import PrivateRoute from './PrivateRoute';
+import PublicRoute from './PublicRoute';
 
 
 
@@ -56,8 +57,8 @@ const App = () => {
           <Routes>
             <Route index element={<Home />}></Route>
             <Route path='/home' element={<Home />}></Route>
-            <Route path='/register' element={<Register />}></Route>
-            <Route path='/login' element={<Login />}></Route>
+            <Route path='/register' element={<PublicRoute><Register /></PublicRoute>}></Route>
+            <Route path='/login' element={<PublicRoute><Login /></PublicRoute>}></Route>
 
             <Route path='/new/contacts' element={<PrivateRoute><AddContact /></PrivateRoute>}></Route>
             <Route path='/contacts' element={<PrivateRoute><Contacts /></PrivateRoute>}></Route>
