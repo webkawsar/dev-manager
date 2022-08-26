@@ -1,8 +1,4 @@
-import { ADD_CONTACT, DELETE_CONTACT, UPDATE_CONTACT } from "./action.types";
-
-
-
-
+import { ADD_CONTACT, DELETE_CONTACT, LOAD_CONTACTS, UPDATE_CONTACT } from "./action.types";
 
 
 
@@ -27,6 +23,9 @@ const contactsReducer = (state, action) => {
       case DELETE_CONTACT:
         const filteredContacts = state.filter(contact => contact.id !== payload);
         return [...filteredContacts];
+
+      case LOAD_CONTACTS:
+        return [...payload];
   
       default:
         return state;

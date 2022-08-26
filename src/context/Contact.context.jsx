@@ -1,6 +1,8 @@
-import { createContext, useReducer } from "react";
-import { ADD_CONTACT, DELETE_CONTACT, UPDATE_CONTACT } from "./action.types";
-import contactsReducer from "./reducer";
+import { createContext, useEffect, useReducer, useState } from "react";
+import { axiosPrivateInstance } from "../config/axios";
+import { formateContact } from "../utils/formateContact";
+import { ADD_CONTACT, DELETE_CONTACT, LOAD_CONTACTS, UPDATE_CONTACT } from "./action.types";
+import contactsReducer from "./Contact.reducer";
 
 
 
@@ -125,7 +127,31 @@ const initialContacts = [
 // create a provider
 export const ContactProvider = ({children}) => {
 
-  const [contacts, dispatch] = useReducer(contactsReducer, initialContacts);
+  const [contacts, dispatch] = useReducer(contactsReducer, []);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+
+    loadContacts();
+    
+  }, [])
+
+  const loadContacts = async() => {
+
+    try {
+
+      const response = await axiosPrivateInstance.get('/contacts');
+      const mappedContacts = response?.data?.data?.map(contact => formateContact(contact));
+      
+      dispatch({type: LOAD_CONTACTS, payload: mappedContacts});
+      setLoaded(true);
+      
+    } catch (error) {
+      
+      console.log(error, 'error');
+      setLoaded(true);
+    }
+  }
 
   const addContact = (contact) => {
       dispatch({type: ADD_CONTACT, payload: contact});
@@ -140,6 +166,7 @@ export const ContactProvider = ({children}) => {
   }
 
   const value = {
+      loaded,
       contacts,
       addContact,
       updateContact,

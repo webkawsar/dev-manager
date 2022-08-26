@@ -11,7 +11,7 @@ const Contact = ({contact}) => {
 
     const {deleteContact} = useContext(ContactContext);
 
-    const {id, first_name, last_name, email, gender, profession, image, dob, bio} = contact;
+    const {id, firstName, lastName, email, gender, profession, image, dob, bio} = contact;
 
     const handleDelete = (id) => {
 
@@ -32,7 +32,7 @@ const Contact = ({contact}) => {
                         </Col>
                         <Col md={7}>
                             <Card.Body>
-                                <Card.Title>{first_name} {last_name}</Card.Title>
+                                <Card.Title>{firstName} {lastName}</Card.Title>
                                 <Card.Subtitle className="mb-2 text-muted">{profession}</Card.Subtitle>
                                 <Card.Text>
                                     {bio}

@@ -13,8 +13,8 @@ import { ContactContext } from '../../context/Contact.context';
 
 
 const schema = yup.object({
-    first_name: yup.string().required("First name is Required").min(3, 'First name at least 3 character'),
-    last_name: yup.string().required('Last name is Required').min(3, 'Last name at least 3 character'),
+    firstName: yup.string().required("First name is Required").min(3, 'First name at least 3 character'),
+    lastName: yup.string().required('Last name is Required').min(3, 'Last name at least 3 character'),
     email: yup.string().required('Email is Required').email('Must be a valid email'),
     profession: yup.string().required('Profession is required'),
     image: yup.string().required('Image link is required').url('Please add valid url link'),
@@ -28,8 +28,8 @@ const ContactForm = ({contact}) => {
     const {addContact, updateContact} = useContext(ContactContext);
     
     const defaultValue = {
-        first_name: contact?.first_name || 'Kawsar',
-        last_name: contact?.last_name || 'Ahmed',
+        firstName: contact?.firstName || 'Kawsar',
+        lastName: contact?.lastName || 'Ahmed',
         email: contact?.email || 'web.kawsarahmed@gmail.com',
         profession: contact?.profession || 'web_developer',
         image: contact?.image || 'https://facebook.com',
@@ -74,8 +74,8 @@ const ContactForm = ({contact}) => {
         if(isSubmitSuccessful) {
 
             reset({
-                first_name: '',
-                last_name: '',
+                firstName: '',
+                lastName: '',
                 email: '',
                 profession: '',
                 image: '',
@@ -91,7 +91,7 @@ const ContactForm = ({contact}) => {
 
 
 
-    const {first_name, last_name, email, profession, image, bio, gender} = defaultValue;
+    const {firstName, lastName, email, profession, image, bio, gender} = defaultValue;
 
     return (
         <div>
@@ -101,7 +101,7 @@ const ContactForm = ({contact}) => {
                 <Row>
                     <Form.Group className="mb-3" as={Col} md={6} controlId="firstName">
                         <Form.Label>First name</Form.Label>
-                        <Form.Control type="text" placeholder="First name" {...register('first_name')} defaultValue={first_name} />
+                        <Form.Control type="text" placeholder="First name" {...register('firstName')} defaultValue={firstName} />
 
                         {
                             errors?.firstName?.message && <Form.Text className="text-danger">
@@ -112,7 +112,7 @@ const ContactForm = ({contact}) => {
                     
                     <Form.Group className="mb-3" as={Col} md={6} controlId="lastName">
                         <Form.Label>Last name</Form.Label>
-                        <Form.Control type="text" placeholder="Last name" {...register('last_name')} defaultValue={last_name} />
+                        <Form.Control type="text" placeholder="Last name" {...register('lastName')} defaultValue={lastName} />
 
                         {
                             errors?.lastName?.message && <Form.Text className="text-danger">

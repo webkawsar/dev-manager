@@ -17,10 +17,9 @@ const ContactDetails = () => {
     const [contact, setContact] = useState({});
     const navigate = useNavigate();
 
-    
     useEffect(() => {
+        const foundContact = contacts.find((contact) => contact.id === Number(contactId));
         
-        const foundContact = contacts.find((contact) => contact.id === contactId);
         if(contactId && foundContact) {
             setContact(foundContact);
         }
@@ -37,7 +36,7 @@ const ContactDetails = () => {
         navigate('/contacts');
     }
 
-    const {id, first_name, last_name, email, profession, gender, bio, dob } = contact;
+    const {id, firstName, lastName, email, profession, gender, bio, dob } = contact;
     return (
         <> 
         
@@ -54,7 +53,7 @@ const ContactDetails = () => {
                                 </Col>
                                 <Col md={7}>
                                     <Card.Body>
-                                        <Card.Title>{first_name} {last_name}</Card.Title>
+                                        <Card.Title>{firstName} {lastName}</Card.Title>
                                         <Card.Subtitle className="mb-2 text-muted">{profession}</Card.Subtitle>
                                         <Card.Text>
                                             {bio}
