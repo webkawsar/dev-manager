@@ -3,7 +3,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Button, Card, Col, ListGroup, Row } from 'react-bootstrap';
 import { FaPencilAlt, FaRegTrashAlt } from "react-icons/fa";
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import { ContactContext } from '../context/Contact.context';
 
 
@@ -29,11 +28,6 @@ const ContactDetails = () => {
     const handleDelete = (id) => {
 
         deleteContact(id);
-
-        // show flash message
-        toast.success('Contact delete successfully');
-
-        navigate('/contacts');
     }
 
     const {id, firstName, lastName, email, profession, gender, bio, dob } = contact;

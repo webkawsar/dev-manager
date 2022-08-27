@@ -3,9 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import ReactDatePicker from 'react-datepicker';
 import { useForm } from "react-hook-form";
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { v4 as uuidV4 } from 'uuid';
 import * as yup from "yup";
 import { ContactContext } from '../../context/Contact.context';
 
@@ -16,7 +14,7 @@ const schema = yup.object({
     firstName: yup.string().required("First name is Required").min(3, 'First name at least 3 character'),
     lastName: yup.string().required('Last name is Required').min(3, 'Last name at least 3 character'),
     email: yup.string().required('Email is Required').email('Must be a valid email'),
-    profession: yup.string().required('Profession is required'),
+    profession: yup.string().required('Profession is required').oneOf(['designer', 'developer', 'marketer']),
     image: yup.string().required('Image link is required').url('Please add valid url link'),
     bio: yup.string().required('BIO is required').min(10, 'Write your BIO at least 10 character').max(100, 'BIO must be less than 100 character'),
     gender: yup.mixed().oneOf(['male', 'female'])
@@ -39,7 +37,6 @@ const ContactForm = ({contact}) => {
     
     const [birthDate, setBirthDate] = useState(new Date());
     const { register, handleSubmit, setValue, reset, formState:{ errors, isSubmitting, isSubmitSuccessful } } = useForm({resolver: yupResolver(schema)});
-    const navigate = useNavigate();
     
     const onSubmit = data => {
 
@@ -54,13 +51,9 @@ const ContactForm = ({contact}) => {
         } else {
             
             // adding contact
-            addContact({...data, id: uuidV4()});
-
-            // show flash message
-            toast.success('Contact added successfully');
+            addContact(data);
         }
         
-        navigate('/contacts');
     }
 
     useEffect(() => {
@@ -137,9 +130,9 @@ const ContactForm = ({contact}) => {
 
                         <Form.Select {...register('profession')} defaultValue={profession}>
                             <option value="">Select your profession</option>
-                            <option value="software_engineer">Software Engineer</option>
-                            <option value="web_developer">Web Developer</option>
-                            <option value="js_developer">JS Developer</option>
+                            <option value="designer">Designer</option>
+                            <option value="developer">Developer</option>
+                            <option value="marketer">Marketer</option>
                         </Form.Select>
 
                         {
