@@ -38,7 +38,7 @@ export const ContactProvider = ({children}) => {
       
     } catch (error) {
       
-      console.log(error?.response?.data?.error, 'error');
+      console.log(error?.response?.data?.error, 'loadContacts error');
       setLoaded(true);
     }
   }
@@ -48,7 +48,7 @@ export const ContactProvider = ({children}) => {
     try {
 
       const response = await axiosPrivateInstance.post('/contacts', {
-        data: {...contact, author: user.id}
+        data: contact
       });
 
       const formattedContact = formateContact(response?.data?.data);
@@ -62,7 +62,8 @@ export const ContactProvider = ({children}) => {
       
     } catch (error) {
       
-      console.log(error?.response?.data?.error, 'error');
+      console.log(error?.response?.data?.error, 'addContact error');
+      toast.error(error?.response?.data?.error?.message);
     }
   }
 
@@ -84,7 +85,8 @@ export const ContactProvider = ({children}) => {
       
     } catch (error) {
       
-      console.log(error?.response?.data?.error, 'error');
+      console.log(error?.response?.data?.error, 'deleteContact error');
+      toast.error(error?.response?.data?.error?.message);
     }
   }
 
