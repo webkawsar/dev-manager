@@ -8,6 +8,7 @@ export const axiosInstance = axios.create({
 
 
 const token = JSON.parse(localStorage.getItem('token'));
+
 export const axiosPrivateInstance = axios.create({
     baseURL: 'http://localhost:1337/api',
     headers: {

@@ -1,10 +1,9 @@
-import { createContext, useContext, useEffect, useReducer, useState } from "react";
+import { createContext, useEffect, useReducer, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { toast } from "react-toastify";
 import { axiosPrivateInstance } from "../config/axios";
 import { formateContact } from "../utils/formateContact";
 import { ADD_CONTACT, DELETE_CONTACT, LOAD_CONTACTS, UPDATE_CONTACT } from "./action.types";
-import { AuthContext } from "./Auth.context";
 import contactsReducer from "./Contact.reducer";
 
 
@@ -15,7 +14,6 @@ export const ContactContext = createContext();
 // create a provider
 export const ContactProvider = ({children}) => {
 
-  const { user } = useContext(AuthContext);
   const [contacts, dispatch] = useReducer(contactsReducer, []);
   const [loaded, setLoaded] = useState(false);
   const navigate = useNavigate();
@@ -30,7 +28,7 @@ export const ContactProvider = ({children}) => {
 
     try {
 
-      const response = await axiosPrivateInstance.get('/contacts');
+      const response = await axiosPrivateInstance.get('/contacts?populate=*');
       const mappedContacts = response?.data?.data?.map(contact => formateContact(contact));
       
       dispatch({type: LOAD_CONTACTS, payload: mappedContacts});

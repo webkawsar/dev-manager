@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Button, Card, Col, ListGroup, Row } from 'react-bootstrap';
 import { FaPencilAlt, FaRegTrashAlt } from "react-icons/fa";
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { AuthContext } from '../context/Auth.context';
 import { ContactContext } from '../context/Contact.context';
 
 
@@ -11,6 +12,7 @@ import { ContactContext } from '../context/Contact.context';
 const ContactDetails = () => {
 
     const {contacts, deleteContact} = useContext(ContactContext);
+    const {user} = useContext(AuthContext);
 
     const {contactId} = useParams();
     const [contact, setContact] = useState({});
@@ -30,7 +32,8 @@ const ContactDetails = () => {
         deleteContact(id);
     }
 
-    const {id, firstName, lastName, email, profession, gender, bio, dob } = contact;
+    const {id, firstName, lastName, email, profession, gender, bio, dob, author } = contact;
+    const isOwner = user.id === author?.data?.id;
     return (
         <> 
         
@@ -60,18 +63,21 @@ const ContactDetails = () => {
                                         <ListGroup.Item>Date of Birth: {dob instanceof Object ? format(dob, 'd-MMM-yyyy') : dob}</ListGroup.Item>
                                     </ListGroup>
 
-                                    <Card.Footer>
+                                    {
+                                        isOwner && 
+                                        <Card.Footer>
                                         
-                                        <Link to={`/edit/contacts/${id}`}>
-                                            <Button variant="warning">
-                                                <FaPencilAlt />
+                                            <Link to={`/edit/contacts/${id}`}>
+                                                <Button variant="warning">
+                                                    <FaPencilAlt />
+                                                </Button>
+                                            </Link>
+                                            
+                                            <Button variant="danger ms-3" onClick={()=> handleDelete(id)}>
+                                                <FaRegTrashAlt />
                                             </Button>
-                                        </Link>
-                                        
-                                        <Button variant="danger ms-3" onClick={()=> handleDelete(id)}>
-                                            <FaRegTrashAlt />
-                                        </Button>
-                                    </Card.Footer>
+                                        </Card.Footer>
+                                    }
                                 </Col>
                             </Row>
                         </Card>

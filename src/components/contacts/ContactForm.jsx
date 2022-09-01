@@ -62,24 +62,24 @@ const ContactForm = ({contact}) => {
         
     }, [birthDate])
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        if(isSubmitSuccessful) {
+    //     if(isSubmitSuccessful) {
 
-            reset({
-                firstName: '',
-                lastName: '',
-                email: '',
-                profession: '',
-                image: '',
-                bio: '',
-                gender: ''
-            })
+    //         reset({
+    //             firstName: '',
+    //             lastName: '',
+    //             email: '',
+    //             profession: '',
+    //             image: '',
+    //             bio: '',
+    //             gender: ''
+    //         })
 
-            setBirthDate(new Date());
-        }
+    //         setBirthDate(new Date());
+    //     }
 
-    }, [isSubmitSuccessful])
+    // }, [isSubmitSuccessful])
 
 
 

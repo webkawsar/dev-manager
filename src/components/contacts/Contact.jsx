@@ -3,20 +3,24 @@ import React, { useContext } from 'react';
 import { Button, Card, Col, ListGroup, Row } from 'react-bootstrap';
 import { FaEye, FaRegTrashAlt } from "react-icons/fa";
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../../context/Auth.context';
 import { ContactContext } from '../../context/Contact.context';
 
 
 const Contact = ({contact}) => {
 
     const {deleteContact} = useContext(ContactContext);
+    const {user} = useContext(AuthContext);
 
-    const {id, firstName, lastName, email, gender, profession, image, dob, bio} = contact;
+    const {id, firstName, lastName, email, gender, profession, image, dob, bio, author} = contact;
 
     const handleDelete = (id) => {
 
         deleteContact(id);
     }
-    
+
+    const isOwner = user.id === author?.data?.id;
+
     return (
         <>
             <Col md={6}>
@@ -49,9 +53,11 @@ const Contact = ({contact}) => {
                                     </Button>
                                 </Link>
                                 
-                                <Button variant="danger ms-3" onClick={()=> handleDelete(id)}>
-                                    <FaRegTrashAlt />
-                                </Button>
+                                {
+                                    isOwner && <Button variant="danger ms-3" onClick={()=> handleDelete(id)}>
+                                                    <FaRegTrashAlt />
+                                                </Button>
+                                }
                             </Card.Footer>
                         </Col>
                     </Row>
