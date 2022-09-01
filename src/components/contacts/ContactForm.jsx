@@ -3,7 +3,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import ReactDatePicker from 'react-datepicker';
 import { useForm } from "react-hook-form";
-import { toast } from 'react-toastify';
 import * as yup from "yup";
 import { ContactContext } from '../../context/Contact.context';
 
@@ -23,30 +22,32 @@ const schema = yup.object({
 
 const ContactForm = ({contact}) => {
 
+    console.log(contact, 'contact');
     const {addContact, updateContact} = useContext(ContactContext);
     
     const defaultValue = {
         firstName: contact?.firstName || 'Kawsar',
         lastName: contact?.lastName || 'Ahmed',
         email: contact?.email || 'web.kawsarahmed@gmail.com',
-        profession: contact?.profession || 'web_developer',
+        profession: contact?.profession || 'developer',
         image: contact?.image || 'https://facebook.com',
         bio: contact?.bio || 'Hi, This is Kawsar Ahmed',
-        gender: contact?.gender || 'male'
+        gender: contact?.gender || 'male',
+        dob: contact?.dob && new Date(contact?.dob) || new Date()
     }
+
+    const {firstName, lastName, email, profession, image, bio, gender, dob} = defaultValue;
     
-    const [birthDate, setBirthDate] = useState(new Date());
+    const [birthDate, setBirthDate] = useState(dob ? dob : new Date());
     const { register, handleSubmit, setValue, reset, formState:{ errors, isSubmitting, isSubmitSuccessful } } = useForm({resolver: yupResolver(schema)});
     
     const onSubmit = data => {
 
-        if(contact?.id) {
+        const id = contact?.id;
+        if(id) {
             
             // update contact
-            updateContact({...data, id: contact?.id});
-            
-            // show flash message
-            toast.success('Contact updated successfully');
+            updateContact(data, id);
             
         } else {
             
@@ -62,29 +63,26 @@ const ContactForm = ({contact}) => {
         
     }, [birthDate])
 
-    // useEffect(() => {
+    useEffect(() => {
 
-    //     if(isSubmitSuccessful) {
+        if(isSubmitSuccessful) {
 
-    //         reset({
-    //             firstName: '',
-    //             lastName: '',
-    //             email: '',
-    //             profession: '',
-    //             image: '',
-    //             bio: '',
-    //             gender: ''
-    //         })
+            reset({
+                firstName: '',
+                lastName: '',
+                email: '',
+                profession: '',
+                image: '',
+                bio: '',
+                gender: ''
+            })
 
-    //         setBirthDate(new Date());
-    //     }
+            setBirthDate(new Date());
+        }
 
-    // }, [isSubmitSuccessful])
-
-
+    }, [isSubmitSuccessful])
 
 
-    const {firstName, lastName, email, profession, image, bio, gender} = defaultValue;
 
     return (
         <div>

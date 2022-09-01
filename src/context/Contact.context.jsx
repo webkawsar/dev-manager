@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from "react-toastify";
 import { axiosPrivateInstance } from "../config/axios";
 import { formateContact } from "../utils/formateContact";
-import { ADD_CONTACT, DELETE_CONTACT, LOAD_CONTACTS, UPDATE_CONTACT } from "./action.types";
+import { ADD_CONTACT, LOAD_CONTACTS, UPDATE_CONTACT } from "./action.types";
 import contactsReducer from "./Contact.reducer";
 
 
@@ -65,8 +65,28 @@ export const ContactProvider = ({children}) => {
     }
   }
 
-  const updateContact = (updatedContactValue) => {
-      dispatch({type: UPDATE_CONTACT, payload: updatedContactValue});
+  const updateContact = async (updatedContactValue, id) => {
+    try {
+
+      const response = await axiosPrivateInstance.put(`/contacts/${id}?populate=*`, {
+        data: updatedContactValue
+      });
+
+      const updatedContact = formateContact(response?.data?.data);
+      
+      dispatch({type: UPDATE_CONTACT, payload: updatedContact});
+      
+      // show flash message
+      toast.success('Contact updated successfully');
+
+      // redirect to user
+      navigate(`/contacts/${updatedContact.id}`);
+
+    } catch (error) {
+      
+      console.log(error?.response?.data?.error, 'addContact error');
+      toast.error(error?.response?.data?.error?.message);
+    }
   }
 
   const deleteContact = async(id) => {

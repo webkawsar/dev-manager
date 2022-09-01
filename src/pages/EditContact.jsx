@@ -9,9 +9,9 @@ import { ContactContext } from '../context/Contact.context';
 const EditContact = () => {
 
     const {contacts} = useContext(ContactContext);
-
     const {contactId} = useParams();
-    const foundContact = contacts.find((contact) => contact.id === contactId);
+    
+    const foundContact = contacts.find((contact) => contact.id === +contactId);
 
     return (
         <div>
