@@ -2,7 +2,8 @@ import { format } from 'date-fns';
 import React, { useContext, useEffect, useState } from 'react';
 import { Button, Card, Col, ListGroup, Row } from 'react-bootstrap';
 import { FaPencilAlt, FaRegTrashAlt } from "react-icons/fa";
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import Loader from '../components/Loader';
 import { AuthContext } from '../context/Auth.context';
 import { ContactContext } from '../context/Contact.context';
 
@@ -11,12 +12,11 @@ import { ContactContext } from '../context/Contact.context';
 
 const ContactDetails = () => {
 
-    const {contacts, deleteContact} = useContext(ContactContext);
+    const {loaded, contacts, deleteContact} = useContext(ContactContext);
     const {user} = useContext(AuthContext);
 
     const {contactId} = useParams();
     const [contact, setContact] = useState({});
-    const navigate = useNavigate();
 
     useEffect(() => {
         const foundContact = contacts.find((contact) => contact.id === Number(contactId));
@@ -25,7 +25,7 @@ const ContactDetails = () => {
             setContact(foundContact);
         }
 
-    }, [contactId])
+    }, [loaded])
 
     const handleDelete = (id) => {
 
@@ -38,7 +38,7 @@ const ContactDetails = () => {
         <> 
         
             {
-                Object.keys(contact).length === 0 ? <h2 style={{color:'red', textAlign: 'center'}}>No Contact to Show</h2> : 
+                loaded ? Object.keys(contact).length === 0 ? <h2 style={{color:'red', textAlign: 'center'}}>No Contact to Show</h2> : 
 
                 <Row>
                     <Col md={12}>
@@ -83,6 +83,8 @@ const ContactDetails = () => {
                         </Card>
                     </Col>
                 </Row>
+                :
+                <Loader />
 
             }
             
