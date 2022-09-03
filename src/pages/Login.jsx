@@ -2,9 +2,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import React, { useContext } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import { Link } from 'react-router-dom';
 import * as yup from "yup";
 import { AuthContext } from "../context/Auth.context";
-
 
 const schema = yup
   .object({
@@ -34,7 +34,7 @@ const Login = () => {
   
   return (
     <div>
-      <h1 className="text-center mb-3">Login</h1>
+      <h2 className="text-center mb-3">Login</h2>
 
       <Row>
         <Col sm="12" md="6" lg="6" xl={{ span: 6, offset: 3 }}>
@@ -84,6 +84,7 @@ const Login = () => {
             <Button variant="primary" type="submit" disabled={isSubmitting ? true : false}>
               Log In
             </Button>
+            <p className="mt-3">Forgot password ? <Link to='/forgot-password'>click here</Link></p>
           </Form>
         </Col>
       </Row>

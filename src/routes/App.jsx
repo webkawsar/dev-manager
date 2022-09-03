@@ -9,10 +9,15 @@ import ContactDetails from '../pages/ContactDetails';
 import Contacts from '../pages/Contacts';
 import Dashboard from '../pages/Dashboard';
 import EditContact from '../pages/EditContact';
+import ForgotPassword from '../pages/ForgotPassword';
 import Home from '../pages/Home';
 import Login from '../pages/Login';
+import ManagePassword from '../pages/ManagePassword';
 import NotFound from '../pages/NotFound';
+import Profile from '../pages/Profile';
 import Register from '../pages/Register';
+import ResetPassword from '../pages/ResetPassword';
+import UserContacts from '../pages/UserContacts';
 import PrivateRoute from './PrivateRoute';
 import PublicRoute from './PublicRoute';
 
@@ -65,7 +70,16 @@ const App = () => {
             <Route path='/contacts/:contactId' element={<PrivateRoute><ContactDetails /></PrivateRoute>}></Route>
             <Route path='/edit/contacts/:contactId' element={<PrivateRoute><EditContact /></PrivateRoute>}></Route>
 
-            <Route path='/dashboard' element={<PrivateRoute><Dashboard /></PrivateRoute>}></Route>
+            <Route path='/dashboard' element={<PrivateRoute><Dashboard /></PrivateRoute>}>
+              <Route index element={<Profile />} />
+              <Route path='profile' element={<Profile />} />
+              <Route path='manage-password' element={<ManagePassword />} />
+              <Route path='contacts' element={<UserContacts />} />
+            </Route>
+
+            <Route path='/forgot-password' element={<ForgotPassword />} />
+            <Route path='/reset-password' element={<ResetPassword />} />
+            
             <Route path='*' element={<NotFound />}></Route>
           </Routes>
         </Container>
