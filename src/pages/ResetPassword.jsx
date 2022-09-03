@@ -2,7 +2,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import React from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import * as yup from "yup";
+import { axiosInstance } from "../config/axios";
 
 const schema = yup
   .object({
@@ -28,8 +31,28 @@ const ResetPassword = () => {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data) => {
-    console.log(data, "data");
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const code = searchParams.get("code");
+
+  const onSubmit = async (data) => {
+    try {
+      const response = await axiosInstance.post("/auth/reset-password", {
+        code,
+        password: data.password,
+        passwordConfirmation: data.confirmPassword,
+      });
+
+      console.log(response, "response");
+      toast.success(
+        "Password reset successfully, please login with new password"
+      );
+
+      navigate("/login");
+    } catch (error) {
+      console.log(error.response);
+      toast.error("Issue in resetting password please try again!");
+    }
   };
 
   return (
