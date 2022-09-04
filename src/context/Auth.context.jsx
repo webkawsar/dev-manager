@@ -19,10 +19,10 @@ export const AuthProvider = ({ children }) => {
   const location = useLocation();
 
   useEffect(() => {
-    // if (user) {
-    loadUserContacts();
-    // }
-  }, [triggerDelete]);
+    if (user) {
+      loadUserContacts();
+    }
+  }, [user, triggerDelete]);
 
   const loadUserContacts = async () => {
     try {
@@ -39,21 +39,11 @@ export const AuthProvider = ({ children }) => {
   const registerUser = async (data) => {
     try {
       const response = await axiosInstance.post("/auth/local/register", data);
-      const { jwt, user } = response.data;
-
-      // update state
-      setUser(user);
-      setToken(jwt);
-
-      // set data to local storage
-      localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("token", JSON.stringify(jwt));
 
       // show success msg
-      toast.success("Registration is successful");
-
-      // redirect the user
-      navigate("/contacts");
+      toast.success(
+        "Registration is successful! please check email and confirm to click the link"
+      );
     } catch (error) {
       toast.error(error?.response?.data?.error?.message);
     }

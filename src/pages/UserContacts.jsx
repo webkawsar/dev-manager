@@ -40,7 +40,7 @@ const UserContacts = () => {
                   <td>{contact?.email}</td>
                   <td>{contact?.profession}</td>
                   <td>
-                    <Link to={`/edit/contacts/:${contact.id}`}>
+                    <Link to={`/edit/contacts/${contact.id}`}>
                       <FaEye />
                     </Link>
                   </td>

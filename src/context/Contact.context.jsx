@@ -29,9 +29,9 @@ export const ContactProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    // if (user) {
-    loadContacts();
-    // }
+    if (user) {
+      loadContacts();
+    }
   }, [user]);
 
   const loadContacts = async () => {
