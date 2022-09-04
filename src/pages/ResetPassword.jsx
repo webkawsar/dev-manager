@@ -43,7 +43,6 @@ const ResetPassword = () => {
         passwordConfirmation: data.confirmPassword,
       });
 
-      console.log(response, "response");
       toast.success(
         "Password reset successfully, please login with new password"
       );

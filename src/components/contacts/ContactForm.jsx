@@ -1,194 +1,257 @@
-import { yupResolver } from '@hookform/resolvers/yup';
-import React, { useContext, useEffect, useState } from 'react';
-import { Button, Col, Form, Row } from 'react-bootstrap';
-import ReactDatePicker from 'react-datepicker';
+import { yupResolver } from "@hookform/resolvers/yup";
+import React, { useContext, useEffect, useState } from "react";
+import { Button, Col, Form, Row } from "react-bootstrap";
+import ReactDatePicker from "react-datepicker";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
-import { ContactContext } from '../../context/Contact.context';
+import { ContactContext } from "../../context/Contact.context";
 
+const schema = yup
+  .object({
+    firstName: yup
+      .string()
+      .required("First name is Required")
+      .min(3, "First name at least 3 character"),
+    lastName: yup
+      .string()
+      .required("Last name is Required")
+      .min(3, "Last name at least 3 character"),
+    email: yup
+      .string()
+      .required("Email is Required")
+      .email("Must be a valid email"),
+    profession: yup
+      .string()
+      .required("Profession is required")
+      .oneOf(["designer", "developer", "marketer"]),
+    image: yup
+      .string()
+      .required("Image link is required")
+      .url("Please add valid url link"),
+    bio: yup
+      .string()
+      .required("BIO is required")
+      .min(10, "Write your BIO at least 10 character")
+      .max(100, "BIO must be less than 100 character"),
+    gender: yup.mixed().oneOf(["male", "female"]),
+  })
+  .required();
 
+const ContactForm = ({ contact }) => {
+  const { addContact, updateContact } = useContext(ContactContext);
 
+  const defaultValue = {
+    firstName: contact?.firstName || "Kawsar",
+    lastName: contact?.lastName || "Ahmed",
+    email: contact?.email || "web.kawsarahmed@gmail.com",
+    profession: contact?.profession || "developer",
+    image: contact?.image || "https://facebook.com",
+    bio: contact?.bio || "Hi, This is Kawsar Ahmed",
+    gender: contact?.gender || "male",
+    dob: (contact?.dob && new Date(contact?.dob)) || new Date(),
+  };
 
-const schema = yup.object({
-    firstName: yup.string().required("First name is Required").min(3, 'First name at least 3 character'),
-    lastName: yup.string().required('Last name is Required').min(3, 'Last name at least 3 character'),
-    email: yup.string().required('Email is Required').email('Must be a valid email'),
-    profession: yup.string().required('Profession is required').oneOf(['designer', 'developer', 'marketer']),
-    image: yup.string().required('Image link is required').url('Please add valid url link'),
-    bio: yup.string().required('BIO is required').min(10, 'Write your BIO at least 10 character').max(100, 'BIO must be less than 100 character'),
-    gender: yup.mixed().oneOf(['male', 'female'])
-  }).required();
+  const { firstName, lastName, email, profession, image, bio, gender, dob } =
+    defaultValue;
 
+  const [birthDate, setBirthDate] = useState(dob ? dob : new Date());
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors, isSubmitting, isSubmitSuccessful },
+  } = useForm({ resolver: yupResolver(schema) });
 
-const ContactForm = ({contact}) => {
-
-    console.log(contact, 'contact');
-    const {addContact, updateContact} = useContext(ContactContext);
-    
-    const defaultValue = {
-        firstName: contact?.firstName || 'Kawsar',
-        lastName: contact?.lastName || 'Ahmed',
-        email: contact?.email || 'web.kawsarahmed@gmail.com',
-        profession: contact?.profession || 'developer',
-        image: contact?.image || 'https://facebook.com',
-        bio: contact?.bio || 'Hi, This is Kawsar Ahmed',
-        gender: contact?.gender || 'male',
-        dob: contact?.dob && new Date(contact?.dob) || new Date()
+  const onSubmit = (data) => {
+    const id = contact?.id;
+    if (id) {
+      // update contact
+      updateContact(data, id);
+    } else {
+      // adding contact
+      addContact(data);
     }
+  };
 
-    const {firstName, lastName, email, profession, image, bio, gender, dob} = defaultValue;
-    
-    const [birthDate, setBirthDate] = useState(dob ? dob : new Date());
-    const { register, handleSubmit, setValue, reset, formState:{ errors, isSubmitting, isSubmitSuccessful } } = useForm({resolver: yupResolver(schema)});
-    
-    const onSubmit = data => {
+  useEffect(() => {
+    setValue("dob", birthDate);
+  }, [birthDate]);
 
-        const id = contact?.id;
-        if(id) {
-            
-            // update contact
-            updateContact(data, id);
-            
-        } else {
-            
-            // adding contact
-            addContact(data);
-        }
-        
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset({
+        firstName: "",
+        lastName: "",
+        email: "",
+        profession: "",
+        image: "",
+        bio: "",
+        gender: "",
+      });
+
+      setBirthDate(new Date());
     }
+  }, [isSubmitSuccessful]);
 
-    useEffect(() => {
+  return (
+    <div>
+      <h2 className="text-center">
+        {contact?.id ? "Edit Contact" : "Add Contact"}
+      </h2>
 
-        setValue('dob', birthDate);
-        
-    }, [birthDate])
+      <Form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <Row>
+          <Form.Group className="mb-3" as={Col} md={6} controlId="firstName">
+            <Form.Label>First name</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="First name"
+              {...register("firstName")}
+              defaultValue={firstName}
+            />
 
-    useEffect(() => {
+            {errors?.firstName?.message && (
+              <Form.Text className="text-danger">
+                {errors?.firstName?.message}
+              </Form.Text>
+            )}
+          </Form.Group>
 
-        if(isSubmitSuccessful) {
+          <Form.Group className="mb-3" as={Col} md={6} controlId="lastName">
+            <Form.Label>Last name</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Last name"
+              {...register("lastName")}
+              defaultValue={lastName}
+            />
 
-            reset({
-                firstName: '',
-                lastName: '',
-                email: '',
-                profession: '',
-                image: '',
-                bio: '',
-                gender: ''
-            })
+            {errors?.lastName?.message && (
+              <Form.Text className="text-danger">
+                {errors?.lastName?.message}
+              </Form.Text>
+            )}
+          </Form.Group>
 
-            setBirthDate(new Date());
-        }
+          <Form.Group className="mb-3" as={Col} md={6} controlId="email">
+            <Form.Label>Email</Form.Label>
+            <Form.Control
+              type="email"
+              placeholder="Email address"
+              {...register("email")}
+              defaultValue={email}
+            />
 
-    }, [isSubmitSuccessful])
+            {errors?.email?.message && (
+              <Form.Text className="text-danger">
+                {errors?.email?.message}
+              </Form.Text>
+            )}
+          </Form.Group>
 
+          <Form.Group className="mb-3" as={Col} md={6} controlId="profession">
+            <Form.Label>Profession</Form.Label>
 
+            <Form.Select {...register("profession")} defaultValue={profession}>
+              <option value="">Select your profession</option>
+              <option value="designer">Designer</option>
+              <option value="developer">Developer</option>
+              <option value="marketer">Marketer</option>
+            </Form.Select>
 
-    return (
-        <div>
-            <h2 className='text-center'>{contact?.id ? 'Edit Contact' : 'Add Contact'}</h2>
+            {errors?.profession?.message && (
+              <Form.Text className="text-danger">
+                {errors?.profession?.message}
+              </Form.Text>
+            )}
+          </Form.Group>
 
-            <Form onSubmit={handleSubmit(onSubmit)} noValidate>
-                <Row>
-                    <Form.Group className="mb-3" as={Col} md={6} controlId="firstName">
-                        <Form.Label>First name</Form.Label>
-                        <Form.Control type="text" placeholder="First name" {...register('firstName')} defaultValue={firstName} />
+          <Form.Group className="mb-3" as={Col} md={6} controlId="Image">
+            <Form.Label>Image</Form.Label>
 
-                        {
-                            errors?.firstName?.message && <Form.Text className="text-danger">
-                                {errors?.firstName?.message}
-                            </Form.Text>
-                        }
-                    </Form.Group>
-                    
-                    <Form.Group className="mb-3" as={Col} md={6} controlId="lastName">
-                        <Form.Label>Last name</Form.Label>
-                        <Form.Control type="text" placeholder="Last name" {...register('lastName')} defaultValue={lastName} />
+            <Form.Control
+              type="text"
+              placeholder="Link of image URL"
+              {...register("image")}
+              defaultValue={image}
+            />
 
-                        {
-                            errors?.lastName?.message && <Form.Text className="text-danger">
-                                {errors?.lastName?.message}
-                            </Form.Text>
-                        }
-                    </Form.Group>
-                    
-                    <Form.Group className="mb-3" as={Col} md={6} controlId="email">
-                        <Form.Label>Email</Form.Label>
-                        <Form.Control type="email" placeholder="Email address" {...register('email')} defaultValue={email} />
+            {errors?.image?.message && (
+              <Form.Text className="text-danger">
+                {errors?.image?.message}
+              </Form.Text>
+            )}
+          </Form.Group>
 
-                        {
-                            errors?.email?.message && <Form.Text className="text-danger">
-                                {errors?.email?.message}
-                            </Form.Text>
-                        }
-                    </Form.Group>
-                    
-                    <Form.Group className="mb-3" as={Col} md={6} controlId="profession">
-                        <Form.Label>Profession</Form.Label>
+          <Col md={6}>
+            <ReactDatePicker
+              selected={birthDate}
+              onChange={(date) => setBirthDate(date)}
+              maxDate={new Date()}
+              showYearDropdown
+            />
+          </Col>
 
-                        <Form.Select {...register('profession')} defaultValue={profession}>
-                            <option value="">Select your profession</option>
-                            <option value="designer">Designer</option>
-                            <option value="developer">Developer</option>
-                            <option value="marketer">Marketer</option>
-                        </Form.Select>
+          <Form.Group className="mb-3" as={Col} md={6} controlId="bio">
+            <Form.Label>BIO</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={3}
+              placeholder="Write your bio"
+              {...register("bio")}
+              defaultValue={bio}
+            />
 
-                        {
-                            errors?.profession?.message && <Form.Text className="text-danger">
-                                {errors?.profession?.message}
-                            </Form.Text>
-                        }
-                    </Form.Group>
+            {errors?.bio?.message && (
+              <Form.Text className="text-danger">
+                {errors?.bio?.message}
+              </Form.Text>
+            )}
+          </Form.Group>
 
-                    <Form.Group className="mb-3" as={Col} md={6} controlId="Image">
-                        <Form.Label>Image</Form.Label>
-                        
-                        <Form.Control type="text" placeholder="Link of image URL" {...register('image')} defaultValue={image} />
+          <Form.Group className="mb-3" as={Col} md={6} controlId="gender">
+            <Form.Check
+              type="radio"
+              inline
+              label="Male"
+              id="male"
+              value="male"
+              {...register("gender")}
+              defaultChecked={gender === "male"}
+            />
+            <Form.Check
+              type="radio"
+              inline
+              label="Female"
+              id="female"
+              value="female"
+              {...register("gender")}
+              defaultChecked={gender === "female"}
+            />
 
-                        {
-                            errors?.image?.message && <Form.Text className="text-danger">
-                                {errors?.image?.message}
-                            </Form.Text>
-                        }
-                    </Form.Group>
+            {errors?.gender?.message && (
+              <Form.Text className="text-danger">
+                {errors?.gender?.message}
+              </Form.Text>
+            )}
+          </Form.Group>
+        </Row>
 
-                    <Col md={6} >
-                        <ReactDatePicker selected={birthDate} onChange={(date) => setBirthDate(date)} maxDate={new Date()} showYearDropdown />
-                    </Col>
-
-                    <Form.Group className="mb-3" as={Col} md={6} controlId="bio">
-                        <Form.Label>BIO</Form.Label>
-                        <Form.Control as="textarea" rows={3} placeholder="Write your bio" {...register('bio')} defaultValue={bio} />
-
-                        {
-                            errors?.bio?.message && <Form.Text className="text-danger">
-                                {errors?.bio?.message}
-                            </Form.Text>
-                        }
-                    </Form.Group>
-
-                    <Form.Group className="mb-3" as={Col} md={6} controlId="gender">
-                        <Form.Check type="radio" inline label="Male" id="male" value="male" {...register('gender')} defaultChecked={gender === 'male'} />
-                        <Form.Check type="radio" inline label="Female" id="female" value="female" {...register('gender')} defaultChecked={gender === 'female'} />
-
-                        {
-                            errors?.gender?.message && <Form.Text className="text-danger">
-                                {errors?.gender?.message}
-                            </Form.Text>
-                        }
-                    </Form.Group>
-                </Row> 
-
-                {/* <Form.Group className="mb-3" controlId="formBasicCheckbox">
+        {/* <Form.Group className="mb-3" controlId="formBasicCheckbox">
                     <Form.Check type="checkbox" label="Agreed to Dev Manager terms & conditions" name="agreedPolicy" />
                 </Form.Group> */}
 
-                <Button variant="primary" type="submit" disabled={isSubmitting ? 'disabled' : ''}>
-                    {contact?.id ? 'Update Contact' : 'Add Contact'}
-                </Button>
-            </Form>
-        </div>
-    );
+        <Button
+          variant="primary"
+          type="submit"
+          disabled={isSubmitting ? "disabled" : ""}
+        >
+          {contact?.id ? "Update Contact" : "Add Contact"}
+        </Button>
+      </Form>
+    </div>
+  );
 };
 
 export default ContactForm;

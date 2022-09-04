@@ -9,7 +9,12 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { axiosPrivateInstance } from "../config/axios";
 import { formateContact } from "../utils/formateContact";
-import { ADD_CONTACT, LOAD_CONTACTS, UPDATE_CONTACT } from "./action.types";
+import {
+  ADD_CONTACT,
+  DELETE_CONTACT,
+  LOAD_CONTACTS,
+  UPDATE_CONTACT,
+} from "./action.types";
 import { AuthContext } from "./Auth.context";
 import contactsReducer from "./Contact.reducer";
 
@@ -24,7 +29,6 @@ export const ContactProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    console.log(user, "user");
     // if (user) {
     loadContacts();
     // }
@@ -100,7 +104,7 @@ export const ContactProvider = ({ children }) => {
       // redirect to user
       navigate("/contacts");
     } catch (error) {
-      console.log(error?.response?.data?.error, "deleteContact error");
+      console.log(error, "deleteContact error");
       toast.error(error?.response?.data?.error?.message);
     }
   };

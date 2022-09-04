@@ -1,13 +1,17 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import React from "react";
+import React, { useContext } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import * as yup from "yup";
+import { AuthContext } from "../context/Auth.context";
 
 const schema = yup
   .object({
-    oldPassword: yup.string().trim().required("Old password is required"),
+    currentPassword: yup
+      .string()
+      .trim()
+      .required("Current password is required"),
     newPassword: yup
       .string()
       .trim()
@@ -22,6 +26,8 @@ const schema = yup
   .required();
 
 const ManagePassword = (props) => {
+  const { changePassword } = useContext(AuthContext);
+
   const {
     register,
     handleSubmit,
@@ -35,25 +41,7 @@ const ManagePassword = (props) => {
   const code = searchParams.get("code");
 
   const onSubmit = async (data) => {
-    // try {
-    //   const response = await axiosInstance.post("/auth/reset-password", {
-    //     code,
-    //     password: data.password,
-    //     passwordConfirmation: data.confirmPassword,
-    //   });
-
-    //   console.log(response, "response");
-    //   toast.success(
-    //     "Password reset successfully, please login with new password"
-    //   );
-
-    //   navigate("/login");
-    // } catch (error) {
-    //   console.log(error.response);
-    //   toast.error("Issue in resetting password please try again!");
-    // }
-
-    console.log(data, "data");
+    changePassword(data);
   };
 
   return (
@@ -61,19 +49,19 @@ const ManagePassword = (props) => {
       <Row>
         <Col sm="12" md="12" lg="12" xl={{ span: 8, offset: 2 }}>
           <Form onSubmit={handleSubmit(onSubmit)} noValidate>
-            <Form.Group className="mb-3" controlId="oldPassword">
-              <Form.Label>Old password</Form.Label>
+            <Form.Group className="mb-3" controlId="currentPassword">
+              <Form.Label>Current password</Form.Label>
 
               <Form.Control
                 type="password"
-                placeholder="Enter old password"
+                placeholder="Enter current password"
                 defaultValue=""
-                {...register("oldPassword")}
-                isInvalid={!!errors.oldPassword}
+                {...register("currentPassword")}
+                isInvalid={!!errors.currentPassword}
               />
-              {errors?.oldPassword?.message && (
+              {errors?.currentPassword?.message && (
                 <Form.Control.Feedback type="invalid">
-                  {errors?.oldPassword?.message}
+                  {errors?.currentPassword?.message}
                 </Form.Control.Feedback>
               )}
             </Form.Group>

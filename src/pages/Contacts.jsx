@@ -6,8 +6,6 @@ import { ContactContext } from "../context/Contact.context";
 
 const Contacts = () => {
   const { contacts, loaded } = useContext(ContactContext);
-  console.log(contacts, "contacts");
-  console.log(loaded, "loaded");
 
   return (
     <>

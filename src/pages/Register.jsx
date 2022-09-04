@@ -7,33 +7,49 @@ import { AuthContext } from "../context/Auth.context";
 
 const schema = yup
   .object({
-    username: yup.string().trim().required('Username is required').min(3, 'Username must be at least 3 character'),
-    email: yup.string().trim().email('Must be a valid email').required('Email is required').lowercase(),
-    password: yup.string().trim().required('Password is required').matches(/[a-z0-9]{6}/, 'Must contain letter and number'),
-    confirm_password: yup.string().trim().required('Confirm password is required').oneOf([yup.ref('password')], 'Confirm password don\'t match'),
+    username: yup
+      .string()
+      .trim()
+      .required("Username is required")
+      .min(3, "Username must be at least 3 character"),
+    email: yup
+      .string()
+      .trim()
+      .email("Must be a valid email")
+      .required("Email is required")
+      .lowercase(),
+    password: yup
+      .string()
+      .trim()
+      .required("Password is required")
+      .matches(/[a-z0-9]{6}/, "Must contain letter and number"),
+    confirm_password: yup
+      .string()
+      .trim()
+      .required("Confirm password is required")
+      .oneOf([yup.ref("password")], "Confirm password don't match"),
   })
   .required();
 
-
-
-
 const Register = () => {
-  const {registerUser} = useContext(AuthContext);
-  const { register, handleSubmit, formState: { errors, isSubmitting }} = useForm({
+  const { registerUser } = useContext(AuthContext);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
     resolver: yupResolver(schema),
   });
 
   const onSubmit = (data) => {
-    
     // register user
     registerUser({
       username: data.username,
       password: data.password,
-      email: data.email
-    })
+      email: data.email,
+    });
   };
 
-  
   return (
     <div>
       <h1 className="text-center mb-3">Register</h1>
@@ -51,12 +67,11 @@ const Register = () => {
                 {...register("username")}
                 isInvalid={!!errors.username}
               />
-              {
-                errors?.username?.message && 
+              {errors?.username?.message && (
                 <Form.Control.Feedback type="invalid">
-                    {errors?.username?.message}
+                  {errors?.username?.message}
                 </Form.Control.Feedback>
-              }
+              )}
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="email">
@@ -69,12 +84,11 @@ const Register = () => {
                 {...register("email")}
                 isInvalid={!!errors.email}
               />
-              {
-                errors?.email?.message && 
+              {errors?.email?.message && (
                 <Form.Control.Feedback type="invalid">
-                    {errors?.email?.message}
+                  {errors?.email?.message}
                 </Form.Control.Feedback>
-              }
+              )}
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="password">
@@ -87,12 +101,11 @@ const Register = () => {
                 {...register("password")}
                 isInvalid={!!errors.password}
               />
-              {
-                errors?.password?.message && 
+              {errors?.password?.message && (
                 <Form.Control.Feedback type="invalid">
-                    {errors?.password?.message}
+                  {errors?.password?.message}
                 </Form.Control.Feedback>
-              }
+              )}
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="confirmPassword">
@@ -105,20 +118,19 @@ const Register = () => {
                 {...register("confirm_password")}
                 isInvalid={!!errors.confirm_password}
               />
-              
-              {
-                errors?.confirm_password?.message && 
+
+              {errors?.confirm_password?.message && (
                 <Form.Control.Feedback type="invalid">
-                    {errors?.confirm_password?.message}
+                  {errors?.confirm_password?.message}
                 </Form.Control.Feedback>
-              }
+              )}
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="check">
-              <Form.Check type="checkbox" label="Check me out" />
-            </Form.Group>
-
-            <Button variant="primary" type="submit" disabled={isSubmitting ? true : false}>
+            <Button
+              variant="primary"
+              type="submit"
+              disabled={isSubmitting ? true : false}
+            >
               Submit
             </Button>
           </Form>
