@@ -26,7 +26,7 @@ export const ContactProvider = ({ children }) => {
   const [contacts, dispatch] = useReducer(contactsReducer, []);
   const [loaded, setLoaded] = useState(false);
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
+  const { user, token } = useContext(AuthContext);
 
   useEffect(() => {
     if (user) {

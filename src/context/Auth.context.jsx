@@ -45,6 +45,7 @@ export const AuthProvider = ({ children }) => {
         "Registration is successful! please check email and confirm to click the link"
       );
     } catch (error) {
+      console.log(error, "registerUser error");
       toast.error(error?.response?.data?.error?.message);
     }
   };
@@ -68,6 +69,7 @@ export const AuthProvider = ({ children }) => {
       // redirect the user
       navigate(location?.state?.from ? location?.state?.from : "/contacts");
     } catch (error) {
+      console.log(error, "login error");
       toast.error(error?.response?.data?.error?.message);
     }
   };
