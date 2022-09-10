@@ -26,7 +26,17 @@ export const AuthProvider = ({ children }) => {
 
   const loadUserContacts = async () => {
     try {
-      const response = await axiosPrivateInstance.get("/users/me?populate=*");
+      // Populate 1 level for all relations => populate=*
+      // Populate 1 level => populate[0]=profile
+      // Populate 2 levels => populate[profile][populate][user][populate]=contacts
+      // Populate 2 levels => populate[profile][populate][user][populate]=*
+
+      // Populate 2 levels => populate[0]=contacts&populate[1]=profile.user.contacts
+      // Populate 2 levels => populate[0]=contacts&populate[1]=profile.user&populate[2]=profile.user.contacts&populate[3]=profile.user.profile
+
+      const response = await axiosPrivateInstance.get(
+        "/users/me?populate[0]=contacts&populate[1]=profile.user&populate[2]=profile.user.contacts&populate[3]=profile.user.profile"
+      );
       console.log(response.data, "loadUserContacts response");
 
       setUserContacts(response.data.contacts);
