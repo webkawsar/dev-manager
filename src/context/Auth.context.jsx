@@ -27,6 +27,7 @@ export const AuthProvider = ({ children }) => {
   const loadUserContacts = async () => {
     try {
       const response = await axiosPrivateInstance.get("/users/me?populate=*");
+      console.log(response.data, "loadUserContacts response");
 
       setUserContacts(response.data.contacts);
       setLoaded(true);
