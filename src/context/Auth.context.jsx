@@ -19,10 +19,10 @@ export const AuthProvider = ({ children }) => {
   const location = useLocation();
 
   useEffect(() => {
-    if (user) {
+    if (token) {
       loadUserContacts();
     }
-  }, [user, triggerDelete]);
+  }, [token, triggerDelete]);
 
   const loadUserContacts = async () => {
     try {
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
       // Populate 2 levels => populate[0]=contacts&populate[1]=profile.user.contacts
       // Populate 2 levels => populate[0]=contacts&populate[1]=profile.user&populate[2]=profile.user.contacts&populate[3]=profile.user.profile
 
-      const response = await axiosPrivateInstance.get(
+      const response = await axiosPrivateInstance(token).get(
         "/users/me?populate[0]=contacts&populate[1]=profile.user&populate[2]=profile.user.contacts&populate[3]=profile.user.profile"
       );
       console.log(response.data, "loadUserContacts response");
@@ -103,7 +103,7 @@ export const AuthProvider = ({ children }) => {
 
   const changePassword = async (data) => {
     try {
-      const response = await axiosPrivateInstance.post(
+      const response = await axiosPrivateInstance(token).post(
         "/auth/change-password",
         {
           currentPassword: data.currentPassword,

@@ -29,14 +29,16 @@ export const ContactProvider = ({ children }) => {
   const { user, token } = useContext(AuthContext);
 
   useEffect(() => {
-    if (user) {
+    if (token) {
       loadContacts();
     }
-  }, [user]);
+  }, [token]);
 
   const loadContacts = async () => {
     try {
-      const response = await axiosPrivateInstance.get("/contacts?populate=*");
+      const response = await axiosPrivateInstance(token).get(
+        "/contacts?populate=*"
+      );
       const mappedContacts = response?.data?.data?.map((contact) =>
         formateContact(contact)
       );
@@ -51,7 +53,7 @@ export const ContactProvider = ({ children }) => {
 
   const addContact = async (contact) => {
     try {
-      const response = await axiosPrivateInstance.post("/contacts", {
+      const response = await axiosPrivateInstance(token).post("/contacts", {
         data: contact,
       });
 
@@ -71,7 +73,7 @@ export const ContactProvider = ({ children }) => {
 
   const updateContact = async (updatedContactValue, id) => {
     try {
-      const response = await axiosPrivateInstance.put(
+      const response = await axiosPrivateInstance(token).put(
         `/contacts/${id}?populate=*`,
         {
           data: updatedContactValue,
@@ -95,7 +97,9 @@ export const ContactProvider = ({ children }) => {
 
   const deleteContact = async (id) => {
     try {
-      const response = await axiosPrivateInstance.delete(`/contacts/${id}`);
+      const response = await axiosPrivateInstance(token).delete(
+        `/contacts/${id}`
+      );
       dispatch({ type: DELETE_CONTACT, payload: response?.data?.data?.id });
 
       // show flash message

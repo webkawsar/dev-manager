@@ -5,7 +5,7 @@ import { axiosPrivateInstance } from "../config/axios";
 import { AuthContext } from "../context/Auth.context";
 
 const Profile = () => {
-  const { user } = useContext(AuthContext);
+  const { user, token } = useContext(AuthContext);
   const [showUploadSection, setShowUploadSection] = useState(false);
   const [file, setFile] = useState(null);
 
@@ -21,9 +21,12 @@ const Profile = () => {
     const formData = new FormData();
     formData.append("files", file);
 
-    // api req handling
+    // upload file to the server
     try {
-      const response = await axiosPrivateInstance.post("/upload", formData);
+      const response = await axiosPrivateInstance(token).post(
+        "/upload",
+        formData
+      );
       console.log(response, "response");
     } catch (error) {
       console.log(error, "error");
