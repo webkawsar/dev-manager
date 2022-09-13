@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Button, Col, Form, Row } from "react-bootstrap";
+import { Button, Col, Form, ProgressBar, Row } from "react-bootstrap";
 import avatarImg from "../assets/avatar-img.jpg";
 import { axiosPrivateInstance } from "../config/axios";
 import { AuthContext } from "../context/Auth.context";
@@ -8,6 +8,12 @@ const Profile = () => {
   const { user, token } = useContext(AuthContext);
   const [showUploadSection, setShowUploadSection] = useState(false);
   const [file, setFile] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [percentage, setPercentage] = useState(0);
+
+  const uploadPercentage = (total, loaded) => {
+    return Math.floor((loaded / total) * 100);
+  };
 
   const handleChange = (e) => {
     setFile(e.target.files[0]);
@@ -16,20 +22,36 @@ const Profile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(file, "file");
+    const data = {
+      firstName: "Imran",
+      lastName: "Ahmed",
+      user: user.id,
+    };
     // form data
     const formData = new FormData();
-    formData.append("files", file);
+    formData.append("files.profilePicture", file, file.name);
+    formData.append("data", JSON.stringify(data));
 
     // upload file to the server
     try {
+      setSubmitting(true);
       const response = await axiosPrivateInstance(token).post(
-        "/upload",
-        formData
+        "/profiles?populate=*",
+        formData,
+        {
+          onUploadProgress: (progress) => {
+            const percentage = uploadPercentage(
+              progress.total,
+              progress.loaded
+            );
+            setPercentage(percentage);
+          },
+        }
       );
-      console.log(response, "response");
+      console.log(response.data, "upload response");
+      setSubmitting(false);
     } catch (error) {
-      console.log(error, "error");
+      console.log(error, "upload error");
     }
   };
 
@@ -95,6 +117,10 @@ const Profile = () => {
               alt=""
             />
 
+            {percentage > 0 && (
+              <ProgressBar animated now={percentage} label={`${percentage}%`} />
+            )}
+
             {showUploadSection && (
               <>
                 <input
@@ -102,9 +128,14 @@ const Profile = () => {
                   type="file"
                   name="profilePicture"
                   id="profilePicture"
+                  accept="image/*"
                 />
                 <br />
-                <Button type="submit" className="mt-5">
+                <Button
+                  type="submit"
+                  className="mt-5"
+                  disabled={submitting ? true : false}
+                >
                   Save
                 </Button>
               </>

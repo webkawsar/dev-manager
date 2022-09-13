@@ -1,7 +1,9 @@
+import qs from "qs";
 import { createContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { axiosInstance, axiosPrivateInstance } from "../config/axios";
+import { formateContact } from "../utils/formateContact";
 
 export const AuthContext = createContext();
 
@@ -12,38 +14,83 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(storageUser ? storageUser : null);
   const [token, setToken] = useState(storageToken ? storageToken : null);
   const [userContacts, setUserContacts] = useState([]);
+  const [profileId, setProfileId] = useState(null);
   const [loaded, setLoaded] = useState(false);
   const [triggerDelete, setTriggerDelete] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
 
+  // load user contact
   useEffect(() => {
     if (token) {
       loadUserContacts();
     }
   }, [token, triggerDelete]);
 
-  const loadUserContacts = async () => {
+  // load user profile
+  useEffect(() => {
+    if (token && loaded) {
+      loadUserProfile();
+    }
+  }, [token, loaded]);
+
+  const loadUserProfile = async () => {
+    const query = qs.stringify(
+      {
+        // populate: "*",
+        // populate: ["profilePicture", "user"],
+        // populate: {
+        //   user: {
+        //     populate: ["contacts", "profile"],
+        //   },
+        // },
+        populate: ["profilePicture", "user", "user.contacts", "user.profile"],
+      },
+      {
+        encodeValuesOnly: true, // prettify URL
+      }
+    );
+
     try {
-      // Populate 1 level for all relations => populate=*
-      // Populate 1 level => populate[0]=profile
-      // Populate 2 levels => populate[profile][populate][user][populate]=contacts
-      // Populate 2 levels => populate[profile][populate][user][populate]=*
-
-      // Populate 2 levels => populate[0]=contacts&populate[1]=profile.user.contacts
-      // Populate 2 levels => populate[0]=contacts&populate[1]=profile.user&populate[2]=profile.user.contacts&populate[3]=profile.user.profile
-
       const response = await axiosPrivateInstance(token).get(
-        "/users/me?populate[0]=contacts&populate[1]=profile.user&populate[2]=profile.user.contacts&populate[3]=profile.user.profile"
+        `/profiles/${profileId}?${query}`
       );
-      console.log(response.data, "loadUserContacts response");
+      console.log(response.data.data, "loadUserProfile response");
 
-      setUserContacts(response.data.contacts);
+      const mappedContacts =
+        response?.data?.data?.attributes?.user?.data?.attributes?.contacts?.data.map(
+          (contact) => formateContact(contact)
+        );
+
+      setUserContacts(mappedContacts);
+    } catch (error) {
+      console.log(error, "error");
+    }
+  };
+
+  const loadUserContacts = async () => {
+    const query = qs.stringify(
+      {
+        populate: "*",
+      },
+      {
+        encodeValuesOnly: true, // prettify URL
+      }
+    );
+
+    try {
+      const response = await axiosPrivateInstance(token).get(
+        `/users/me?${query}`
+      );
+      // console.log(response.data, "loadUserContacts response");
+
+      setProfileId(response.data.profile.id);
+      // setUserContacts(response.data.contacts);
       setLoaded(true);
     } catch (error) {
       console.log(error?.response?.data?.error, "loadUserContacts error");
-      // setLoaded(true);
+      setLoaded(true);
     }
   };
 
