@@ -1,18 +1,23 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import Table from "react-bootstrap/Table";
 import { FaEye, FaTrashAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import Loader from "../components/Loader";
-import { AuthContext } from "../context/Auth.context";
 import { ContactContext } from "../context/Contact.context";
+import { UserContext } from "../context/User.context";
 
 const UserContacts = () => {
-  const { userContacts, loaded } = useContext(AuthContext);
+  const { loaded, userContacts, loadUserProfile } = useContext(UserContext);
   const { deleteContact } = useContext(ContactContext);
 
   const handleDelete = (id) => {
     deleteContact(id);
   };
+
+  useEffect(() => {
+    // console.log(userContacts, "userContacts");
+    loadUserProfile();
+  }, []);
 
   return (
     <div>
