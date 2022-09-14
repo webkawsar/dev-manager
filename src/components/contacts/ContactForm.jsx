@@ -166,23 +166,6 @@ const ContactForm = ({ contact }) => {
             )}
           </Form.Group>
 
-          {/* <Form.Group className="mb-3" as={Col} md={6} controlId="Image">
-            <Form.Label>Image</Form.Label>
-
-            <Form.Control
-              type="text"
-              placeholder="Link of image URL"
-              {...register("image")}
-              defaultValue={image}
-            />
-
-            {errors?.image?.message && (
-              <Form.Text className="text-danger">
-                {errors?.image?.message}
-              </Form.Text>
-            )}
-          </Form.Group> */}
-
           <Form.Group className="mb-3" as={Col} md={6} controlId="Image">
             <Form.Label>Image</Form.Label>
 
@@ -195,14 +178,16 @@ const ContactForm = ({ contact }) => {
             )}
           </Form.Group>
 
-          <Col md={6}>
+          <Form.Group className="mb-3" as={Col} md={6} controlId="dob">
+            <Form.Label>Date of Birth</Form.Label>
             <ReactDatePicker
+              className="form-control"
               selected={birthDate}
               onChange={(date) => setBirthDate(date)}
               maxDate={new Date()}
               showYearDropdown
             />
-          </Col>
+          </Form.Group>
 
           <Form.Group className="mb-3" as={Col} md={6} controlId="bio">
             <Form.Label>BIO</Form.Label>
