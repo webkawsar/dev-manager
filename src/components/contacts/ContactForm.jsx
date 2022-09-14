@@ -24,16 +24,13 @@ const schema = yup
       .string()
       .required("Profession is required")
       .oneOf(["designer", "developer", "marketer"]),
-    image: yup
-      .string()
-      .required("Image link is required")
-      .url("Please add valid url link"),
     bio: yup
       .string()
       .required("BIO is required")
       .min(10, "Write your BIO at least 10 character")
       .max(100, "BIO must be less than 100 character"),
     gender: yup.mixed().oneOf(["male", "female"]),
+    image: yup.mixed().required("Image is required"),
   })
   .required();
 
@@ -45,7 +42,6 @@ const ContactForm = ({ contact }) => {
     lastName: contact?.lastName || "Ahmed",
     email: contact?.email || "web.kawsarahmed@gmail.com",
     profession: contact?.profession || "developer",
-    image: contact?.image || "https://facebook.com",
     bio: contact?.bio || "Hi, This is Kawsar Ahmed",
     gender: contact?.gender || "male",
     dob: (contact?.dob && new Date(contact?.dob)) || new Date(),
@@ -69,30 +65,33 @@ const ContactForm = ({ contact }) => {
       // update contact
       updateContact(data, id);
     } else {
+      // console.log(data, "data");
       // adding contact
       addContact(data);
     }
   };
 
+  console.log(errors, "errors");
+
   useEffect(() => {
     setValue("dob", birthDate);
   }, [birthDate]);
 
-  useEffect(() => {
-    if (isSubmitSuccessful) {
-      reset({
-        firstName: "",
-        lastName: "",
-        email: "",
-        profession: "",
-        image: "",
-        bio: "",
-        gender: "",
-      });
+  // useEffect(() => {
+  //   if (isSubmitSuccessful) {
+  //     reset({
+  //       firstName: "",
+  //       lastName: "",
+  //       email: "",
+  //       profession: "",
+  //       image: "",
+  //       bio: "",
+  //       gender: "",
+  //     });
 
-      setBirthDate(new Date());
-    }
-  }, [isSubmitSuccessful]);
+  //     setBirthDate(new Date());
+  //   }
+  // }, [isSubmitSuccessful]);
 
   return (
     <div>
@@ -167,7 +166,7 @@ const ContactForm = ({ contact }) => {
             )}
           </Form.Group>
 
-          <Form.Group className="mb-3" as={Col} md={6} controlId="Image">
+          {/* <Form.Group className="mb-3" as={Col} md={6} controlId="Image">
             <Form.Label>Image</Form.Label>
 
             <Form.Control
@@ -176,6 +175,18 @@ const ContactForm = ({ contact }) => {
               {...register("image")}
               defaultValue={image}
             />
+
+            {errors?.image?.message && (
+              <Form.Text className="text-danger">
+                {errors?.image?.message}
+              </Form.Text>
+            )}
+          </Form.Group> */}
+
+          <Form.Group className="mb-3" as={Col} md={6} controlId="Image">
+            <Form.Label>Image</Form.Label>
+
+            <Form.Control type="file" {...register("image")} accept="image/*" />
 
             {errors?.image?.message && (
               <Form.Text className="text-danger">

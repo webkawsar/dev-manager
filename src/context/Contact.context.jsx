@@ -9,12 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { axiosPrivateInstance } from "../config/axios";
 import { formateContact } from "../utils/formateContact";
-import {
-  ADD_CONTACT,
-  DELETE_CONTACT,
-  LOAD_CONTACTS,
-  UPDATE_CONTACT,
-} from "./action.types";
+import { DELETE_CONTACT, LOAD_CONTACTS, UPDATE_CONTACT } from "./action.types";
 import { AuthContext } from "./Auth.context";
 import contactsReducer from "./Contact.reducer";
 
@@ -53,12 +48,17 @@ export const ContactProvider = ({ children }) => {
 
   const addContact = async (contact) => {
     try {
-      const response = await axiosPrivateInstance(token).post("/contacts", {
-        data: contact,
-      });
+      const { image, ...restData } = contact;
+      const formData = new FormData();
+      formData.append("image", image[0], image[0]?.name);
+      formData.append("data", JSON.stringify(restData));
 
-      const formattedContact = formateContact(response?.data?.data);
-      dispatch({ type: ADD_CONTACT, payload: formattedContact });
+      const response = await axiosPrivateInstance(token).post(
+        "/contacts",
+        formData
+      );
+
+      // dispatch({ type: ADD_CONTACT, payload: response?.data });
 
       // show flash message
       toast.success("Contact added successfully");
@@ -66,7 +66,7 @@ export const ContactProvider = ({ children }) => {
       // redirect to user
       navigate("/contacts");
     } catch (error) {
-      console.log(error?.response?.data?.error, "addContact error");
+      console.log(error, "addContact error");
       toast.error(error?.response?.data?.error?.message);
     }
   };
