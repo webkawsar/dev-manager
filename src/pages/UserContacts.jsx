@@ -7,12 +7,11 @@ import { AuthContext } from "../context/Auth.context";
 import { ContactContext } from "../context/Contact.context";
 
 const UserContacts = () => {
-  const { userContacts, loaded, setTriggerDelete } = useContext(AuthContext);
+  const { userContacts, loaded } = useContext(AuthContext);
   const { deleteContact } = useContext(ContactContext);
 
   const handleDelete = (id) => {
     deleteContact(id);
-    setTriggerDelete((prevState) => !prevState);
   };
 
   return (

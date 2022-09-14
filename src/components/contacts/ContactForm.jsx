@@ -234,10 +234,6 @@ const ContactForm = ({ contact }) => {
           </Form.Group>
         </Row>
 
-        {/* <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                    <Form.Check type="checkbox" label="Agreed to Dev Manager terms & conditions" name="agreedPolicy" />
-                </Form.Group> */}
-
         <Button
           variant="primary"
           type="submit"
