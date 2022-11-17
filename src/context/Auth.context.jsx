@@ -6,7 +6,7 @@ import { axiosInstance, axiosPrivateInstance } from "../config/axios";
 export const AuthContext = createContext();
 
 const storageUser = JSON.parse(localStorage.getItem("user"));
-const storageToken = JSON.parse(localStorage.getItem("token"));
+const storageToken = localStorage.getItem("token");
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(storageUser ? storageUser : null);
@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
         "Registration is successful! please check email and confirm to click the link"
       );
     } catch (error) {
-      console.log(error, "registerUser error");
+      console.log(error?.response?.data?.error, "registerUser error");
       toast.error(error?.response?.data?.error?.message);
     }
   };
