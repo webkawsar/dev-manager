@@ -84,16 +84,15 @@ const ContactForm = ({ contact }) => {
             <Form.Label>First name</Form.Label>
             <Form.Control
               type="text"
-              placeholder="First name"
+              placeholder="Enter your first name"
               {...register("firstName")}
               defaultValue={firstName}
+              isInvalid={errors?.firstName?.message}
             />
 
-            {errors?.firstName?.message && (
-              <Form.Text className="text-danger">
-                {errors?.firstName?.message}
-              </Form.Text>
-            )}
+            <Form.Control.Feedback type="invalid">
+              {errors?.firstName?.message}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3" as={Col} md={6} controlId="lastName">
@@ -103,13 +102,12 @@ const ContactForm = ({ contact }) => {
               placeholder="Last name"
               {...register("lastName")}
               defaultValue={lastName}
+              isInvalid={errors?.lastName?.message}
             />
 
-            {errors?.lastName?.message && (
-              <Form.Text className="text-danger">
-                {errors?.lastName?.message}
-              </Form.Text>
-            )}
+            <Form.Control.Feedback type="invalid">
+              {errors?.lastName?.message}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3" as={Col} md={6} controlId="email">
@@ -119,30 +117,31 @@ const ContactForm = ({ contact }) => {
               placeholder="Email address"
               {...register("email")}
               defaultValue={email}
+              isInvalid={errors?.email?.message}
             />
 
-            {errors?.email?.message && (
-              <Form.Text className="text-danger">
-                {errors?.email?.message}
-              </Form.Text>
-            )}
+            <Form.Control.Feedback type="invalid">
+              {errors?.email?.message}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3" as={Col} md={6} controlId="profession">
             <Form.Label>Profession</Form.Label>
 
-            <Form.Select {...register("profession")} defaultValue={profession}>
+            <Form.Select
+              {...register("profession")}
+              defaultValue={profession}
+              isInvalid={errors?.profession?.message}
+            >
               <option value="">Select your profession</option>
               <option value="designer">Designer</option>
               <option value="developer">Developer</option>
               <option value="marketer">Marketer</option>
             </Form.Select>
 
-            {errors?.profession?.message && (
-              <Form.Text className="text-danger">
-                {errors?.profession?.message}
-              </Form.Text>
-            )}
+            <Form.Control.Feedback type="invalid">
+              {errors?.profession?.message}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3" as={Col} md={6} controlId="Image">
@@ -153,13 +152,12 @@ const ContactForm = ({ contact }) => {
               {...register("image")}
               accept="image/*"
               required
+              isInvalid={errors?.image?.message}
             />
 
-            {errors?.image?.message && (
-              <Form.Text className="text-danger">
-                {errors?.image?.message}
-              </Form.Text>
-            )}
+            <Form.Control.Feedback type="invalid">
+              {errors?.image?.message}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3" as={Col} md={6} controlId="dob">
@@ -181,47 +179,45 @@ const ContactForm = ({ contact }) => {
               placeholder="Write your bio"
               {...register("bio")}
               defaultValue={bio}
+              isInvalid={errors?.bio?.message}
             />
 
-            {errors?.bio?.message && (
-              <Form.Text className="text-danger">
-                {errors?.bio?.message}
-              </Form.Text>
-            )}
+            <Form.Control.Feedback type="invalid">
+              {errors?.bio?.message}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3" as={Col} md={6} controlId="gender">
+            <Form.Label className="d-block mb-3">Gender</Form.Label>
             <Form.Check
               type="radio"
-              inline
               label="Male"
               id="male"
               value="male"
               {...register("gender")}
               defaultChecked={gender === "male"}
+              isInvalid={errors?.gender?.message}
             />
             <Form.Check
               type="radio"
-              inline
               label="Female"
               id="female"
               value="female"
               {...register("gender")}
               defaultChecked={gender === "female"}
+              isInvalid={errors?.gender?.message}
             />
 
-            {errors?.gender?.message && (
-              <Form.Text className="text-danger">
-                {errors?.gender?.message}
-              </Form.Text>
-            )}
+            <Form.Control.Feedback type="invalid">
+              {errors?.gender?.message}
+            </Form.Control.Feedback>
           </Form.Group>
         </Row>
 
         <Button
           variant="primary"
           type="submit"
-          disabled={isSubmitting ? "disabled" : ""}
+          disabled={isSubmitting ? true : false}
         >
           {contact?.id ? "Update Contact" : "Add Contact"}
         </Button>

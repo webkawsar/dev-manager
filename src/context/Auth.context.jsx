@@ -18,9 +18,7 @@ export const AuthProvider = ({ children }) => {
       const response = await axiosInstance.post("/auth/local/register", data);
 
       // show success msg
-      toast.success(
-        "Registration is successful! please check email and confirm to click the link"
-      );
+      toast.success("Please check email and confirm to click the link");
     } catch (error) {
       console.log(error?.response?.data?.error, "registerUser error");
 

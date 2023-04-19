@@ -58,7 +58,7 @@ const Contact = ({ contact }) => {
         <Card>
           <Row className="g-0">
             <Col md={5}>
-              <Card.Img src={imageUrl} />
+              <Card.Img src={imageUrl} className="h-100" />
             </Col>
             <Col md={7}>
               <Card.Body>
