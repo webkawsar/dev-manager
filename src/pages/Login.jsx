@@ -6,6 +6,11 @@ import { Link } from "react-router-dom";
 import * as yup from "yup";
 import { AuthContext } from "../context/Auth.context";
 
+const defaultValues = {
+  email: "web.kawsarahmed@gmail.com",
+  password: "123456@Ka",
+};
+
 const schema = yup
   .object({
     email: yup.string().trim().required("Email is required").lowercase(),
@@ -31,6 +36,7 @@ const Login = () => {
     });
   };
 
+  const { email, password } = defaultValues;
   return (
     <div>
       <h2 className="text-center mb-3">Login</h2>
@@ -44,7 +50,7 @@ const Login = () => {
               <Form.Control
                 type="email"
                 placeholder="Enter email"
-                defaultValue="web.kawsarahmed@gmail.com"
+                defaultValue={email}
                 {...register("email")}
                 isInvalid={!!errors.email}
               />
@@ -61,7 +67,7 @@ const Login = () => {
               <Form.Control
                 type="password"
                 placeholder="Enter password"
-                defaultValue="123456@Ka"
+                defaultValue={password}
                 {...register("password")}
                 isInvalid={!!errors.password}
               />

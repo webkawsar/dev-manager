@@ -4,14 +4,12 @@ import { toast } from "react-toastify";
 import { axiosInstance, axiosPrivateInstance } from "../config/axios";
 
 export const AuthContext = createContext();
-
 const storageUser = JSON.parse(localStorage.getItem("user"));
 const storageToken = localStorage.getItem("token");
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(storageUser ? storageUser : null);
   const [token, setToken] = useState(storageToken ? storageToken : null);
-
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -25,6 +23,7 @@ export const AuthProvider = ({ children }) => {
       );
     } catch (error) {
       console.log(error?.response?.data?.error, "registerUser error");
+
       toast.error(error?.response?.data?.error?.message);
     }
   };

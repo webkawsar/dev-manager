@@ -31,6 +31,13 @@ const schema = yup
   })
   .required();
 
+const defaultValues = {
+  username: "webkawsar",
+  email: "web.kawsarahmed@gmail.com",
+  password: "123456@Ka",
+  confirmPassword: "123456@Ka",
+};
+
 const Register = () => {
   const { registerUser } = useContext(AuthContext);
   const {
@@ -42,7 +49,6 @@ const Register = () => {
   });
 
   const onSubmit = (data) => {
-    // register user
     registerUser({
       username: data.username,
       password: data.password,
@@ -50,6 +56,7 @@ const Register = () => {
     });
   };
 
+  const { username, email, password, confirmPassword } = defaultValues;
   return (
     <div>
       <h1 className="text-center mb-3">Register</h1>
@@ -63,7 +70,7 @@ const Register = () => {
               <Form.Control
                 type="text"
                 placeholder="Enter your username"
-                defaultValue="webkawsar"
+                defaultValue={username}
                 {...register("username")}
                 isInvalid={!!errors.username}
               />
@@ -80,7 +87,7 @@ const Register = () => {
               <Form.Control
                 type="email"
                 placeholder="Enter email"
-                defaultValue="web.kawsarahmed@gmail.com"
+                defaultValue={email}
                 {...register("email")}
                 isInvalid={!!errors.email}
               />
@@ -97,7 +104,7 @@ const Register = () => {
               <Form.Control
                 type="password"
                 placeholder="Enter password"
-                defaultValue="123456@Ka"
+                defaultValue={password}
                 {...register("password")}
                 isInvalid={!!errors.password}
               />
@@ -114,7 +121,7 @@ const Register = () => {
               <Form.Control
                 type="password"
                 placeholder="Enter confirm password"
-                defaultValue="123456@Ka"
+                defaultValue={confirmPassword}
                 {...register("confirm_password")}
                 isInvalid={!!errors.confirm_password}
               />
