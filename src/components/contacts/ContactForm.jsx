@@ -62,36 +62,15 @@ const ContactForm = ({ contact }) => {
   const onSubmit = (data) => {
     const id = contact?.id;
     if (id) {
-      // update contact
       updateContact(data, id);
     } else {
-      // console.log(data, "data");
-      // adding contact
       addContact(data);
     }
   };
 
-  console.log(errors, "errors");
-
   useEffect(() => {
     setValue("dob", birthDate);
   }, [birthDate]);
-
-  // useEffect(() => {
-  //   if (isSubmitSuccessful) {
-  //     reset({
-  //       firstName: "",
-  //       lastName: "",
-  //       email: "",
-  //       profession: "",
-  //       image: "",
-  //       bio: "",
-  //       gender: "",
-  //     });
-
-  //     setBirthDate(new Date());
-  //   }
-  // }, [isSubmitSuccessful]);
 
   return (
     <div>
@@ -169,7 +148,12 @@ const ContactForm = ({ contact }) => {
           <Form.Group className="mb-3" as={Col} md={6} controlId="Image">
             <Form.Label>Image</Form.Label>
 
-            <Form.Control type="file" {...register("image")} accept="image/*" />
+            <Form.Control
+              type="file"
+              {...register("image")}
+              accept="image/*"
+              required
+            />
 
             {errors?.image?.message && (
               <Form.Text className="text-danger">

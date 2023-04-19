@@ -5,7 +5,7 @@ const Loader = () => {
   return (
     <>
       <Spinner
-        className="d-block mx-auto my-auto"
+        className="d-block mx-auto my-auto mt-3"
         animation="grow"
         size="xxl"
       />

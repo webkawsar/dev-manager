@@ -1,54 +1,55 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useReducer,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useReducer } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { axiosPrivateInstance } from "../config/axios";
 import { formateContact } from "../utils/formateContact";
-import { DELETE_CONTACT, LOAD_CONTACTS, UPDATE_CONTACT } from "./action.types";
 import { AuthContext } from "./Auth.context";
-import contactsReducer from "./Contact.reducer";
+import contactsReducer, { initialState } from "./Contact.reducer";
+import {
+  ADD_CONTACT,
+  CONTACTS_LOADED,
+  DELETE_CONTACT,
+  UPDATE_CONTACT,
+} from "./action.types";
 
 // create a context
 export const ContactContext = createContext();
 
 // create a provider
 export const ContactProvider = ({ children }) => {
-  const [contacts, dispatch] = useReducer(contactsReducer, []);
-  const [loaded, setLoaded] = useState(false);
-  const navigate = useNavigate();
   const { user, token } = useContext(AuthContext);
+  const [{ loaded, contacts }, dispatch] = useReducer(
+    contactsReducer,
+    initialState
+  );
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (token) {
-      loadContacts();
+      getAllContacts();
     }
   }, [token]);
 
-  const loadContacts = async () => {
+  const getAllContacts = async () => {
     try {
       const response = await axiosPrivateInstance(token).get(
         "/contacts?populate=*"
       );
+
       const mappedContacts = response?.data?.data?.map((contact) =>
         formateContact(contact)
       );
 
-      dispatch({ type: LOAD_CONTACTS, payload: mappedContacts });
-      setLoaded(true);
+      dispatch({ type: CONTACTS_LOADED, payload: mappedContacts });
     } catch (error) {
-      console.log(error?.response?.data?.error, "loadContacts error");
-      // setLoaded(true);
+      toast.error(`Can't load all contacts`);
     }
   };
 
   const addContact = async (contact) => {
     try {
       const { image, ...restData } = contact;
+
       const formData = new FormData();
       formData.append("image", image[0], image[0]?.name);
       formData.append("data", JSON.stringify(restData));
@@ -58,7 +59,7 @@ export const ContactProvider = ({ children }) => {
         formData
       );
 
-      // dispatch({ type: ADD_CONTACT, payload: response?.data });
+      dispatch({ type: ADD_CONTACT, payload: response?.data });
 
       // show flash message
       toast.success("Contact added successfully");
@@ -66,7 +67,6 @@ export const ContactProvider = ({ children }) => {
       // redirect to user
       navigate("/contacts");
     } catch (error) {
-      console.log(error, "addContact error");
       toast.error(error?.response?.data?.error?.message);
     }
   };
@@ -103,7 +103,7 @@ export const ContactProvider = ({ children }) => {
       dispatch({ type: DELETE_CONTACT, payload: response?.data?.data?.id });
 
       // show flash message
-      toast.success("Contact delete successfully");
+      toast.success("Contact deleted successfully");
 
       // redirect to user
       navigate("/contacts");

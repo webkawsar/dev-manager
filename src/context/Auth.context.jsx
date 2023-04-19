@@ -5,7 +5,7 @@ import { axiosInstance, axiosPrivateInstance } from "../config/axios";
 
 export const AuthContext = createContext();
 const storageUser = JSON.parse(localStorage.getItem("user"));
-const storageToken = localStorage.getItem("token");
+const storageToken = JSON.parse(localStorage.getItem("token"));
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(storageUser ? storageUser : null);
