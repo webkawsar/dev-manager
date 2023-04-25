@@ -51,7 +51,7 @@ export const ContactProvider = ({ children }) => {
       const { image, ...restData } = contact;
 
       const formData = new FormData();
-      formData.append("image", image[0], image[0]?.name);
+      formData.append("files.image", image[0], image[0]?.name);
       formData.append("data", JSON.stringify(restData));
 
       const response = await axiosPrivateInstance(token).post(
@@ -59,7 +59,8 @@ export const ContactProvider = ({ children }) => {
         formData
       );
 
-      dispatch({ type: ADD_CONTACT, payload: response?.data });
+      const mappingContactData = formateContact(response?.data?.data);
+      dispatch({ type: ADD_CONTACT, payload: mappingContactData });
 
       // show flash message
       toast.success("Contact added successfully");
@@ -73,24 +74,28 @@ export const ContactProvider = ({ children }) => {
 
   const updateContact = async (updatedContactValue, id) => {
     try {
+      const { image, ...restData } = updatedContactValue;
+
+      const formData = new FormData();
+      formData.append("image", image[0], image[0]?.name);
+      formData.append("data", JSON.stringify(restData));
+
       const response = await axiosPrivateInstance(token).put(
         `/contacts/${id}?populate=*`,
-        {
-          data: updatedContactValue,
-        }
+        formData
       );
 
-      const updatedContact = formateContact(response?.data?.data);
-
-      dispatch({ type: UPDATE_CONTACT, payload: updatedContact });
+      console.log(response.data, "updateContact response");
+      dispatch({ type: UPDATE_CONTACT, payload: response?.data });
 
       // show flash message
       toast.success("Contact updated successfully");
 
       // redirect to user
-      navigate(`/contacts/${updatedContact.id}`);
+      navigate(`/contacts/${response?.data?.id}`);
     } catch (error) {
-      console.log(error?.response?.data?.error, "addContact error");
+      console.log(error, "error");
+      console.log(error?.response?.data?.error, "error?.response?.data?.error");
       toast.error(error?.response?.data?.error?.message);
     }
   };

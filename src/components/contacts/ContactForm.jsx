@@ -30,7 +30,9 @@ const schema = yup
       .min(10, "Write your BIO at least 10 character")
       .max(100, "BIO must be less than 100 character"),
     gender: yup.mixed().oneOf(["male", "female"]),
-    image: yup.mixed().required("Image is required"),
+    image: yup.mixed().test("required", "Image is required", (value) => {
+      return value && value.length;
+    }),
   })
   .required();
 
