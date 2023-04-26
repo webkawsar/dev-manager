@@ -77,25 +77,27 @@ export const ContactProvider = ({ children }) => {
       const { image, ...restData } = updatedContactValue;
 
       const formData = new FormData();
-      formData.append("image", image[0], image[0]?.name);
+      if (image.length) {
+        formData.append("files.image", image[0], image[0]?.name);
+      }
       formData.append("data", JSON.stringify(restData));
 
       const response = await axiosPrivateInstance(token).put(
-        `/contacts/${id}?populate=*`,
+        `/contacts/${id}`,
         formData
       );
 
-      console.log(response.data, "updateContact response");
-      dispatch({ type: UPDATE_CONTACT, payload: response?.data });
+      const mappedData = formateContact(response?.data?.data);
+      dispatch({ type: UPDATE_CONTACT, payload: mappedData });
 
       // show flash message
       toast.success("Contact updated successfully");
 
       // redirect to user
-      navigate(`/contacts/${response?.data?.id}`);
+      navigate(`/contacts/${response?.data?.data?.id}`);
     } catch (error) {
-      console.log(error, "error");
-      console.log(error?.response?.data?.error, "error?.response?.data?.error");
+      console.log(error, "updateContact error");
+
       toast.error(error?.response?.data?.error?.message);
     }
   };

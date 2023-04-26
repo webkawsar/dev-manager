@@ -10,15 +10,15 @@ const schema = yup
   .object({
     firstName: yup
       .string()
-      .required("First name is Required")
+      .required("First name is required")
       .min(3, "First name at least 3 character"),
     lastName: yup
       .string()
-      .required("Last name is Required")
+      .required("Last name is required")
       .min(3, "Last name at least 3 character"),
     email: yup
       .string()
-      .required("Email is Required")
+      .required("Email is required")
       .email("Must be a valid email"),
     profession: yup
       .string()
@@ -30,29 +30,27 @@ const schema = yup
       .min(10, "Write your BIO at least 10 character")
       .max(100, "BIO must be less than 100 character"),
     gender: yup.mixed().oneOf(["male", "female"]),
-    image: yup.mixed().test("required", "Image is required", (value) => {
-      return value && value.length;
-    }),
+    image: yup.mixed(),
   })
   .required();
 
-const ContactForm = ({ contact }) => {
+const EditContactForm = ({ contact }) => {
   const { addContact, updateContact } = useContext(ContactContext);
 
   const defaultValue = {
-    firstName: contact?.firstName || "Kawsar",
-    lastName: contact?.lastName || "Ahmed",
-    email: contact?.email || "web.kawsarahmed@gmail.com",
-    profession: contact?.profession || "developer",
-    bio: contact?.bio || "Hi, This is Kawsar Ahmed",
-    gender: contact?.gender || "male",
-    dob: (contact?.dob && new Date(contact?.dob)) || new Date(),
+    firstName: contact?.firstName,
+    lastName: contact?.lastName,
+    email: contact?.email,
+    profession: contact?.profession,
+    bio: contact?.bio,
+    gender: contact?.gender,
+    dob: contact?.dob && new Date(contact?.dob),
   };
 
   const { firstName, lastName, email, profession, image, bio, gender, dob } =
     defaultValue;
 
-  const [birthDate, setBirthDate] = useState(dob ? dob : new Date());
+  const [birthDate, setBirthDate] = useState(dob);
   const {
     register,
     handleSubmit,
@@ -62,12 +60,7 @@ const ContactForm = ({ contact }) => {
   } = useForm({ resolver: yupResolver(schema) });
 
   const onSubmit = (data) => {
-    const id = contact?.id;
-    if (id) {
-      updateContact(data, id);
-    } else {
-      addContact(data);
-    }
+    updateContact({ ...data, imageId: contact?.image?.data?.id }, contact?.id);
   };
 
   useEffect(() => {
@@ -76,9 +69,7 @@ const ContactForm = ({ contact }) => {
 
   return (
     <div>
-      <h2 className="text-center">
-        {contact?.id ? "Edit Contact" : "Add Contact"}
-      </h2>
+      <h2 className="text-center">Edit Contact</h2>
 
       <Form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Row>
@@ -221,11 +212,11 @@ const ContactForm = ({ contact }) => {
           type="submit"
           disabled={isSubmitting ? true : false}
         >
-          {contact?.id ? "Update Contact" : "Add Contact"}
+          Update Contact
         </Button>
       </Form>
     </div>
   );
 };
 
-export default ContactForm;
+export default EditContactForm;

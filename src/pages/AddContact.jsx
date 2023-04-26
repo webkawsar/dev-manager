@@ -1,16 +1,12 @@
-import React from 'react';
-import ContactForm from '../components/contacts/ContactForm';
-
-
-
+import React from "react";
+import AddContactForm from "../components/contacts/AddContactForm";
 
 const AddContact = () => {
-    
-    return (
-        <div>
-            <ContactForm />
-        </div>
-    );
+  return (
+    <div>
+      <AddContactForm />
+    </div>
+  );
 };
 
 export default AddContact;

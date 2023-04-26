@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Loader from "../components/Loader";
-import ContactForm from "../components/contacts/ContactForm";
+import EditContactForm from "../components/contacts/EditContactForm";
 import { ContactContext } from "../context/Contact.context";
 
 const EditContact = () => {
@@ -31,7 +31,7 @@ const EditContact = () => {
     );
   }
   if (loaded && Object.keys(contact).length) {
-    content = <ContactForm contact={contact} />;
+    content = <EditContactForm contact={contact} />;
   }
 
   return <div>{content}</div>;

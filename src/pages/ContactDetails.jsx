@@ -14,7 +14,7 @@ const ContactDetails = () => {
   const [contact, setContact] = useState({});
 
   useEffect(() => {
-    if (loaded) {
+    if (contactId && loaded) {
       const foundContact = contacts.find(
         (contact) => contact.id === Number(contactId)
       );
@@ -22,7 +22,7 @@ const ContactDetails = () => {
         setContact(foundContact);
       }
     }
-  }, [loaded]);
+  }, [contactId, loaded]);
 
   const handleDelete = (id) => {
     deleteContact(id);
