@@ -96,8 +96,6 @@ export const ContactProvider = ({ children }) => {
       // redirect to user
       navigate(`/contacts/${response?.data?.data?.id}`);
     } catch (error) {
-      console.log(error, "updateContact error");
-
       toast.error(error?.response?.data?.error?.message);
     }
   };
@@ -115,7 +113,6 @@ export const ContactProvider = ({ children }) => {
       // redirect to user
       navigate("/contacts");
     } catch (error) {
-      console.log(error, "deleteContact error");
       toast.error(error?.response?.data?.error?.message);
     }
   };
