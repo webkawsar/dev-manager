@@ -1,15 +1,23 @@
 import React, { useContext } from "react";
 import { Card, Col, Row } from "react-bootstrap";
-import Loader from "../components/Loader";
 import Contact from "../components/contacts/Contact";
 import { ContactContext } from "../context/Contact.context";
+import ContactsLoader from "../ui/ContactsLoader";
 
 const Contacts = () => {
   const { loaded, contacts } = useContext(ContactContext);
 
   // decide what to render
   let content = null;
-  if (!loaded) content = <Loader />;
+  if (!loaded)
+    content = (
+      <>
+        <ContactsLoader />
+        <ContactsLoader />
+        <ContactsLoader />
+        <ContactsLoader />
+      </>
+    );
   if (loaded && contacts.length === 0) {
     content = (
       <Col sm>

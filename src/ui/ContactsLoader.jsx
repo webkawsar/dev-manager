@@ -1,14 +1,14 @@
 import React from "react";
 import { Card, Col, ListGroup, Placeholder, Row } from "react-bootstrap";
 
-const Playground = () => {
+const ContactsLoader = () => {
   return (
-    <>
-      <Card style={{ height: "350px" }}>
+    <Col md={6}>
+      <Card>
         <Row className="g-0">
           <Col md={5}>
             <Card.Img
-              className="h-75"
+              className="h-100"
               src="https://cpimg.tistatic.com/05058109/b/4/Vat-Black-8.jpg"
             />
           </Col>
@@ -51,8 +51,8 @@ const Playground = () => {
           </Col>
         </Row>
       </Card>
-    </>
+    </Col>
   );
 };
 
-export default Playground;
+export default ContactsLoader;

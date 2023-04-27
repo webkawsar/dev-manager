@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Loader from "../components/Loader";
 import EditContactForm from "../components/contacts/EditContactForm";
 import { ContactContext } from "../context/Contact.context";
+import EditContactLoader from "../ui/EditContactLoader";
 
 const EditContact = () => {
   const { loaded, contacts } = useContext(ContactContext);
@@ -22,7 +22,7 @@ const EditContact = () => {
 
   // decide what to render
   let content = null;
-  if (!loaded) content = <Loader />;
+  if (!loaded) content = <EditContactLoader />;
   if (loaded && Object.keys(contact).length === 0) {
     content = (
       <h2 style={{ color: "red", textAlign: "center" }}>

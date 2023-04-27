@@ -207,11 +207,7 @@ const AddContactForm = () => {
           </Form.Group>
         </Row>
 
-        <Button
-          variant="primary"
-          type="submit"
-          disabled={isSubmitting ? true : false}
-        >
+        <Button variant="primary" type="submit" disabled={isSubmitSuccessful}>
           Add Contact
         </Button>
       </Form>

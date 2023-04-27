@@ -2,9 +2,9 @@ import React, { useContext, useEffect, useState } from "react";
 import { Button, Card, Col, ListGroup, Row } from "react-bootstrap";
 import { FaPencilAlt, FaRegTrashAlt } from "react-icons/fa";
 import { Link, useParams } from "react-router-dom";
-import Loader from "../components/Loader";
 import { AuthContext } from "../context/Auth.context";
 import { ContactContext } from "../context/Contact.context";
+import ContactLoader from "../ui/ContactLoader";
 import formatImageUrl from "../utils/formatImageUrl";
 
 const ContactDetails = () => {
@@ -44,7 +44,7 @@ const ContactDetails = () => {
 
   // decide what to render
   let content = null;
-  if (!loaded) content = <Loader />;
+  if (!loaded) content = <ContactLoader />;
   if (loaded && Object.keys(contact).length === 0) {
     content = (
       <h2 style={{ color: "red", textAlign: "center" }}>No Contact to Show</h2>
@@ -54,57 +54,60 @@ const ContactDetails = () => {
     const imageUrl = formatImageUrl(image);
 
     content = (
-      <Row className="g-0">
-        <Col md={5}>
-          <Card.Img className="contact_image" src={imageUrl} />
-        </Col>
-        <Col md={7}>
-          <Card.Body>
-            <Card.Title>
-              {firstName} {lastName}
-            </Card.Title>
-            <Card.Subtitle className="mb-2 text-muted text-capitalize">
-              {profession}
-            </Card.Subtitle>
-            <Card.Text>{bio}</Card.Text>
-          </Card.Body>
+      <Col md={12}>
+        <Card>
+          <Row className="g-0">
+            <Col md={5}>
+              <Card.Img className="contact_image" src={imageUrl} />
+            </Col>
+            <Col md={7}>
+              <Card.Body>
+                <Card.Title>
+                  {firstName} {lastName}
+                </Card.Title>
+                <Card.Subtitle className="mb-2 text-muted text-capitalize">
+                  {profession}
+                </Card.Subtitle>
+                <Card.Text>{bio}</Card.Text>
+              </Card.Body>
 
-          <ListGroup variant="flush">
-            <ListGroup.Item>Email: {email}</ListGroup.Item>
-            <ListGroup.Item className="text-capitalize">
-              Gender: {gender}
-            </ListGroup.Item>
-            <ListGroup.Item>
-              Date of Birth:{" "}
-              {dob instanceof Object ? format(dob, "d-MMM-yyyy") : dob}
-            </ListGroup.Item>
-          </ListGroup>
+              <ListGroup variant="flush">
+                <ListGroup.Item>Email: {email}</ListGroup.Item>
+                <ListGroup.Item className="text-capitalize">
+                  Gender: {gender}
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  Date of Birth:{" "}
+                  {dob instanceof Object ? format(dob, "d-MMM-yyyy") : dob}
+                </ListGroup.Item>
+              </ListGroup>
 
-          {isOwner && (
-            <Card.Footer>
-              <Link to={`/edit/contacts/${id}`}>
-                <Button variant="warning">
-                  <FaPencilAlt />
-                </Button>
-              </Link>
+              {isOwner && (
+                <Card.Footer>
+                  <Link to={`/edit/contacts/${id}`}>
+                    <Button variant="warning">
+                      <FaPencilAlt />
+                    </Button>
+                  </Link>
 
-              <Button variant="danger ms-3" onClick={() => handleDelete(id)}>
-                <FaRegTrashAlt />
-              </Button>
-            </Card.Footer>
-          )}
-        </Col>
-      </Row>
+                  <Button
+                    variant="danger ms-3"
+                    onClick={() => handleDelete(id)}
+                  >
+                    <FaRegTrashAlt />
+                  </Button>
+                </Card.Footer>
+              )}
+            </Col>
+          </Row>
+        </Card>
+      </Col>
     );
   }
 
   return (
     <>
-      <Row>
-        <Col md={12}>
-          <Card>{content}</Card>
-        </Col>
-      </Row>
+      <Row>{content}</Row>
     </>
   );
 };

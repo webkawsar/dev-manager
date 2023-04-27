@@ -2,9 +2,9 @@ import React, { useContext, useEffect } from "react";
 import Table from "react-bootstrap/Table";
 import { FaEye, FaTrashAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import Loader from "../components/Loader";
 import { ContactContext } from "../context/Contact.context";
 import { UserContext } from "../context/User.context";
+import Loader from "../ui/Loader";
 
 const UserContacts = () => {
   const { loaded, userContacts, loadUserProfile } = useContext(UserContext);

@@ -37,7 +37,7 @@ const Contact = ({ contact }) => {
         <Card>
           <Row className="g-0">
             <Col md={5}>
-              <Card.Img src={imageUrl} className="h-100" />
+              <Card.Img src={imageUrl} style={{ height: "289px" }} />
             </Col>
             <Col md={7}>
               <Card.Body>
