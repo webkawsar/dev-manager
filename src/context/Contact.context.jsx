@@ -1,4 +1,11 @@
-import { createContext, useContext, useEffect, useReducer } from "react";
+import qs from "qs";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { axiosPrivateInstance } from "../config/axios";
@@ -22,18 +29,33 @@ export const ContactProvider = ({ children }) => {
     contactsReducer,
     initialState
   );
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageCount, setPageCount] = useState(1);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (token) {
       getAllContacts();
     }
-  }, [token]);
+  }, [token, pageNumber]);
 
   const getAllContacts = async () => {
     try {
+      const query = qs.stringify(
+        {
+          sort: ["id:desc"],
+          populate: "*",
+          pagination: {
+            page: pageNumber,
+            pageSize: 4,
+          },
+        },
+        {
+          encodeValuesOnly: true, // prettify URL
+        }
+      );
       const response = await axiosPrivateInstance(token).get(
-        "/contacts?populate=*"
+        `/contacts?${query}`
       );
 
       const mappedContacts = response?.data?.data?.map((contact) =>
@@ -41,6 +63,11 @@ export const ContactProvider = ({ children }) => {
       );
 
       dispatch({ type: CONTACTS_LOADED, payload: mappedContacts });
+
+      // set pagination data
+      // console.log(response.data.meta.pagination, "res");
+      setPageNumber(response?.data?.meta?.pagination?.page);
+      setPageCount(response?.data?.meta?.pagination?.pageCount);
     } catch (error) {
       toast.error(`Can't load all contacts`);
     }
@@ -123,6 +150,9 @@ export const ContactProvider = ({ children }) => {
     addContact,
     updateContact,
     deleteContact,
+    pageNumber,
+    setPageNumber,
+    pageCount,
   };
 
   return (

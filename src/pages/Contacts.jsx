@@ -1,11 +1,22 @@
 import React, { useContext } from "react";
-import { Card, Col, Row } from "react-bootstrap";
+import { Card, Col, Pagination, Row } from "react-bootstrap";
 import Contact from "../components/contacts/Contact";
 import { ContactContext } from "../context/Contact.context";
 import ContactsLoader from "../ui/ContactsLoader";
 
+const generateArr = (num) => {
+  const nums = [];
+  for (let i = 1; i <= num; i++) {
+    nums.push(i);
+  }
+  return nums;
+};
+
 const Contacts = () => {
-  const { loaded, contacts } = useContext(ContactContext);
+  const { loaded, contacts, pageNumber, setPageNumber, pageCount } =
+    useContext(ContactContext);
+
+  const paginationArr = generateArr(pageCount);
 
   // decide what to render
   let content = null;
@@ -37,6 +48,21 @@ const Contacts = () => {
     <>
       <h2 className="text-center mb-3">All Contacts</h2>
       <Row className="g-3">{content}</Row>
+      <div className="mt-5">
+        <Pagination className="justify-content-center">
+          {paginationArr.map((count) => {
+            return (
+              <Pagination.Item
+                key={count}
+                active={count === pageNumber}
+                onClick={() => setPageNumber(count)}
+              >
+                {count}{" "}
+              </Pagination.Item>
+            );
+          })}
+        </Pagination>
+      </div>
     </>
   );
 };
