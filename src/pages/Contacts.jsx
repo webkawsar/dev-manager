@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Card, Col, Pagination, Row } from "react-bootstrap";
 import Contact from "../components/contacts/Contact";
 import { ContactContext } from "../context/Contact.context";
@@ -17,10 +17,17 @@ const Contacts = () => {
     useContext(ContactContext);
 
   const paginationArr = generateArr(pageCount);
+  const isPageOutOfBound = pageNumber > pageCount;
+
+  useEffect(() => {
+    if (isPageOutOfBound) {
+      setPageNumber(pageNumber - 1);
+    }
+  }, [isPageOutOfBound]);
 
   // decide what to render
   let content = null;
-  if (!loaded)
+  if (!loaded) {
     content = (
       <>
         <ContactsLoader />
@@ -29,6 +36,8 @@ const Contacts = () => {
         <ContactsLoader />
       </>
     );
+  }
+
   if (loaded && contacts.length === 0) {
     content = (
       <Col sm>
@@ -46,7 +55,7 @@ const Contacts = () => {
 
   return (
     <>
-      <h2 className="text-center mb-3">All Contacts</h2>
+      <h2 className="text-center mb-5">All Contacts</h2>
       <Row className="g-3">{content}</Row>
       <div className="mt-5">
         <Pagination className="justify-content-center">

@@ -12,12 +12,7 @@ import { axiosPrivateInstance } from "../config/axios";
 import { formateContact } from "../utils/formateContact";
 import { AuthContext } from "./Auth.context";
 import contactsReducer, { initialState } from "./Contact.reducer";
-import {
-  ADD_CONTACT,
-  CONTACTS_LOADED,
-  DELETE_CONTACT,
-  UPDATE_CONTACT,
-} from "./action.types";
+import { CONTACTS_LOADED, UPDATE_CONTACT } from "./action.types";
 
 // create a context
 export const ContactContext = createContext();
@@ -31,13 +26,14 @@ export const ContactProvider = ({ children }) => {
   );
   const [pageNumber, setPageNumber] = useState(1);
   const [pageCount, setPageCount] = useState(1);
+  const [trigger, setTrigger] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (token) {
       getAllContacts();
     }
-  }, [token, pageNumber]);
+  }, [token, pageNumber, trigger]);
 
   const getAllContacts = async () => {
     try {
@@ -47,7 +43,7 @@ export const ContactProvider = ({ children }) => {
           populate: "*",
           pagination: {
             page: pageNumber,
-            pageSize: 4,
+            pageSize: import.meta.env.VITE_PAGE_SIZE,
           },
         },
         {
@@ -86,11 +82,14 @@ export const ContactProvider = ({ children }) => {
         formData
       );
 
-      const mappingContactData = formateContact(response?.data?.data);
-      dispatch({ type: ADD_CONTACT, payload: mappingContactData });
+      // const mappingContactData = formateContact(response?.data?.data);
+      // dispatch({ type: ADD_CONTACT, payload: mappingContactData });
 
       // show flash message
       toast.success("Contact added successfully");
+
+      // trigger for load contacts
+      setTrigger(!trigger);
 
       // redirect to user
       navigate("/contacts");
@@ -132,10 +131,14 @@ export const ContactProvider = ({ children }) => {
       const response = await axiosPrivateInstance(token).delete(
         `/contacts/${id}`
       );
-      dispatch({ type: DELETE_CONTACT, payload: response?.data?.data?.id });
+
+      // dispatch({ type: DELETE_CONTACT, payload: response?.data?.data?.id });
 
       // show flash message
       toast.success("Contact deleted successfully");
+
+      // trigger for load contacts
+      setTrigger(!trigger);
 
       // redirect to user
       navigate("/contacts");
