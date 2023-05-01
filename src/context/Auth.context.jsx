@@ -18,10 +18,8 @@ export const AuthProvider = ({ children }) => {
       const response = await axiosInstance.post("/auth/local/register", data);
 
       // show success msg
-      toast.success("Please check email and confirm to click the link");
+      toast.success("Confirm your account by clicking the email link");
     } catch (error) {
-      console.log(error?.response?.data?.error, "registerUser error");
-
       toast.error(error?.response?.data?.error?.message);
     }
   };
@@ -45,7 +43,6 @@ export const AuthProvider = ({ children }) => {
       // redirect the user
       navigate(location?.state?.from ? location?.state?.from : "/contacts");
     } catch (error) {
-      console.log(error, "login error");
       toast.error(error?.response?.data?.error?.message);
     }
   };
