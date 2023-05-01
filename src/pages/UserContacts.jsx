@@ -1,13 +1,13 @@
 import React, { useContext, useEffect } from "react";
 import Table from "react-bootstrap/Table";
-import { FaEye, FaTrashAlt } from "react-icons/fa";
+import { FaPen, FaTrashAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { ContactContext } from "../context/Contact.context";
 import { UserContext } from "../context/User.context";
 import Loader from "../ui/Loader";
 
 const UserContacts = () => {
-  const { loaded, userContacts, loadUserProfile } = useContext(UserContext);
+  const { loaded, userContacts } = useContext(UserContext);
   const { deleteContact } = useContext(ContactContext);
 
   const handleDelete = (id) => {
@@ -16,7 +16,6 @@ const UserContacts = () => {
 
   useEffect(() => {
     // console.log(userContacts, "userContacts");
-    loadUserProfile();
   }, []);
 
   return (
@@ -31,6 +30,7 @@ const UserContacts = () => {
                 <th>Last Name</th>
                 <th>Email</th>
                 <th>Profession</th>
+                <th>Gender</th>
                 <th>Edit</th>
                 <th>Delete</th>
               </tr>
@@ -44,9 +44,10 @@ const UserContacts = () => {
                     <td>{contact?.lastName}</td>
                     <td>{contact?.email}</td>
                     <td>{contact?.profession}</td>
+                    <td>{contact?.gender}</td>
                     <td>
                       <Link to={`/edit/contacts/${contact.id}`}>
-                        <FaEye />
+                        <FaPen />
                       </Link>
                     </td>
                     <td>

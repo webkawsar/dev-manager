@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Button, Col, Form, ProgressBar, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
@@ -42,13 +42,8 @@ const Profile = () => {
 
     // }
 
-    console.log(data, "data");
-    // createUserProfile(data);
+    createUserProfile(data);
   };
-
-  useEffect(() => {
-    console.log(userProfile, "userProfile in useEffect");
-  }, [loaded]);
 
   const { firstName, lastName } = userProfile || {
     firstName: "******",
