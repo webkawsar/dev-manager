@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button, Col, Form, ProgressBar, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
@@ -17,8 +17,13 @@ const schema = yup
 
 const Profile = () => {
   const { user, token } = useContext(AuthContext);
-  const { loaded, userProfile, createUserProfile, updateUserProfile } =
-    useContext(UserContext);
+  const {
+    loaded,
+    userProfile,
+    createUserProfile,
+    updateUserProfile,
+    loadUserProfile,
+  } = useContext(UserContext);
 
   const [showUploadSection, setShowUploadSection] = useState(false);
   const [file, setFile] = useState(null);
@@ -33,7 +38,6 @@ const Profile = () => {
     formState: { errors, isSubmitting, isSubmitSuccessful },
   } = useForm({ resolver: yupResolver(schema) });
 
-  // console.log(user, "user");
   const onSubmit = async (data) => {
     // console.log(userProfile, "userProfile in onsubmit");
     // if (userProfile) {
@@ -44,6 +48,10 @@ const Profile = () => {
 
     createUserProfile(data);
   };
+
+  useEffect(() => {
+    loadUserProfile();
+  }, []);
 
   const { firstName, lastName } = userProfile || {
     firstName: "******",

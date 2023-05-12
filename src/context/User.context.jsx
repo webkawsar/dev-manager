@@ -1,5 +1,5 @@
 import qs from "qs";
-import { createContext, useContext, useEffect, useReducer } from "react";
+import { createContext, useContext, useReducer } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { axiosPrivateInstance } from "../config/axios";
@@ -19,10 +19,6 @@ export const UserProvider = ({ children }) => {
 
   const navigate = useNavigate();
   const location = useLocation();
-
-  useEffect(() => {
-    loadUserProfile();
-  }, []);
 
   const createUserProfile = async (data) => {
     const { profilePicture, ...restData } = data;
@@ -53,40 +49,6 @@ export const UserProvider = ({ children }) => {
       console.log(error, "createUserProfile error");
     }
   };
-
-  //   const loadUserProfile = async () => {
-  //     const query = qs.stringify(
-  //       {
-  //         // populate: "*",
-  //         // populate: ["profilePicture", "user"],
-  //         // populate: {
-  //         //   user: {
-  //         //     populate: ["contacts", "profile"],
-  //         //   },
-  //         // },
-  //         populate: ["profilePicture", "user", "user.contacts", "user.profile"],
-  //       },
-  //       {
-  //         encodeValuesOnly: true, // prettify URL
-  //       }
-  //     );
-
-  //     try {
-  //       const response = await axiosPrivateInstance(token).get(
-  //         `/profiles/${profileId}?${query}`
-  //       );
-  //       console.log(response.data.data, "loadUserProfile response");
-
-  //       // const mappedContacts =
-  //       //   response?.data?.data?.attributes?.user?.data?.attributes?.contacts?.data.map(
-  //       //     (contact) => formateContact(contact)
-  //       //   );
-
-  //       // setUserContacts(mappedContacts);
-  //     } catch (error) {
-  //       console.log(error, "loadUserProfile error");
-  //     }
-  //   };
 
   const loadUserProfile = async () => {
     const query = qs.stringify(
@@ -132,6 +94,7 @@ export const UserProvider = ({ children }) => {
     userContacts,
     createUserProfile,
     updateUserProfile,
+    loadUserProfile,
   };
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
