@@ -11,15 +11,15 @@ import "./index.css";
 import App from "./routes/App";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <AuthProvider>
-        <ContactProvider>
-          <UserProvider>
-            <App />
-          </UserProvider>
-        </ContactProvider>
-      </AuthProvider>
-    </BrowserRouter>
-  </React.StrictMode>
+  // <React.StrictMode>
+  <BrowserRouter>
+    <AuthProvider>
+      <ContactProvider>
+        <UserProvider>
+          <App />
+        </UserProvider>
+      </ContactProvider>
+    </AuthProvider>
+  </BrowserRouter>
+  // </React.StrictMode>
 );

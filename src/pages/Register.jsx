@@ -2,16 +2,17 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import React, { useContext } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import { v4 as uuidv4 } from "uuid";
 import * as yup from "yup";
 import { AuthContext } from "../context/Auth.context";
 
 const schema = yup
   .object({
-    username: yup
+    fullName: yup
       .string()
       .trim()
-      .required("Username is required")
-      .min(3, "Username must be at least 3 character"),
+      .required("Full name is required")
+      .min(3, "Full name must be at least 3 character"),
     email: yup
       .string()
       .trim()
@@ -32,7 +33,7 @@ const schema = yup
   .required();
 
 const defaultValues = {
-  username: "webkawsar",
+  fullName: "Kawsar Ahmed",
   email: "web.kawsarahmed@gmail.com",
   password: "123456@Ka",
   confirmPassword: "123456@Ka",
@@ -50,13 +51,14 @@ const Register = () => {
 
   const onSubmit = (data) => {
     registerUser({
-      username: data.username,
+      username: uuidv4(),
+      fullName: data.fullName,
       password: data.password,
       email: data.email,
     });
   };
 
-  const { username, email, password, confirmPassword } = defaultValues;
+  const { fullName, email, password, confirmPassword } = defaultValues;
   return (
     <div>
       <h1 className="text-center mb-3">Register</h1>
@@ -65,18 +67,18 @@ const Register = () => {
         <Col sm="12" md="6" lg="6" xl={{ span: 6, offset: 3 }}>
           <Form onSubmit={handleSubmit(onSubmit)}>
             <Form.Group className="mb-3" controlId="username">
-              <Form.Label>Username</Form.Label>
+              <Form.Label>Full name</Form.Label>
 
               <Form.Control
                 type="text"
-                placeholder="Enter your username"
-                defaultValue={username}
-                {...register("username")}
-                isInvalid={!!errors.username}
+                placeholder="Enter your full name"
+                defaultValue={fullName}
+                {...register("fullName")}
+                isInvalid={!!errors.fullName}
               />
-              {errors?.username?.message && (
+              {errors?.fullName?.message && (
                 <Form.Control.Feedback type="invalid">
-                  {errors?.username?.message}
+                  {errors?.fullName?.message}
                 </Form.Control.Feedback>
               )}
             </Form.Group>

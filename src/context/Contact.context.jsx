@@ -1,3 +1,4 @@
+import qs from "qs";
 import {
   createContext,
   useContext,
@@ -5,52 +6,76 @@ import {
   useReducer,
   useState,
 } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { axiosPrivateInstance } from "../config/axios";
 import { formateContact } from "../utils/formateContact";
-import { DELETE_CONTACT, LOAD_CONTACTS, UPDATE_CONTACT } from "./action.types";
 import { AuthContext } from "./Auth.context";
-import contactsReducer from "./Contact.reducer";
+import contactsReducer, { initialState } from "./Contact.reducer";
+import { CONTACTS_LOADED, UPDATE_CONTACT } from "./action.types";
 
 // create a context
 export const ContactContext = createContext();
 
 // create a provider
 export const ContactProvider = ({ children }) => {
-  const [contacts, dispatch] = useReducer(contactsReducer, []);
-  const [loaded, setLoaded] = useState(false);
-  const navigate = useNavigate();
   const { user, token } = useContext(AuthContext);
+  const [{ loaded, contacts }, dispatch] = useReducer(
+    contactsReducer,
+    initialState
+  );
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageCount, setPageCount] = useState(1);
+  const [trigger, setTrigger] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (token) {
-      loadContacts();
+      getAllContacts();
     }
-  }, [token]);
+  }, [token, pageNumber, trigger]);
 
-  const loadContacts = async () => {
+  const getAllContacts = async () => {
     try {
-      const response = await axiosPrivateInstance(token).get(
-        "/contacts?populate=*"
+      const query = qs.stringify(
+        {
+          sort: ["id:desc"],
+          populate: "*",
+          pagination: {
+            page: pageNumber,
+            pageSize: import.meta.env.VITE_PAGE_SIZE,
+          },
+        },
+        {
+          encodeValuesOnly: true, // prettify URL
+        }
       );
+      const response = await axiosPrivateInstance(token).get(
+        `/contacts?${query}`
+      );
+
       const mappedContacts = response?.data?.data?.map((contact) =>
         formateContact(contact)
       );
 
-      dispatch({ type: LOAD_CONTACTS, payload: mappedContacts });
-      setLoaded(true);
+      dispatch({ type: CONTACTS_LOADED, payload: mappedContacts });
+
+      // set pagination data
+      // console.log(response.data.meta.pagination, "res");
+      setPageNumber(response?.data?.meta?.pagination?.page);
+      setPageCount(response?.data?.meta?.pagination?.pageCount);
     } catch (error) {
-      console.log(error?.response?.data?.error, "loadContacts error");
-      // setLoaded(true);
+      toast.error(`Can't load all contacts`);
     }
   };
 
   const addContact = async (contact) => {
     try {
       const { image, ...restData } = contact;
+
       const formData = new FormData();
-      formData.append("image", image[0], image[0]?.name);
+      formData.append("files.image", image[0], image[0]?.name);
       formData.append("data", JSON.stringify(restData));
 
       const response = await axiosPrivateInstance(token).post(
@@ -58,39 +83,46 @@ export const ContactProvider = ({ children }) => {
         formData
       );
 
-      // dispatch({ type: ADD_CONTACT, payload: response?.data });
+      // const mappingContactData = formateContact(response?.data?.data);
+      // dispatch({ type: ADD_CONTACT, payload: mappingContactData });
 
       // show flash message
       toast.success("Contact added successfully");
 
+      // trigger for load contacts
+      setTrigger(!trigger);
+
       // redirect to user
       navigate("/contacts");
     } catch (error) {
-      console.log(error, "addContact error");
       toast.error(error?.response?.data?.error?.message);
     }
   };
 
   const updateContact = async (updatedContactValue, id) => {
     try {
+      const { image, ...restData } = updatedContactValue;
+
+      const formData = new FormData();
+      if (image.length) {
+        formData.append("files.image", image[0], image[0]?.name);
+      }
+      formData.append("data", JSON.stringify(restData));
+
       const response = await axiosPrivateInstance(token).put(
-        `/contacts/${id}?populate=*`,
-        {
-          data: updatedContactValue,
-        }
+        `/contacts/${id}`,
+        formData
       );
 
-      const updatedContact = formateContact(response?.data?.data);
-
-      dispatch({ type: UPDATE_CONTACT, payload: updatedContact });
+      const mappedData = formateContact(response?.data?.data);
+      dispatch({ type: UPDATE_CONTACT, payload: mappedData });
 
       // show flash message
       toast.success("Contact updated successfully");
 
       // redirect to user
-      navigate(`/contacts/${updatedContact.id}`);
+      navigate(`/contacts/${response?.data?.data?.id}`);
     } catch (error) {
-      console.log(error?.response?.data?.error, "addContact error");
       toast.error(error?.response?.data?.error?.message);
     }
   };
@@ -100,15 +132,22 @@ export const ContactProvider = ({ children }) => {
       const response = await axiosPrivateInstance(token).delete(
         `/contacts/${id}`
       );
-      dispatch({ type: DELETE_CONTACT, payload: response?.data?.data?.id });
+
+      // dispatch({ type: DELETE_CONTACT, payload: response?.data?.data?.id });
 
       // show flash message
-      toast.success("Contact delete successfully");
+      toast.success("Contact deleted successfully");
+
+      // trigger for load contacts
+      setTrigger(!trigger);
 
       // redirect to user
-      navigate("/contacts");
+      if (location.pathname === `/contacts/${id}`) {
+        navigate("/contacts");
+      }
+
+      // console.log(location, "location");
     } catch (error) {
-      console.log(error, "deleteContact error");
       toast.error(error?.response?.data?.error?.message);
     }
   };
@@ -119,6 +158,10 @@ export const ContactProvider = ({ children }) => {
     addContact,
     updateContact,
     deleteContact,
+    pageNumber,
+    setPageNumber,
+    pageCount,
+    setTrigger,
   };
 
   return (

@@ -17,19 +17,14 @@ const schema = yup
 
 const Profile = () => {
   const { user, token } = useContext(AuthContext);
-  const {
-    loaded,
-    userProfile,
-    createUserProfile,
-    loadUserProfile,
-    updateUserProfile,
-  } = useContext(UserContext);
+  const { userProfile, createUserProfile, updateUserProfile, loadUserProfile } =
+    useContext(UserContext);
 
   const [showUploadSection, setShowUploadSection] = useState(false);
   const [file, setFile] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [percentage, setPercentage] = useState(0);
-  const [disabledForm, setDiasbledForm] = useState(true);
+  const [disabledForm, setDisabledForm] = useState(true);
 
   const {
     register,
@@ -38,50 +33,30 @@ const Profile = () => {
     formState: { errors, isSubmitting, isSubmitSuccessful },
   } = useForm({ resolver: yupResolver(schema) });
 
-  // console.log(user, "user");
   const onSubmit = async (data) => {
-    console.log(userProfile, "userProfile in onsubmit");
-    if (userProfile) {
-      updateUserProfile(data);
-    } else {
-      createUserProfile(data);
-    }
+    // console.log(userProfile, "userProfile in onsubmit");
+    // if (userProfile) {
+    //   updateUserProfile(data);
+    // } else {
+
+    // }
+
+    createUserProfile(data);
   };
 
   useEffect(() => {
     loadUserProfile();
-    console.log(userProfile, "userProfile in useEffect");
   }, []);
+
+  const { firstName, lastName } = userProfile || {
+    firstName: "******",
+    lastName: "******",
+  };
 
   return (
     <div>
       <Row>
         <Col xl="12">
-          {/* {userProfile && (
-            <>
-              <Card style={{ width: "30rem" }}>
-                <Card.Img
-                  className="contact_image"
-                  src={userProfile?.profilePicture?.formats?.large?.url}
-                  alt="Profile Picture Image"
-                />
-
-                <ListGroup variant="flush">
-                  <ListGroup.Item>
-                    Username: {userProfile?.user?.username}
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    Name: {userProfile?.firstName} {userProfile?.lastName}
-                  </ListGroup.Item>
-
-                  <ListGroup.Item>
-                    Email: {userProfile?.user?.email}
-                  </ListGroup.Item>
-                </ListGroup>
-              </Card>
-            </>
-          )} */}
-
           {
             <div className="d-flex flex-column justify-content-center">
               {percentage > 0 && (
@@ -95,7 +70,7 @@ const Profile = () => {
               <p style={{ fontSize: "25px" }}>
                 Personal Information{" "}
                 <span
-                  onClick={() => setDiasbledForm(false)}
+                  onClick={() => setDisabledForm(false)}
                   style={{
                     fontSize: "17px",
                     color: "#03A4E0",
@@ -112,7 +87,8 @@ const Profile = () => {
 
               <img
                 style={{
-                  maxWidth: "200px",
+                  width: "200px",
+                  height: "200px",
                   borderRadius: "50%",
                   display: "block",
                 }}
@@ -132,15 +108,12 @@ const Profile = () => {
                   controlId="firstName"
                 >
                   <Form.Label>First name</Form.Label>
+
                   <Form.Control
                     type="text"
                     placeholder="First name"
                     {...register("firstName")}
-                    defaultValue={
-                      userProfile?.firstName
-                        ? userProfile?.firstName
-                        : "*******"
-                    }
+                    defaultValue={firstName}
                     disabled={disabledForm ? true : false}
                   />
 
@@ -162,9 +135,7 @@ const Profile = () => {
                     type="text"
                     placeholder="Last name"
                     {...register("lastName")}
-                    defaultValue={
-                      userProfile?.lastName ? userProfile?.lastName : "*******"
-                    }
+                    defaultValue={lastName}
                     disabled={disabledForm ? true : false}
                   />
 

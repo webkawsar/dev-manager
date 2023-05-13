@@ -10,15 +10,15 @@ const schema = yup
   .object({
     firstName: yup
       .string()
-      .required("First name is Required")
+      .required("First name is required")
       .min(3, "First name at least 3 character"),
     lastName: yup
       .string()
-      .required("Last name is Required")
+      .required("Last name is required")
       .min(3, "Last name at least 3 character"),
     email: yup
       .string()
-      .required("Email is Required")
+      .required("Email is required")
       .email("Must be a valid email"),
     profession: yup
       .string()
@@ -30,27 +30,25 @@ const schema = yup
       .min(10, "Write your BIO at least 10 character")
       .max(100, "BIO must be less than 100 character"),
     gender: yup.mixed().oneOf(["male", "female"]),
-    image: yup.mixed().required("Image is required"),
+    image: yup.mixed().test("required", "Image is required", (value) => {
+      return value && value.length;
+    }),
   })
   .required();
 
-const ContactForm = ({ contact }) => {
-  const { addContact, updateContact } = useContext(ContactContext);
+const defaultValue = {
+  firstName: "Kawsar",
+  lastName: "Ahmed",
+  email: "web.kawsarahmed@gmail.com",
+  profession: "developer",
+  bio: "Hi, This is Kawsar Ahmed",
+  gender: "male",
+  dob: new Date(),
+};
 
-  const defaultValue = {
-    firstName: contact?.firstName || "Kawsar",
-    lastName: contact?.lastName || "Ahmed",
-    email: contact?.email || "web.kawsarahmed@gmail.com",
-    profession: contact?.profession || "developer",
-    bio: contact?.bio || "Hi, This is Kawsar Ahmed",
-    gender: contact?.gender || "male",
-    dob: (contact?.dob && new Date(contact?.dob)) || new Date(),
-  };
-
-  const { firstName, lastName, email, profession, image, bio, gender, dob } =
-    defaultValue;
-
-  const [birthDate, setBirthDate] = useState(dob ? dob : new Date());
+const AddContactForm = () => {
+  const { addContact } = useContext(ContactContext);
+  const [birthDate, setBirthDate] = useState(new Date());
   const {
     register,
     handleSubmit,
@@ -60,44 +58,18 @@ const ContactForm = ({ contact }) => {
   } = useForm({ resolver: yupResolver(schema) });
 
   const onSubmit = (data) => {
-    const id = contact?.id;
-    if (id) {
-      // update contact
-      updateContact(data, id);
-    } else {
-      // console.log(data, "data");
-      // adding contact
-      addContact(data);
-    }
+    addContact(data);
   };
-
-  console.log(errors, "errors");
 
   useEffect(() => {
     setValue("dob", birthDate);
   }, [birthDate]);
 
-  // useEffect(() => {
-  //   if (isSubmitSuccessful) {
-  //     reset({
-  //       firstName: "",
-  //       lastName: "",
-  //       email: "",
-  //       profession: "",
-  //       image: "",
-  //       bio: "",
-  //       gender: "",
-  //     });
-
-  //     setBirthDate(new Date());
-  //   }
-  // }, [isSubmitSuccessful]);
-
+  const { firstName, lastName, email, profession, image, bio, gender, dob } =
+    defaultValue;
   return (
     <div>
-      <h2 className="text-center">
-        {contact?.id ? "Edit Contact" : "Add Contact"}
-      </h2>
+      <h2 className="text-center">Add Contact</h2>
 
       <Form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Row>
@@ -105,16 +77,15 @@ const ContactForm = ({ contact }) => {
             <Form.Label>First name</Form.Label>
             <Form.Control
               type="text"
-              placeholder="First name"
+              placeholder="Enter your first name"
               {...register("firstName")}
               defaultValue={firstName}
+              isInvalid={errors?.firstName?.message}
             />
 
-            {errors?.firstName?.message && (
-              <Form.Text className="text-danger">
-                {errors?.firstName?.message}
-              </Form.Text>
-            )}
+            <Form.Control.Feedback type="invalid">
+              {errors?.firstName?.message}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3" as={Col} md={6} controlId="lastName">
@@ -124,13 +95,12 @@ const ContactForm = ({ contact }) => {
               placeholder="Last name"
               {...register("lastName")}
               defaultValue={lastName}
+              isInvalid={errors?.lastName?.message}
             />
 
-            {errors?.lastName?.message && (
-              <Form.Text className="text-danger">
-                {errors?.lastName?.message}
-              </Form.Text>
-            )}
+            <Form.Control.Feedback type="invalid">
+              {errors?.lastName?.message}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3" as={Col} md={6} controlId="email">
@@ -140,42 +110,47 @@ const ContactForm = ({ contact }) => {
               placeholder="Email address"
               {...register("email")}
               defaultValue={email}
+              isInvalid={errors?.email?.message}
             />
 
-            {errors?.email?.message && (
-              <Form.Text className="text-danger">
-                {errors?.email?.message}
-              </Form.Text>
-            )}
+            <Form.Control.Feedback type="invalid">
+              {errors?.email?.message}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3" as={Col} md={6} controlId="profession">
             <Form.Label>Profession</Form.Label>
 
-            <Form.Select {...register("profession")} defaultValue={profession}>
+            <Form.Select
+              {...register("profession")}
+              defaultValue={profession}
+              isInvalid={errors?.profession?.message}
+            >
               <option value="">Select your profession</option>
               <option value="designer">Designer</option>
               <option value="developer">Developer</option>
               <option value="marketer">Marketer</option>
             </Form.Select>
 
-            {errors?.profession?.message && (
-              <Form.Text className="text-danger">
-                {errors?.profession?.message}
-              </Form.Text>
-            )}
+            <Form.Control.Feedback type="invalid">
+              {errors?.profession?.message}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3" as={Col} md={6} controlId="Image">
             <Form.Label>Image</Form.Label>
 
-            <Form.Control type="file" {...register("image")} accept="image/*" />
+            <Form.Control
+              type="file"
+              {...register("image")}
+              accept="image/*"
+              required
+              isInvalid={errors?.image?.message}
+            />
 
-            {errors?.image?.message && (
-              <Form.Text className="text-danger">
-                {errors?.image?.message}
-              </Form.Text>
-            )}
+            <Form.Control.Feedback type="invalid">
+              {errors?.image?.message}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3" as={Col} md={6} controlId="dob">
@@ -197,53 +172,47 @@ const ContactForm = ({ contact }) => {
               placeholder="Write your bio"
               {...register("bio")}
               defaultValue={bio}
+              isInvalid={errors?.bio?.message}
             />
 
-            {errors?.bio?.message && (
-              <Form.Text className="text-danger">
-                {errors?.bio?.message}
-              </Form.Text>
-            )}
+            <Form.Control.Feedback type="invalid">
+              {errors?.bio?.message}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3" as={Col} md={6} controlId="gender">
+            <Form.Label className="d-block mb-3">Gender</Form.Label>
             <Form.Check
               type="radio"
-              inline
               label="Male"
               id="male"
               value="male"
               {...register("gender")}
               defaultChecked={gender === "male"}
+              isInvalid={errors?.gender?.message}
             />
             <Form.Check
               type="radio"
-              inline
               label="Female"
               id="female"
               value="female"
               {...register("gender")}
               defaultChecked={gender === "female"}
+              isInvalid={errors?.gender?.message}
             />
 
-            {errors?.gender?.message && (
-              <Form.Text className="text-danger">
-                {errors?.gender?.message}
-              </Form.Text>
-            )}
+            <Form.Control.Feedback type="invalid">
+              {errors?.gender?.message}
+            </Form.Control.Feedback>
           </Form.Group>
         </Row>
 
-        <Button
-          variant="primary"
-          type="submit"
-          disabled={isSubmitting ? "disabled" : ""}
-        >
-          {contact?.id ? "Update Contact" : "Add Contact"}
+        <Button variant="primary" type="submit" disabled={isSubmitSuccessful}>
+          Add Contact
         </Button>
       </Form>
     </div>
   );
 };
 
-export default ContactForm;
+export default AddContactForm;

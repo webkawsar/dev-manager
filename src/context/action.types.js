@@ -1,14 +1,8 @@
-
-
-
-export const ADD_CONTACT = 'ADD_CONTACT';
-export const UPDATE_CONTACT = 'UPDATE_CONTACT';
-export const DELETE_CONTACT = 'DELETE_CONTACT';
-export const LOAD_CONTACTS = 'LOAD_CONTACTS';
-
-
-
-
-
-
-
+export const CONTACTS_LOADED = "LOAD_CONTACTS";
+export const ADD_CONTACT = "ADD_CONTACT";
+export const UPDATE_CONTACT = "UPDATE_CONTACT";
+export const DELETE_CONTACT = "DELETE_CONTACT";
+export const USER_LOADED = "USER_LOADED";
+export const ADD_PROFILE = "ADD_PROFILE";
+export const LOAD_USER_PROFILE = "LOAD_USER_PROFILE";
+export const LOAD_USER_CONTACTS = "LOAD_USER_CONTACTS";

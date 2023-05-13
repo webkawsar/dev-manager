@@ -5,6 +5,7 @@ import { FaEye, FaRegTrashAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/Auth.context";
 import { ContactContext } from "../../context/Contact.context";
+import formatImageUrl from "../../utils/formatImageUrl";
 
 const Contact = ({ contact }) => {
   const { deleteContact } = useContext(ContactContext);
@@ -22,13 +23,13 @@ const Contact = ({ contact }) => {
     bio,
     author,
   } = contact;
-  console.log(contact, "contact");
 
   const handleDelete = (id) => {
     deleteContact(id);
   };
 
-  const isOwner = user.id === author?.data?.id;
+  const isOwner = user?.id === author?.data?.id ? author?.data?.id : author?.id;
+  let imageUrl = formatImageUrl(image);
 
   return (
     <>
@@ -36,13 +37,7 @@ const Contact = ({ contact }) => {
         <Card>
           <Row className="g-0">
             <Col md={5}>
-              <Card.Img
-                src={
-                  image?.data?.attributes?.formats?.large?.url
-                    ? image?.data?.attributes?.formats?.large?.url
-                    : image?.data?.attributes?.formats?.thumbnail?.url
-                }
-              />
+              <Card.Img src={imageUrl} className="h-100" />
             </Col>
             <Col md={7}>
               <Card.Body>

@@ -1,91 +1,61 @@
 import qs from "qs";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useReducer } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { axiosPrivateInstance } from "../config/axios";
+import { formateContact } from "../utils/formateContact";
 import { AuthContext } from "./Auth.context";
+import { ContactContext } from "./Contact.context";
+import userReducer, { userInitialState } from "./User.reducer";
+import {
+  ADD_PROFILE,
+  DELETE_CONTACT,
+  LOAD_USER_CONTACTS,
+  LOAD_USER_PROFILE,
+} from "./action.types";
 
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const { token } = useContext(AuthContext);
-
-  const [userContacts, setUserContacts] = useState([]);
-  const [userProfile, setUserProfile] = useState(null);
-  const [loaded, setLoaded] = useState(false);
+  const { setTrigger } = useContext(ContactContext);
+  const [
+    { loadedProfile, loadedContacts, userContacts, userProfile },
+    dispatch,
+  ] = useReducer(userReducer, userInitialState);
 
   const navigate = useNavigate();
   const location = useLocation();
 
-  //   useEffect(() => {
-  //     loadUserContacts;
-  //     console.log("User context called in mounting stage");
-  //   }, []);
-
   const createUserProfile = async (data) => {
     const { profilePicture, ...restData } = data;
+
     const formData = new FormData();
-    formData.append(
-      "profilePicture",
-      profilePicture[0],
-      profilePicture[0]?.name
-    );
+    if (profilePicture.length) {
+      formData.append(
+        "files.profilePicture",
+        profilePicture[0],
+        profilePicture[0]?.name
+      );
+    }
     formData.append("data", JSON.stringify(restData));
 
     try {
       const response = await axiosPrivateInstance(token).post(
         "/profiles",
         formData
-        // {
-        //   onUploadProgress: (progress) => {
-        //     const percentage = uploadPercentage(
-        //       progress.total,
-        //       progress.loaded
-        //     );
-        //     setPercentage(percentage);
-        //   },
-        // }
       );
 
       console.log(response.data, "createUserProfile response");
-      setUserProfile(response?.data);
+
+      const formattedData = formateContact(response?.data?.data);
+      dispatch({ type: ADD_PROFILE, payload: formattedData });
+
+      console.log(formattedData, "formattedData");
     } catch (error) {
       console.log(error, "createUserProfile error");
     }
   };
-
-  //   const loadUserProfile = async () => {
-  //     const query = qs.stringify(
-  //       {
-  //         // populate: "*",
-  //         // populate: ["profilePicture", "user"],
-  //         // populate: {
-  //         //   user: {
-  //         //     populate: ["contacts", "profile"],
-  //         //   },
-  //         // },
-  //         populate: ["profilePicture", "user", "user.contacts", "user.profile"],
-  //       },
-  //       {
-  //         encodeValuesOnly: true, // prettify URL
-  //       }
-  //     );
-
-  //     try {
-  //       const response = await axiosPrivateInstance(token).get(
-  //         `/profiles/${profileId}?${query}`
-  //       );
-  //       console.log(response.data.data, "loadUserProfile response");
-
-  //       // const mappedContacts =
-  //       //   response?.data?.data?.attributes?.user?.data?.attributes?.contacts?.data.map(
-  //       //     (contact) => formateContact(contact)
-  //       //   );
-
-  //       // setUserContacts(mappedContacts);
-  //     } catch (error) {
-  //       console.log(error, "loadUserProfile error");
-  //     }
-  //   };
 
   const loadUserProfile = async () => {
     const query = qs.stringify(
@@ -96,7 +66,6 @@ export const UserProvider = ({ children }) => {
           "contacts.author",
           "contacts.image",
           "profile.profilePicture",
-          "profile.user",
         ],
       },
       {
@@ -108,14 +77,45 @@ export const UserProvider = ({ children }) => {
       const response = await axiosPrivateInstance(token).get(
         `/users/me?${query}`
       );
-      //   console.log(response.data, "loadUserProfile response");
 
-      setUserProfile(response?.data?.profile);
-      setUserContacts(response?.data?.contacts);
-      setLoaded(true);
+      // save data tp reducer state
+      dispatch({
+        type: LOAD_USER_PROFILE,
+        payload: response.data?.profile,
+      });
     } catch (error) {
-      console.log(error?.response?.data?.error, "loadUserProfile error");
-      setLoaded(true);
+      toast.error("loadUserProfile error");
+    }
+  };
+
+  const loadUserContacts = async () => {
+    const query = qs.stringify(
+      {
+        populate: [
+          "contacts",
+          "profile",
+          "contacts.author",
+          "contacts.image",
+          "profile.profilePicture",
+        ],
+      },
+      {
+        encodeValuesOnly: true, // prettify URL
+      }
+    );
+
+    try {
+      const response = await axiosPrivateInstance(token).get(
+        `/users/me?${query}`
+      );
+
+      // save data tp reducer state
+      dispatch({
+        type: LOAD_USER_CONTACTS,
+        payload: response.data?.contacts,
+      });
+    } catch (error) {
+      toast.error("loadUserContacts error");
     }
   };
 
@@ -123,13 +123,33 @@ export const UserProvider = ({ children }) => {
     console.log("Update user profile api call hobe");
   };
 
+  const deleteUserContact = async (id) => {
+    try {
+      await axiosPrivateInstance(token).delete(`/contacts/${id}`);
+
+      // delete from UI
+      dispatch({ type: DELETE_CONTACT, payload: id });
+
+      // show flash message
+      toast.success("Contact deleted successfully");
+
+      // trigger for contacts route UI delete
+      setTrigger((prevState) => !prevState);
+    } catch (error) {
+      toast.error(error?.response?.data?.error?.message);
+    }
+  };
+
   const value = {
-    loaded,
+    loadedProfile,
+    loadedContacts,
     userProfile,
     userContacts,
-    createUserProfile,
     loadUserProfile,
+    loadUserContacts,
+    createUserProfile,
     updateUserProfile,
+    deleteUserContact,
   };
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };

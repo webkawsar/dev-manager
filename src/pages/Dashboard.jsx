@@ -11,7 +11,7 @@ const Dashboard = () => {
       <h1 className="text-center mb-5">Dashboard</h1>
       <Tab.Container id="list-group-tabs-example" defaultActiveKey="#link1">
         <Row>
-          <Col sm={4}>
+          <Col sm={3}>
             <ListGroup>
               <ListGroup.Item action as={NavLink} to="profile">
                 Profile
@@ -25,7 +25,7 @@ const Dashboard = () => {
             </ListGroup>
           </Col>
 
-          <Col sm={8}>
+          <Col sm={9}>
             <Tab.Content>
               <Outlet />
             </Tab.Content>
