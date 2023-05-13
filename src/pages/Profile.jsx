@@ -17,13 +17,8 @@ const schema = yup
 
 const Profile = () => {
   const { user, token } = useContext(AuthContext);
-  const {
-    loaded,
-    userProfile,
-    createUserProfile,
-    updateUserProfile,
-    loadUserProfile,
-  } = useContext(UserContext);
+  const { userProfile, createUserProfile, updateUserProfile, loadUserProfile } =
+    useContext(UserContext);
 
   const [showUploadSection, setShowUploadSection] = useState(false);
   const [file, setFile] = useState(null);

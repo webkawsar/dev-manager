@@ -7,20 +7,21 @@ import { UserContext } from "../context/User.context";
 import Loader from "../ui/Loader";
 
 const UserContacts = () => {
-  const { loaded, userContacts } = useContext(UserContext);
+  const { loadedContacts, loadUserContacts, userContacts, deleteUserContact } =
+    useContext(UserContext);
   const { deleteContact } = useContext(ContactContext);
 
   const handleDelete = (id) => {
-    deleteContact(id);
+    deleteUserContact(id);
   };
 
   useEffect(() => {
-    // console.log(userContacts, "userContacts");
+    loadUserContacts();
   }, []);
 
   return (
     <div>
-      {loaded ? (
+      {loadedContacts ? (
         userContacts.length ? (
           <Table striped bordered hover>
             <thead>

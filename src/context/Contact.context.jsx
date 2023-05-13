@@ -6,7 +6,7 @@ import {
   useReducer,
   useState,
 } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { axiosPrivateInstance } from "../config/axios";
 import { formateContact } from "../utils/formateContact";
@@ -28,6 +28,7 @@ export const ContactProvider = ({ children }) => {
   const [pageCount, setPageCount] = useState(1);
   const [trigger, setTrigger] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (token) {
@@ -141,7 +142,11 @@ export const ContactProvider = ({ children }) => {
       setTrigger(!trigger);
 
       // redirect to user
-      navigate("/contacts");
+      if (location.pathname === `/contacts/${id}`) {
+        navigate("/contacts");
+      }
+
+      // console.log(location, "location");
     } catch (error) {
       toast.error(error?.response?.data?.error?.message);
     }
@@ -156,6 +161,7 @@ export const ContactProvider = ({ children }) => {
     pageNumber,
     setPageNumber,
     pageCount,
+    setTrigger,
   };
 
   return (
