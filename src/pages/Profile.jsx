@@ -6,6 +6,7 @@ import * as yup from "yup";
 import avatarImg from "../assets/avatar-img.jpg";
 import { AuthContext } from "../context/Auth.context";
 import { UserContext } from "../context/User.context";
+import formatImageUrl from "../utils/formatImageUrl";
 
 const schema = yup
   .object({
@@ -17,8 +18,13 @@ const schema = yup
 
 const Profile = () => {
   const { user, token } = useContext(AuthContext);
-  const { userProfile, createUserProfile, updateUserProfile, loadUserProfile } =
-    useContext(UserContext);
+  const {
+    isProfileLoaded,
+    userProfile,
+    createUserProfile,
+    updateUserProfile,
+    loadUserProfile,
+  } = useContext(UserContext);
 
   const [showUploadSection, setShowUploadSection] = useState(false);
   const [file, setFile] = useState(null);
@@ -34,14 +40,11 @@ const Profile = () => {
   } = useForm({ resolver: yupResolver(schema) });
 
   const onSubmit = async (data) => {
-    // console.log(userProfile, "userProfile in onsubmit");
-    // if (userProfile) {
-    //   updateUserProfile(data);
-    // } else {
-
-    // }
-
-    createUserProfile(data);
+    if (isProfileLoaded) {
+      updateUserProfile(userProfile?.id, data);
+    } else {
+      createUserProfile(data);
+    }
   };
 
   useEffect(() => {
@@ -93,8 +96,8 @@ const Profile = () => {
                   display: "block",
                 }}
                 src={
-                  userProfile?.profilePicture?.formats?.large?.url
-                    ? userProfile?.profilePicture?.formats?.large?.url
+                  formatImageUrl(userProfile.profilePicture)
+                    ? formatImageUrl(userProfile.profilePicture)
                     : avatarImg
                 }
                 alt="Profile Avatar Image"

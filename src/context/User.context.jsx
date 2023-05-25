@@ -20,12 +20,43 @@ export const UserProvider = ({ children }) => {
   const { token } = useContext(AuthContext);
   const { setTrigger } = useContext(ContactContext);
   const [
-    { loadedProfile, loadedContacts, userContacts, userProfile },
+    { isProfileLoaded, userProfile, loadedContacts, userContacts },
     dispatch,
   ] = useReducer(userReducer, userInitialState);
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  const loadUserProfile = async () => {
+    const query = qs.stringify(
+      {
+        populate: [
+          "contacts",
+          "profile",
+          "contacts.author",
+          "contacts.image",
+          "profile.profilePicture",
+        ],
+      },
+      {
+        encodeValuesOnly: true, // prettify URL
+      }
+    );
+
+    try {
+      const response = await axiosPrivateInstance(token).get(
+        `/users/me?${query}`
+      );
+
+      // save data tp reducer state
+      dispatch({
+        type: LOAD_USER_PROFILE,
+        payload: response.data?.profile,
+      });
+    } catch (error) {
+      toast.error("Profile Load Error");
+    }
+  };
 
   const createUserProfile = async (data) => {
     const { profilePicture, ...restData } = data;
@@ -57,37 +88,6 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  const loadUserProfile = async () => {
-    const query = qs.stringify(
-      {
-        populate: [
-          "contacts",
-          "profile",
-          "contacts.author",
-          "contacts.image",
-          "profile.profilePicture",
-        ],
-      },
-      {
-        encodeValuesOnly: true, // prettify URL
-      }
-    );
-
-    try {
-      const response = await axiosPrivateInstance(token).get(
-        `/users/me?${query}`
-      );
-
-      // save data tp reducer state
-      dispatch({
-        type: LOAD_USER_PROFILE,
-        payload: response.data?.profile,
-      });
-    } catch (error) {
-      toast.error("loadUserProfile error");
-    }
-  };
-
   const loadUserContacts = async () => {
     const query = qs.stringify(
       {
@@ -109,18 +109,53 @@ export const UserProvider = ({ children }) => {
         `/users/me?${query}`
       );
 
+      console.log(response.data?.contacts, "response.data?.contacts");
+
       // save data tp reducer state
       dispatch({
         type: LOAD_USER_CONTACTS,
         payload: response.data?.contacts,
       });
     } catch (error) {
-      toast.error("loadUserContacts error");
+      toast.error("User Contacts Load Error");
     }
   };
 
-  const updateUserProfile = (data) => {
-    console.log("Update user profile api call hobe");
+  const updateUserProfile = async (id, data) => {
+    const { profilePicture, ...restData } = data;
+
+    const query = qs.stringify(
+      {
+        populate: "*",
+      },
+      {
+        encodeValuesOnly: true, // prettify URL
+      }
+    );
+
+    const formData = new FormData();
+    if (profilePicture.length) {
+      formData.append(
+        "files.profilePicture",
+        profilePicture[0],
+        profilePicture[0]?.name
+      );
+    }
+    formData.append("data", JSON.stringify(restData));
+
+    try {
+      const response = await axiosPrivateInstance(token).put(
+        `/profiles/${id}?${query}`,
+        formData
+      );
+
+      const formattedData = formateContact(response?.data?.data);
+      console.log(formattedData, "formattedData");
+
+      // dispatch({ type: UPDATE_PROFILE, payload: formattedData });
+    } catch (error) {
+      console.log(error, "Profile Update Error");
+    }
   };
 
   const deleteUserContact = async (id) => {
@@ -141,9 +176,9 @@ export const UserProvider = ({ children }) => {
   };
 
   const value = {
-    loadedProfile,
-    loadedContacts,
+    isProfileLoaded,
     userProfile,
+    loadedContacts,
     userContacts,
     loadUserProfile,
     loadUserContacts,

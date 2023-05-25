@@ -6,10 +6,10 @@ import {
 } from "./action.types";
 
 export const userInitialState = {
-  loadedProfile: false,
-  loadedContacts: false,
-  userContacts: [],
+  isProfileLoaded: false,
   userProfile: {},
+  isLoadedContacts: false,
+  userContacts: [],
 };
 
 const userReducer = (state, action) => {
@@ -19,7 +19,7 @@ const userReducer = (state, action) => {
     case LOAD_USER_PROFILE:
       return {
         ...state,
-        loadedProfile: true,
+        isProfileLoaded: true,
         userProfile: payload,
       };
 
