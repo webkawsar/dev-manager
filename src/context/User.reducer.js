@@ -3,6 +3,7 @@ import {
   DELETE_CONTACT,
   LOAD_USER_CONTACTS,
   LOAD_USER_PROFILE,
+  UPDATE_PROFILE,
 } from "./action.types";
 
 export const userInitialState = {
@@ -18,8 +19,8 @@ const userReducer = (state, action) => {
   switch (type) {
     case LOAD_USER_PROFILE:
       return {
-        ...state,
-        isProfileLoaded: true,
+        ...state, 
+        isProfileLoaded: payload ? true : false,
         userProfile: payload,
       };
 
@@ -33,8 +34,15 @@ const userReducer = (state, action) => {
     case ADD_PROFILE:
       return {
         ...state,
+        isProfileLoaded: true,
         userProfile: payload,
       };
+
+    case UPDATE_PROFILE:
+      return {
+        ...state,
+        userProfile: payload
+      }
 
     case DELETE_CONTACT:
       const filteredContacts = state.userContacts.filter(

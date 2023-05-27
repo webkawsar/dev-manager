@@ -51,6 +51,14 @@ const Profile = () => {
     loadUserProfile();
   }, []);
 
+
+
+  // console.log(errors, 'errors')
+  // console.log(isSubmitting, 'isSubmitting')
+  // console.log(isSubmitSuccessful, 'isSubmitSuccessful')
+  // console.log(isProfileLoaded, 'isProfileLoaded')
+  // console.log(userProfile, 'userProfile')
+
   const { firstName, lastName } = userProfile || {
     firstName: "******",
     lastName: "******",
@@ -96,8 +104,8 @@ const Profile = () => {
                   display: "block",
                 }}
                 src={
-                  formatImageUrl(userProfile.profilePicture)
-                    ? formatImageUrl(userProfile.profilePicture)
+                  formatImageUrl(userProfile?.profilePicture)
+                    ? formatImageUrl(userProfile?.profilePicture)
                     : avatarImg
                 }
                 alt="Profile Avatar Image"

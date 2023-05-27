@@ -12,6 +12,7 @@ import {
   DELETE_CONTACT,
   LOAD_USER_CONTACTS,
   LOAD_USER_PROFILE,
+  UPDATE_PROFILE,
 } from "./action.types";
 
 export const UserContext = createContext();
@@ -53,6 +54,7 @@ export const UserProvider = ({ children }) => {
         type: LOAD_USER_PROFILE,
         payload: response.data?.profile,
       });
+      
     } catch (error) {
       toast.error("Profile Load Error");
     }
@@ -77,14 +79,12 @@ export const UserProvider = ({ children }) => {
         formData
       );
 
-      console.log(response.data, "createUserProfile response");
-
       const formattedData = formateContact(response?.data?.data);
       dispatch({ type: ADD_PROFILE, payload: formattedData });
-
-      console.log(formattedData, "formattedData");
+      toast.success('Profile create successfully');
+      
     } catch (error) {
-      console.log(error, "createUserProfile error");
+      toast.error('Profile Create Error')
     }
   };
 
@@ -108,8 +108,6 @@ export const UserProvider = ({ children }) => {
       const response = await axiosPrivateInstance(token).get(
         `/users/me?${query}`
       );
-
-      console.log(response.data?.contacts, "response.data?.contacts");
 
       // save data tp reducer state
       dispatch({
@@ -150,11 +148,11 @@ export const UserProvider = ({ children }) => {
       );
 
       const formattedData = formateContact(response?.data?.data);
-      console.log(formattedData, "formattedData");
+      dispatch({ type: UPDATE_PROFILE, payload: formattedData });
+      toast.success('Profile update successfully');
 
-      // dispatch({ type: UPDATE_PROFILE, payload: formattedData });
     } catch (error) {
-      console.log(error, "Profile Update Error");
+      toast.error('Profile Update Error')
     }
   };
 

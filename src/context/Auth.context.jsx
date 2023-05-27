@@ -89,7 +89,6 @@ export const AuthProvider = ({ children }) => {
       // redirect the user to profile
       navigate("/dashboard/profile");
     } catch (error) {
-      console.log(error?.response?.data?.error, "change password error");
       toast.error(error?.response?.data?.error?.message);
     }
   };
