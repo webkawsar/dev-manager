@@ -1,22 +1,17 @@
-import React, { useContext } from 'react';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { Navigate, useLocation } from 'react-router-dom';
-import { AuthContext } from '../context/Auth.context';
-
-
-
-
 
 
 
 const PrivateRoute = ({children}) => {
-    
     const location = useLocation();
-    const {user} = useContext(AuthContext);
+    const { user } = useSelector(state => state.auth);
     const loadedComponent = user ? children : <Navigate to='/login' state={{from: location.pathname}} />
 
     return (
         <>
-            {loadedComponent}
+            { loadedComponent }
         </>
     );
 };

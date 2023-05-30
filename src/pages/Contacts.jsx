@@ -1,8 +1,10 @@
-import React, { useContext, useEffect } from "react";
-import { Card, Col, Pagination, Row } from "react-bootstrap";
+import React from "react";
+import { Card, Col, Row } from "react-bootstrap";
+import { toast } from "react-toastify";
 import Contact from "../components/contacts/Contact";
-import { ContactContext } from "../context/Contact.context";
+import { useGetContactsQuery } from "../features/contacts/contactsAPI";
 import ContactsLoader from "../ui/ContactsLoader";
+
 
 const generateArr = (num) => {
   const nums = [];
@@ -13,21 +15,25 @@ const generateArr = (num) => {
 };
 
 const Contacts = () => {
-  const { loaded, contacts, pageNumber, setPageNumber, pageCount } =
-    useContext(ContactContext);
+  const {data: contacts, isLoading, isSuccess, isError, error} = useGetContactsQuery();
+  
+  // const { loaded, contacts, pageNumber, setPageNumber, pageCount } =
+  //   useContext(ContactContext);
 
-  const paginationArr = generateArr(pageCount);
-  const isPageOutOfBound = pageNumber > pageCount;
+  // const paginationArr = generateArr(pageCount);
+  // const isPageOutOfBound = pageNumber > pageCount;
 
-  useEffect(() => {
-    if (isPageOutOfBound) {
-      setPageNumber(pageNumber - 1);
-    }
-  }, [isPageOutOfBound]);
+  // useEffect(() => {
+  //   if (isPageOutOfBound) {
+  //     setPageNumber(pageNumber - 1);
+  //   }
+  // }, [isPageOutOfBound]);
 
+
+  
   // decide what to render
   let content = null;
-  if (!loaded) {
+  if (isLoading) {
     content = (
       <>
         <ContactsLoader />
@@ -38,7 +44,7 @@ const Contacts = () => {
     );
   }
 
-  if (loaded && contacts.length === 0) {
+  if (isSuccess && contacts.length === 0) {
     content = (
       <Col sm>
         <Card body className="text-center">
@@ -47,10 +53,17 @@ const Contacts = () => {
       </Col>
     );
   }
-  if (loaded && contacts.length) {
+  
+  if (isSuccess && contacts.length) {
+    console.log(contacts, 'contacts')
+    
     content = contacts.map((contact) => (
       <Contact key={contact.id} contact={contact} />
     ));
+  }
+
+  if(isError) {
+    toast.error(error.message);
   }
 
   return (
@@ -58,7 +71,7 @@ const Contacts = () => {
       <h2 className="text-center mb-5">All Contacts</h2>
       <Row className="g-3">{content}</Row>
       <div className="mt-5">
-        <Pagination className="justify-content-center">
+        {/* <Pagination className="justify-content-center">
           {paginationArr.map((count) => {
             return (
               <Pagination.Item
@@ -70,7 +83,7 @@ const Contacts = () => {
               </Pagination.Item>
             );
           })}
-        </Pagination>
+        </Pagination> */}
       </div>
     </>
   );

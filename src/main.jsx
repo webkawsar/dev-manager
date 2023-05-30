@@ -2,8 +2,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.min.css";
+import { store } from "./app/store";
 import { AuthProvider } from "./context/Auth.context";
 import { ContactProvider } from "./context/Contact.context";
 import { UserProvider } from "./context/User.context";
@@ -16,7 +18,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <AuthProvider>
       <ContactProvider>
         <UserProvider>
-          <App />
+          <Provider store={store}>
+            <App />
+          </Provider>
         </UserProvider>
       </ContactProvider>
     </AuthProvider>

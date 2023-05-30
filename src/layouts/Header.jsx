@@ -1,13 +1,31 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Button, Container, Form, Nav, Navbar } from 'react-bootstrap';
-import { Link, NavLink } from 'react-router-dom';
-import { AuthContext } from '../context/Auth.context';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { userLoggedOut } from '../features/auth/authSlice';
 
 
 
 const Header = () => {
+    const { user } = useSelector(state => state.auth);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-    const {user, logout} = useContext(AuthContext);
+    const logout = () => {
+        
+        // remove redux state data
+        dispatch(userLoggedOut());
+
+        // clear local storage data
+        localStorage.clear();
+
+        // show logout msg
+        toast.success("Logout successful");
+
+        // redirect to the user
+        navigate("/login");
+    }
     
     return (
         <>

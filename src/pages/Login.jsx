@@ -1,10 +1,11 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import React, { useContext } from "react";
+import React, { useEffect } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import * as yup from "yup";
-import { AuthContext } from "../context/Auth.context";
+import { useLoginMutation } from "../features/auth/authAPI";
 
 const defaultValues = {
   email: "web.kawsarahmed@gmail.com",
@@ -19,22 +20,40 @@ const schema = yup
   .required();
 
 const Login = () => {
-  const { login } = useContext(AuthContext);
+  const [login, {data, isLoading, isSuccess, isError, error}] = useLoginMutation();
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
   });
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const onSubmit = (data) => {
-    // login user
     login({
       identifier: data.email,
       password: data.password,
     });
   };
+
+  useEffect(() => {
+
+    if(isError) {
+      // show error message
+      toast.error(error?.data?.error?.message ?? 'Something went wrong!');
+    }
+
+    if(isSuccess) {
+      // show success message
+      toast.success("Login successful");
+
+      // redirect the user
+      navigate(location?.state?.from ? location?.state?.from : "/contacts");
+    }
+
+  }, [isError, isSuccess])
 
   const { email, password } = defaultValues;
   return (
@@ -85,7 +104,7 @@ const Login = () => {
             <Button
               variant="primary"
               type="submit"
-              disabled={isSubmitting ? true : false}
+              disabled={isLoading}
             >
               Log In
             </Button>

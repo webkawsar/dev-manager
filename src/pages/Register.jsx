@@ -1,10 +1,11 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import React, { useContext } from "react";
+import React, { useEffect } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 import * as yup from "yup";
-import { AuthContext } from "../context/Auth.context";
+import { useRegisterMutation } from "../features/auth/authAPI";
 
 const schema = yup
   .object({
@@ -40,7 +41,8 @@ const defaultValues = {
 };
 
 const Register = () => {
-  const { registerUser } = useContext(AuthContext);
+  const [registerUser, { isLoading, isSuccess, isError, error }] =
+    useRegisterMutation();
   const {
     register,
     handleSubmit,
@@ -57,6 +59,19 @@ const Register = () => {
       email: data.email,
     });
   };
+
+  useEffect(() => {
+    
+    if (isError) {
+      // show error message
+      toast.error(error?.data?.error?.message ?? 'Something went wrong!');
+    }
+
+    if (isSuccess) {
+      // show success msg
+      toast.success("Confirm your account by clicking the email link");
+    }
+  }, [isError, isSuccess]);
 
   const { fullName, email, password, confirmPassword } = defaultValues;
   return (
@@ -135,11 +150,7 @@ const Register = () => {
               )}
             </Form.Group>
 
-            <Button
-              variant="primary"
-              type="submit"
-              disabled={isSubmitting ? true : false}
-            >
+            <Button variant="primary" type="submit" disabled={isLoading}>
               Submit
             </Button>
           </Form>

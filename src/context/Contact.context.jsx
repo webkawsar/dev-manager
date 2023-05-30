@@ -32,7 +32,7 @@ export const ContactProvider = ({ children }) => {
 
   useEffect(() => {
     if (token) {
-      getAllContacts();
+      // getAllContacts();
     }
   }, [token, pageNumber, trigger]);
 
