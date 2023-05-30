@@ -31,8 +31,7 @@ export const authAPI = apiSlice.injectEndpoints({
             );
 
             // set data to local storage
-            localStorage.setItem("user", JSON.stringify(user));
-            localStorage.setItem("token", JSON.stringify(jwt));
+            localStorage.setItem("auth", JSON.stringify({ token: jwt, user }));
             
           } catch (error) {
             // do nothing

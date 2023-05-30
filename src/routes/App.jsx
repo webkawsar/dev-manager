@@ -3,6 +3,7 @@ import { Container } from "react-bootstrap";
 import { Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "../App.css";
+import useAuthCheck from "../hooks/useAuthCheck";
 import Header from "../layouts/Header";
 import AddContact from "../pages/AddContact";
 import ContactDetails from "../pages/ContactDetails";
@@ -36,8 +37,12 @@ import PublicRoute from "./PublicRoute";
 // search functionality
 
 const App = () => {
-  return (
-    <>
+  const authChecked = useAuthCheck();
+
+  return !authChecked ? (
+    <div>Checking authentication....</div>
+  ) : (
+    <div>
       <ToastContainer
         position="top-right"
         autoClose={2000}
@@ -127,7 +132,7 @@ const App = () => {
           <Route path="*" element={<NotFound />}></Route>
         </Routes>
       </Container>
-    </>
+    </div>
   );
 };
 
