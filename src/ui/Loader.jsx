@@ -1,13 +1,14 @@
 import React from "react";
-import { Spinner } from "react-bootstrap";
+import { HashLoader } from "react-spinners";
 
-const Loader = () => {
+const Loader = ({ color='#36d7b7', loading=true, size=50, speed=1 }) => {
   return (
     <>
-      <Spinner
-        className="d-block mx-auto my-auto mt-3"
-        animation="grow"
-        size="xxl"
+      <HashLoader
+        color={color}
+        loading={loading}
+        size={size}
+        speedMultiplier={speed}
       />
     </>
   );
