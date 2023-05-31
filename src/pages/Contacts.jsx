@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import Contact from "../components/contacts/Contact";
 import { useGetContactsQuery } from "../features/contacts/contactsAPI";
 import ContactsLoader from "../ui/ContactsLoader";
-
+import { formateContact } from "../utils/formateContact";
 
 const generateArr = (num) => {
   const nums = [];
@@ -15,8 +15,8 @@ const generateArr = (num) => {
 };
 
 const Contacts = () => {
-  const {data: contacts, isLoading, isSuccess, isError, error} = useGetContactsQuery();
-  
+  const { data, isLoading, isSuccess, isError, error } = useGetContactsQuery();
+
   // const { loaded, contacts, pageNumber, setPageNumber, pageCount } =
   //   useContext(ContactContext);
 
@@ -29,8 +29,6 @@ const Contacts = () => {
   //   }
   // }, [isPageOutOfBound]);
 
-
-  
   // decide what to render
   let content = null;
   if (isLoading) {
@@ -44,7 +42,7 @@ const Contacts = () => {
     );
   }
 
-  if (isSuccess && contacts.length === 0) {
+  if (isSuccess && data?.data.length === 0) {
     content = (
       <Col sm>
         <Card body className="text-center">
@@ -53,17 +51,15 @@ const Contacts = () => {
       </Col>
     );
   }
-  
-  if (isSuccess && contacts.length) {
-    console.log(contacts, 'contacts')
-    
-    content = contacts.map((contact) => (
-      <Contact key={contact.id} contact={contact} />
+
+  if (isSuccess && data?.data?.length) {
+    content = data.data.map((contact) => (
+      <Contact key={contact.id} contact={formateContact(contact)} />
     ));
   }
 
-  if(isError) {
-    toast.error(error.message);
+  if (isError) {
+    toast.error(error?.data?.message);
   }
 
   return (

@@ -22,6 +22,21 @@ export const contactsAPI = apiSlice.injectEndpoints({
                     
                     return `/contacts?${query}`
                 }
+            }),
+            addContact: builder.mutation({
+              query: (contact) => {
+
+                const { image, ...restData } = contact;
+                const formData = new FormData();
+                formData.append("files.image", image[0], image[0]?.name);
+                formData.append("data", JSON.stringify(restData));
+          
+                return {
+                  url: `/contacts`,
+                  method: 'POST',
+                  body: formData
+                }
+              }
             })
         }
     }
@@ -127,5 +142,6 @@ export const contactsAPI = apiSlice.injectEndpoints({
 // });
 
 export const {
-  useGetContactsQuery
+  useGetContactsQuery,
+  useAddContactMutation
 } = contactsAPI;

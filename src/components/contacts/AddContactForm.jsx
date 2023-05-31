@@ -1,10 +1,12 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import ReactDatePicker from "react-datepicker";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import * as yup from "yup";
-import { ContactContext } from "../../context/Contact.context";
+import { useAddContactMutation } from "../../features/contacts/contactsAPI";
 
 const schema = yup
   .object({
@@ -47,14 +49,15 @@ const defaultValue = {
 };
 
 const AddContactForm = () => {
-  const { addContact } = useContext(ContactContext);
+  const [addContact, { data, isLoading, isSuccess, isError, error }] =
+    useAddContactMutation();
   const [birthDate, setBirthDate] = useState(new Date());
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     setValue,
-    reset,
-    formState: { errors, isSubmitting, isSubmitSuccessful },
+    formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
 
   const onSubmit = (data) => {
@@ -64,6 +67,20 @@ const AddContactForm = () => {
   useEffect(() => {
     setValue("dob", birthDate);
   }, [birthDate]);
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(error?.data?.message);
+    }
+
+    if (isSuccess) {
+      // show flash message
+      toast.success("Contact added successfully");
+
+      // redirect to the user
+      navigate("/contacts");
+    }
+  }, [isError, isSuccess]);
 
   const { firstName, lastName, email, profession, image, bio, gender, dob } =
     defaultValue;
@@ -207,7 +224,7 @@ const AddContactForm = () => {
           </Form.Group>
         </Row>
 
-        <Button variant="primary" type="submit" disabled={isSubmitSuccessful}>
+        <Button variant="primary" type="submit" disabled={isLoading}>
           Add Contact
         </Button>
       </Form>
