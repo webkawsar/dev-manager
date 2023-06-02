@@ -1,56 +1,51 @@
-import React, { useContext, useEffect, useState } from "react";
+import React from "react";
 import { Button, Card, Col, ListGroup, Row } from "react-bootstrap";
 import { FaPencilAlt, FaRegTrashAlt } from "react-icons/fa";
+import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import { AuthContext } from "../context/Auth.context";
-import { ContactContext } from "../context/Contact.context";
+import { useGetContactQuery } from "../features/contacts/contactsAPI";
 import ContactLoader from "../ui/ContactLoader";
 import formatImageUrl from "../utils/formatImageUrl";
+import { formateContact } from "../utils/formateContact";
 
 const ContactDetails = () => {
-  const { loaded, contacts, deleteContact } = useContext(ContactContext);
-  const { user } = useContext(AuthContext);
   const { contactId } = useParams();
-  const [contact, setContact] = useState({});
-
-  useEffect(() => {
-    if (contactId && loaded) {
-      const foundContact = contacts.find(
-        (contact) => contact.id === Number(contactId)
-      );
-      if (contactId && foundContact) {
-        setContact(foundContact);
-      }
-    }
-  }, [contactId, loaded]);
+  const { data, isLoading, isSuccess, isError, error } =
+    useGetContactQuery(contactId);
+  const { user } = useSelector((state) => state.auth);
 
   const handleDelete = (id) => {
     deleteContact(id);
   };
 
-  const {
-    id,
-    firstName,
-    lastName,
-    email,
-    profession,
-    gender,
-    bio,
-    dob,
-    author,
-    image,
-  } = contact;
-  const isOwner = user?.id === author?.data?.id ? author?.data?.id : author?.id;
-
   // decide what to render
   let content = null;
-  if (!loaded) content = <ContactLoader />;
-  if (loaded && Object.keys(contact).length === 0) {
+  if (isLoading) {
+    content = <ContactLoader />;
+  }
+
+  if (isSuccess && Object.keys(data).length === 0) {
     content = (
       <h2 style={{ color: "red", textAlign: "center" }}>No Contact to Show</h2>
     );
   }
-  if (loaded && Object.keys(contact).length) {
+
+  if (isSuccess && Object.keys(data).length) {
+    const {
+      id,
+      firstName,
+      lastName,
+      email,
+      profession,
+      gender,
+      bio,
+      dob,
+      author,
+      image,
+    } = formateContact(data?.data);
+    const isOwner =
+      user?.id === author?.data?.id ? author?.data?.id : author?.id;
+
     const imageUrl = formatImageUrl(image);
 
     content = (
