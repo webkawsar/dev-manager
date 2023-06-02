@@ -1,10 +1,12 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import ReactDatePicker from "react-datepicker";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import * as yup from "yup";
-import { ContactContext } from "../../context/Contact.context";
+import { useUpdateContactMutation } from "../../features/contacts/contactsAPI";
 
 const schema = yup
   .object({
@@ -35,8 +37,8 @@ const schema = yup
   .required();
 
 const EditContactForm = ({ contact }) => {
-  const { addContact, updateContact } = useContext(ContactContext);
-
+  const [ updateContact, { data, isLoading, isSuccess, isError, error }] = useUpdateContactMutation();
+  const navigate = useNavigate();
   const defaultValue = {
     firstName: contact?.firstName,
     lastName: contact?.lastName,
@@ -56,16 +58,32 @@ const EditContactForm = ({ contact }) => {
     handleSubmit,
     setValue,
     reset,
-    formState: { errors, isSubmitting, isSubmitSuccessful },
+    formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
 
   const onSubmit = (data) => {
-    updateContact({ ...data, imageId: contact?.image?.data?.id }, contact?.id);
+    updateContact({ ...data, contactId: contact?.id });
   };
 
   useEffect(() => {
     setValue("dob", birthDate);
   }, [birthDate]);
+
+  useEffect(() => {
+    
+    if (isError) {
+      toast.error(error?.data?.message);
+    }
+
+    if (isSuccess) {
+      // show flash message
+      toast.success("Contact updated successfully");
+
+      console.log(data, 'data')
+      // redirect to the user
+      navigate(`/contacts/${data?.data?.id}`);
+    }
+  }, [isError, isSuccess]);
 
   return (
     <div>
@@ -207,7 +225,7 @@ const EditContactForm = ({ contact }) => {
           </Form.Group>
         </Row>
 
-        <Button variant="primary" type="submit" disabled={isSubmitSuccessful}>
+        <Button variant="primary" type="submit" disabled={isLoading}>
           Update Contact
         </Button>
       </Form>

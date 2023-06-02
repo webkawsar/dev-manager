@@ -54,11 +54,21 @@ export const contactsAPI = apiSlice.injectEndpoints({
               query: (contactId) => `/contacts/${contactId}?populate=*`
             }),
             updateContact: builder.mutation({
-              query: ({ contactId, data }) => ({
-                url: `/contacts/${contactId}`,
-                method: 'PUT',
-                body: data
-              })
+              query: (data) => {
+
+                const { image, contactId, ...restData } = data;
+                const formData = new FormData();
+                if (image.length) {
+                  formData.append("files.image", image[0], image[0]?.name);
+                }
+                formData.append("data", JSON.stringify(restData));
+          
+                return {
+                  url: `/contacts/${contactId}`,
+                  method: 'PUT',
+                  body: formData
+                }
+              }
             })
         }
     }

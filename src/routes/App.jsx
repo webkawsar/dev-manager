@@ -43,7 +43,7 @@ const App = () => {
   return !authChecked ? (
     <>
       <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
-        <Loader size="150" speed={2} />
+        <Loader size={150} speed={2} />
       </div>
     </>
   ) : (
