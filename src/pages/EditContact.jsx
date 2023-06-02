@@ -1,37 +1,26 @@
-import React, { useContext, useEffect, useState } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
 import EditContactForm from "../components/contacts/EditContactForm";
-import { ContactContext } from "../context/Contact.context";
+import { useGetContactQuery } from "../features/contacts/contactsAPI";
 import EditContactLoader from "../ui/EditContactLoader";
+import { formateContact } from "../utils/formateContact";
 
 const EditContact = () => {
-  const { loaded, contacts } = useContext(ContactContext);
   const { contactId } = useParams();
-  const [contact, setContact] = useState({});
-
-  useEffect(() => {
-    if (loaded) {
-      const foundContact = contacts.find(
-        (contact) => contact.id === +contactId
-      );
-      if (contactId && foundContact) {
-        setContact(foundContact);
-      }
-    }
-  }, [loaded]);
+  const { data: contact, isLoading, isSuccess, isError, error } = useGetContactQuery(contactId);
 
   // decide what to render
   let content = null;
-  if (!loaded) content = <EditContactLoader />;
-  if (loaded && Object.keys(contact).length === 0) {
+  if (isLoading) content = <EditContactLoader />;
+  if (isSuccess && Object.keys(contact?.data).length === 0 || isError) {
     content = (
-      <h2 style={{ color: "red", textAlign: "center" }}>
+      <h2 style={{ color: "red", textAlign: "center", marginTop: '100px'}}>
         Contact not found to edit data
       </h2>
     );
   }
-  if (loaded && Object.keys(contact).length) {
-    content = <EditContactForm contact={contact} />;
+  if (isSuccess && Object.keys(contact?.data).length) {
+    content = <EditContactForm contact={formateContact(contact?.data)} />;
   }
 
   return <div>{content}</div>;

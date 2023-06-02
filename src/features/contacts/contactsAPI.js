@@ -52,6 +52,13 @@ export const contactsAPI = apiSlice.injectEndpoints({
             }),
             getContact: builder.query({
               query: (contactId) => `/contacts/${contactId}?populate=*`
+            }),
+            updateContact: builder.mutation({
+              query: ({ contactId, data }) => ({
+                url: `/contacts/${contactId}`,
+                method: 'PUT',
+                body: data
+              })
             })
         }
     }
@@ -60,5 +67,6 @@ export const contactsAPI = apiSlice.injectEndpoints({
 export const {
   useGetContactsQuery,
   useAddContactMutation,
-  useGetContactQuery
+  useGetContactQuery,
+  useUpdateContactMutation
 } = contactsAPI;
