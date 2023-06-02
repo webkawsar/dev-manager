@@ -42,7 +42,7 @@ const Contacts = () => {
     );
   }
 
-  if (isSuccess && data?.data.length === 0) {
+  if (isSuccess && data?.data?.length === 0) {
     content = (
       <Col sm>
         <Card body className="text-center">

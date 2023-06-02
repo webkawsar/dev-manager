@@ -69,6 +69,7 @@ const AddContactForm = () => {
   }, [birthDate]);
 
   useEffect(() => {
+    
     if (isError) {
       toast.error(error?.data?.message);
     }

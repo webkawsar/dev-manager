@@ -36,6 +36,18 @@ export const contactsAPI = apiSlice.injectEndpoints({
                   method: 'POST',
                   body: formData
                 }
+              },
+              async onQueryStarted(arg, { queryFulfilled, dispatch }){
+                try {
+
+                  const result = await queryFulfilled;
+                  dispatch(apiSlice.util.updateQueryData("getContacts", undefined, (draftContacts) => {
+                    draftContacts?.data.unshift(result?.data?.data);
+                  }))
+                  
+                } catch (error) {
+                  
+                }
               }
             })
         }

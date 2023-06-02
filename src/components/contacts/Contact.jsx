@@ -2,14 +2,14 @@ import { format } from "date-fns";
 import React, { useContext } from "react";
 import { Button, Card, Col, ListGroup, Row } from "react-bootstrap";
 import { FaEye, FaRegTrashAlt } from "react-icons/fa";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../../context/Auth.context";
 import { ContactContext } from "../../context/Contact.context";
 import formatImageUrl from "../../utils/formatImageUrl";
 
 const Contact = ({ contact }) => {
   const { deleteContact } = useContext(ContactContext);
-  const { user } = useContext(AuthContext);
+  const { user } = useSelector(state => state.auth);
 
   const {
     id,
