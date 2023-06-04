@@ -51,7 +51,8 @@ export const contactsAPI = apiSlice.injectEndpoints({
               }
             }),
             getContact: builder.query({
-              query: (contactId) => `/contacts/${contactId}?populate=*`
+              query: (contactId) => `/contacts/${contactId}?populate=*`,
+              providesTags: (result, error, arg) => [{ id: arg, type: 'Contact' }]
             }),
             updateContact: builder.mutation({
               query: (data) => {
@@ -68,7 +69,8 @@ export const contactsAPI = apiSlice.injectEndpoints({
                   method: 'PUT',
                   body: formData
                 }
-              }
+              },
+              invalidatesTags: (result, error, arg) => ['Contacts', { id: arg.contactId, type: 'Contact' }]
             })
         }
     }

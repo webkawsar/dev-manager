@@ -79,7 +79,6 @@ const EditContactForm = ({ contact }) => {
       // show flash message
       toast.success("Contact updated successfully");
 
-      console.log(data, 'data')
       // redirect to the user
       navigate(`/contacts/${data?.data?.id}`);
     }
