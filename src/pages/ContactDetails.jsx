@@ -1,18 +1,31 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Card, Col, ListGroup, Row } from "react-bootstrap";
 import { FaPencilAlt, FaRegTrashAlt } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
-import { useGetContactQuery } from "../features/contacts/contactsAPI";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import {
+  useDeleteContactMutation,
+  useGetContactQuery,
+} from "../features/contacts/contactsAPI";
 import ContactLoader from "../ui/ContactLoader";
 import formatImageUrl from "../utils/formatImageUrl";
 import { formateContact } from "../utils/formateContact";
 
 const ContactDetails = () => {
   const { contactId } = useParams();
-  const { data, isLoading, isSuccess, isError, error } =
-    useGetContactQuery(contactId);
+  const { data, isLoading, isSuccess, isError } = useGetContactQuery(contactId);
+  const [
+    deleteContact,
+    {
+      isLoading: deleteIsLoading,
+      isSuccess: deleteIsSuccess,
+      isError: deleteIsError,
+      error,
+    },
+  ] = useDeleteContactMutation();
   const { user } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
 
   const handleDelete = (id) => {
     deleteContact(id);
@@ -24,9 +37,11 @@ const ContactDetails = () => {
     content = <ContactLoader />;
   }
 
-  if (isSuccess && Object.keys(data).length === 0) {
+  if ((isSuccess && Object.keys(data).length === 0) || isError) {
     content = (
-      <h2 style={{ color: "red", textAlign: "center" }}>No Contact to Show</h2>
+      <h2 style={{ color: "red", textAlign: "center", marginTop: "100px" }}>
+        No contact to show
+      </h2>
     );
   }
 
@@ -99,6 +114,20 @@ const ContactDetails = () => {
       </Col>
     );
   }
+
+  useEffect(() => {
+    if (deleteIsError) {
+      toast.error(error?.data?.error?.message);
+    }
+
+    if (deleteIsSuccess) {
+      // show flash message
+      toast.success("Contact deleted successfully");
+
+      // redirect to the user
+      navigate("/contacts");
+    }
+  }, [deleteIsError, deleteIsSuccess]);
 
   return (
     <>

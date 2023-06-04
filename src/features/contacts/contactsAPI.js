@@ -21,7 +21,8 @@ export const contactsAPI = apiSlice.injectEndpoints({
                     );
                     
                     return `/contacts?${query}`
-                }
+                },
+                providesTags: ['Contacts']
             }),
             addContact: builder.mutation({
               query: (contact) => {
@@ -71,6 +72,13 @@ export const contactsAPI = apiSlice.injectEndpoints({
                 }
               },
               invalidatesTags: (result, error, arg) => ['Contacts', { id: arg.contactId, type: 'Contact' }]
+            }),
+            deleteContact: builder.mutation({
+              query: (contactId) => ({
+                url: `/contacts/${contactId}`,
+                method: 'DELETE'
+              }),
+              invalidatesTags: ['Contacts']
             })
         }
     }
@@ -80,5 +88,6 @@ export const {
   useGetContactsQuery,
   useAddContactMutation,
   useGetContactQuery,
-  useUpdateContactMutation
+  useUpdateContactMutation,
+  useDeleteContactMutation
 } = contactsAPI;

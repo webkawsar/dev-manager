@@ -1,14 +1,15 @@
 import { format } from "date-fns";
-import React, { useContext } from "react";
+import React, { useEffect } from "react";
 import { Button, Card, Col, ListGroup, Row } from "react-bootstrap";
 import { FaEye, FaRegTrashAlt } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { ContactContext } from "../../context/Contact.context";
+import { toast } from "react-toastify";
+import { useDeleteContactMutation } from "../../features/contacts/contactsAPI";
 import formatImageUrl from "../../utils/formatImageUrl";
 
 const Contact = ({ contact }) => {
-  const { deleteContact } = useContext(ContactContext);
+  const [deleteContact, {data, isLoading, isSuccess, isError, error}] = useDeleteContactMutation();
   const { user } = useSelector(state => state.auth);
 
   const {
@@ -27,6 +28,18 @@ const Contact = ({ contact }) => {
   const handleDelete = (id) => {
     deleteContact(id);
   };
+
+  useEffect(() => {
+
+    if(isError) {
+      toast.error(error?.data?.error?.message);
+    }
+
+    if(isSuccess) {
+      // show flash message
+      toast.success("Contact deleted successfully");
+    }
+  }, [isError, isSuccess])
 
   const isOwner = user?.id === author?.data?.id ? author?.data?.id : author?.id;
   let imageUrl = formatImageUrl(image);
