@@ -21,6 +21,8 @@ const schema = yup
   .required();
 
 const Profile = () => {
+  const [file, setFile] = useState(null);
+  const [disabledForm, setDisabledForm] = useState(true);
 
   const {
     data: userProfile,
@@ -28,9 +30,11 @@ const Profile = () => {
     isSuccess: userProfileIsSuccess,
     isError: userProfileIsError,
     error: userProfileError,
+    refetch
   } = useGetUserProfileQuery();
 
-  const [createUserProfile, { isLoading, isSuccess, isError, error }] = useCreateUserProfileMutation();
+  const [createUserProfile, { data, isLoading, isSuccess, isError, error }] =
+    useCreateUserProfileMutation();
 
   const [
     updateUserProfile,
@@ -42,42 +46,64 @@ const Profile = () => {
     },
   ] = useUpdateUserProfileMutation();
 
-
-  const [file, setFile] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [disabledForm, setDisabledForm] = useState(true);
-
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting, isSubmitSuccessful },
+    formState: { errors, isSubmitting },
   } = useForm({ resolver: yupResolver(schema) });
 
   const onSubmit = async (data) => {
-    console.log(userProfileIsSuccess, 'userProfileIsSuccess')
-    if (userProfileIsSuccess) {
+
+    if (userProfileIsSuccess && userProfile?.profile?.id) {
+
+      console.log('onSubmit if')
       updateUserProfile({ id: userProfile?.id, data });
+      
     } else {
+
+      console.log('onSubmit else')
       createUserProfile(data);
     }
   };
 
-  // create side effects 
+  // fetch data after create or update
+  useEffect(() => {
+    if(isSuccess || updateIsSuccess) {
+      refetch();
+    }
+  }, [isSuccess, updateIsSuccess])
+
+  // load user profile side effects
   useEffect(() => {
 
+    if (userProfileIsSuccess && userProfile?.profile) {
+      const {firstName, lastName} = userProfile?.profile;
+      reset({
+        firstName,
+        lastName
+      })
+    }
+
+    console.log('Updated render')
+
+  }, [userProfileIsSuccess, reset]);
+
+  // create side effects
+  useEffect(() => {
+    
     if (isError) {
-      console.log(error, 'create error')
       toast.error(error?.data?.error?.message ?? "Something went wrong!");
     }
 
     if (isSuccess) {
+      setDisabledForm(true);
       toast.success("Profile added successfully");
     }
     
   }, [isError, isSuccess]);
 
-  // update side effects 
+  // update side effects
   useEffect(() => {
 
     if (updateIsError) {
@@ -90,149 +116,144 @@ const Profile = () => {
     
   }, [updateIsError, updateIsSuccess]);
 
-
   // decide what to render
   let content = null;
-  if(userProfileIsLoading) {
+  if (userProfileIsLoading) {
     content = <div>Profile data is Loading</div>;
   }
 
-  if(userProfileIsError) {
-    content = <div>{userProfileError?.data?.error?.message ?? "Something happened in server"}</div>
+  if (userProfileIsError) {
+    content = (
+      <div>
+        {userProfileError?.data?.error?.message ??
+          "Something happened in server"}
+      </div>
+    );
   }
 
-  if(userProfileIsSuccess) {
-    
-    const { firstName, lastName } = userProfile?.profile || {
-      firstName: "******",
-      lastName: "******",
-    };
+  if (userProfileIsSuccess) {
 
-    content = <Row>
-                <Col xl="12">
-                  {
-                    <div className="d-flex flex-column justify-content-center">
-                      
-                      <p style={{ fontSize: "25px" }}>
-                        Personal Information{" "}
-                        <span
-                          onClick={() => setDisabledForm(false)}
-                          style={{
-                            fontSize: "17px",
-                            color: "#03A4E0",
-                            marginLeft: "25px",
-                            cursor: "pointer",
-                          }}
-                        >
-                          {" "}
-                          {userProfile
-                            ? "Change personal information"
-                            : "Add personal information"}
-                        </span>
-                      </p>
+    content = (
+      <Row>
+        <Col xl="12">
+          {
+            <div className="d-flex flex-column justify-content-center">
+              <p style={{ fontSize: "25px" }}>
+                Personal Information{" "}
+                <span
+                  onClick={() => setDisabledForm(false)}
+                  style={{
+                    fontSize: "17px",
+                    color: "#03A4E0",
+                    marginLeft: "25px",
+                    cursor: "pointer",
+                  }}
+                >
+                  {" "}
+                  {userProfile
+                    ? "Change personal information"
+                    : "Add personal information"}
+                </span>
+              </p>
 
-                      <img
-                        style={{
-                          width: "200px",
-                          height: "200px",
-                          borderRadius: "50%",
-                          display: "block",
-                        }}
-                        src={
-                          formatImageUrl(userProfile?.profilePicture)
-                            ? formatImageUrl(userProfile?.profilePicture)
-                            : avatarImg
-                        }
-                        alt="Profile Avatar Image"
-                      />
+              <img
+                style={{
+                  width: "200px",
+                  height: "200px",
+                  borderRadius: "50%",
+                  display: "block",
+                }}
+                src={
+                  formatImageUrl(userProfile?.profile?.profilePicture)
+                    ? formatImageUrl(userProfile?.profile?.profilePicture)
+                    : avatarImg
+                }
+                alt="Profile Avatar Image"
+              />
 
-                      <Form onSubmit={handleSubmit(onSubmit)} noValidate>
-                        <Form.Group
-                          className="mb-3"
-                          as={Col}
-                          md={6}
-                          controlId="firstName"
-                        >
-                          <Form.Label>First name</Form.Label>
+              <Form onSubmit={handleSubmit(onSubmit)} noValidate>
+                <Form.Group
+                  className="mb-3"
+                  as={Col}
+                  md={6}
+                  controlId="firstName"
+                >
+                  <Form.Label>First name</Form.Label>
 
-                          <Form.Control
-                            type="text"
-                            placeholder="First name"
-                            {...register("firstName")}
-                            defaultValue={firstName}
-                            disabled={disabledForm ? true : false}
-                          />
+                  <Form.Control
+                    type="text"
+                    placeholder="First name"
+                    {...register("firstName")}
+                    defaultValue="******"
+                    disabled={disabledForm ? true : false}
+                  />
 
-                          {errors?.firstName?.message && (
-                            <Form.Text className="text-danger">
-                              {errors?.firstName?.message}
-                            </Form.Text>
-                          )}
-                        </Form.Group>
+                  {errors?.firstName?.message && (
+                    <Form.Text className="text-danger">
+                      {errors?.firstName?.message}
+                    </Form.Text>
+                  )}
+                </Form.Group>
 
-                        <Form.Group
-                          className="mb-3"
-                          as={Col}
-                          md={6}
-                          controlId="lastName"
-                        >
-                          <Form.Label>Last name</Form.Label>
-                          <Form.Control
-                            type="text"
-                            placeholder="Last name"
-                            {...register("lastName")}
-                            defaultValue={lastName}
-                            disabled={disabledForm ? true : false}
-                          />
+                <Form.Group
+                  className="mb-3"
+                  as={Col}
+                  md={6}
+                  controlId="lastName"
+                >
+                  <Form.Label>Last name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Last name"
+                    {...register("lastName")}
+                    defaultValue="******"
+                    disabled={disabledForm ? true : false}
+                  />
 
-                          {errors?.lastName?.message && (
-                            <Form.Text className="text-danger">
-                              {errors?.lastName?.message}
-                            </Form.Text>
-                          )}
-                        </Form.Group>
+                  {errors?.lastName?.message && (
+                    <Form.Text className="text-danger">
+                      {errors?.lastName?.message}
+                    </Form.Text>
+                  )}
+                </Form.Group>
 
-                        {!disabledForm && (
-                          <Form.Group
-                            className="mb-3"
-                            as={Col}
-                            md={6}
-                            controlId="profilePicture"
-                          >
-                            <Form.Label>Profile picture</Form.Label>
+                {!disabledForm && (
+                  <Form.Group
+                    className="mb-3"
+                    as={Col}
+                    md={6}
+                    controlId="profilePicture"
+                  >
+                    <Form.Label>Profile picture</Form.Label>
 
-                            <Form.Control
-                              type="file"
-                              {...register("profilePicture")}
-                              accept="image/*"
-                            />
+                    <Form.Control
+                      type="file"
+                      {...register("profilePicture")}
+                      accept="image/*"
+                    />
 
-                            {errors?.profilePicture?.message && (
-                              <Form.Text className="text-danger">
-                                {errors?.profilePicture?.message}
-                              </Form.Text>
-                            )}
-                          </Form.Group>
-                        )}
+                    {errors?.profilePicture?.message && (
+                      <Form.Text className="text-danger">
+                        {errors?.profilePicture?.message}
+                      </Form.Text>
+                    )}
+                  </Form.Group>
+                )}
 
-                        {!disabledForm && (
-                          <Button type="submit" disabled={isSubmitting ? true : false}>
-                            Save
-                          </Button>
-                        )}
-                      </Form>
-                    </div>
-                  }
-                </Col>
-              </Row>
+                {!disabledForm && (
+                  <Button type="submit" disabled={isSubmitting ? true : false}>
+                    Save
+                  </Button>
+                )}
+              </Form>
+            </div>
+          }
+        </Col>
+      </Row>
+    );
   }
 
-
-  return (
-    <div>
-      {content}
-    </div>
-  );
+  return <div>{content}</div>;
 };
 
 export default Profile;

@@ -31,9 +31,9 @@ export const profilesAPI = apiSlice.injectEndpoints({
               populate: [
                 "contacts",
                 "profile",
+                "profile.profilePicture",
                 "contacts.author",
                 "contacts.image",
-                "profile.profilePicture",
               ],
             },
             {
@@ -109,8 +109,8 @@ export const profilesAPI = apiSlice.injectEndpoints({
           formData.append("data", JSON.stringify(restData));
 
           return {
-            url: `/profiles/${id}?${query}`,
-            method: "POST",
+            url: `/profiles/${id}`,
+            method: "PUT",
             body: formData,
           };
         },
