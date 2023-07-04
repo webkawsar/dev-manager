@@ -111,8 +111,6 @@ export const profilesAPI = apiSlice.injectEndpoints({
           try {
             
             const result = await queryFulfilled;
-            console.log(result, 'result')
-
             // remove contact from user cached data
             dispatch(
               apiSlice.util.updateQueryData(

@@ -1,9 +1,12 @@
 import React, { useEffect } from "react";
-import { Table } from "react-bootstrap";
+import { Card, Table } from "react-bootstrap";
 import { FaPen, FaTrashAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useDeleteUserContactMutation, useGetUserContactsQuery } from "../features/profiles/profilesAPI";
+import {
+  useDeleteUserContactMutation,
+  useGetUserContactsQuery,
+} from "../features/profiles/profilesAPI";
 
 const UserContacts = () => {
   const { data, isLoading, isSuccess, isError, error } =
@@ -22,15 +25,15 @@ const UserContacts = () => {
   };
 
   useEffect(() => {
-    
-    if(deleteContactIsError) {
-      toast.error(deleteContactError?.data?.error?.message ?? "Something went wrong!");
+    if (deleteContactIsError) {
+      toast.error(
+        deleteContactError?.data?.error?.message ?? "Something went wrong!"
+      );
     }
 
-    if(deleteContactIsSuccess) {
-      toast.success('Contact deleted successfully!');
+    if (deleteContactIsSuccess) {
+      toast.success("Contact deleted successfully!");
     }
-
   }, [deleteContactIsError, deleteContactIsSuccess]);
 
   // decide what to render
@@ -40,10 +43,18 @@ const UserContacts = () => {
   }
 
   if (isError) {
-    content = <div>Error</div>;
+    content = <div>{error?.data?.error?.message ?? "Something went wrong!"}</div>;
   }
 
-  if (isSuccess) {
+  if (isSuccess && data?.contacts?.length === 0) {
+    content = (
+      <Card body className="text-center">
+        Your contacts not found!
+      </Card>
+    );
+  }
+
+  if (isSuccess && data?.contacts?.length) {
     content = (
       <Table striped bordered hover>
         <thead>
