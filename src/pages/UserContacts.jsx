@@ -10,7 +10,9 @@ import {
 
 const UserContacts = () => {
   const { data, isLoading, isSuccess, isError, error } =
-    useGetUserContactsQuery();
+    useGetUserContactsQuery(undefined, {
+      refetchOnMountOrArgChange: true
+    });
   const [
     deleteUserContact,
     {
