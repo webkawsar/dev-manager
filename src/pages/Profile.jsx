@@ -107,14 +107,16 @@ const Profile = () => {
   // decide what to render
   let content = null;
   if (userProfileIsLoading) {
-    content = <div>Profile data is Loading</div>;
+    content = <div style={{textAlign: 'center'}}>
+      <h2>Loading...</h2>
+    </div>
   }
 
   if (userProfileIsError) {
     content = (
-      <div>
-        {userProfileError?.data?.error?.message ??
-          "Something happened in server"}
+      <div style={{textAlign: 'center'}}> 
+        <h2>{userProfileError?.data?.error?.message ??
+          "Something went wrong!"}</h2>
       </div>
     );
   }
