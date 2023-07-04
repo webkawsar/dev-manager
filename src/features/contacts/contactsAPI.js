@@ -5,13 +5,13 @@ export const contactsAPI = apiSlice.injectEndpoints({
   endpoints: (builder) => {
     return {
       getContacts: builder.query({
-        query: () => {
+        query: (page) => {
           const query = qs.stringify(
             {
               sort: ["id:desc"],
               populate: "*",
               pagination: {
-                page: 1,
+                page,
                 pageSize: import.meta.env.VITE_PAGE_SIZE,
               },
             },
