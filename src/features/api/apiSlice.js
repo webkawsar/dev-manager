@@ -9,6 +9,7 @@ export const apiSlice = createApi({
       ? import.meta.env.VITE_PRODUCTION_URL
       : import.meta.env.VITE_DEVELOPMENT_URL,
     prepareHeaders: (headers, { getState, endpoint }) => {
+      
       const token = getState()?.auth?.token;
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);

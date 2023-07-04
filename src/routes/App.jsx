@@ -125,13 +125,12 @@ const App = () => {
           >
             <Route index element={<Profile />} />
             <Route path="profile" element={<Profile />} />
-            <Route path="manage-password" element={<ManagePassword />} />
             <Route path="contacts" element={<UserContacts />} />
+            <Route path="manage-password" element={<ManagePassword />} />
           </Route>
 
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
-
           <Route path="/playground" element={<Playground />} />
 
           <Route path="*" element={<NotFound />}></Route>

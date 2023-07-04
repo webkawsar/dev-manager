@@ -4,28 +4,8 @@ import { apiSlice } from "../api/apiSlice";
 export const profilesAPI = apiSlice.injectEndpoints({
   endpoints: (builder) => {
     return {
-      getContacts: builder.query({
-        query: () => {
-          const query = qs.stringify(
-            {
-              sort: ["id:desc"],
-              populate: "*",
-              pagination: {
-                page: 1,
-                pageSize: import.meta.env.VITE_PAGE_SIZE,
-              },
-            },
-            {
-              encodeValuesOnly: true, // prettify URL
-            }
-          );
-
-          return `/contacts?${query}`;
-        },
-      }),
       getUserProfile: builder.query({
         query: (data) => {
-
           const query = qs.stringify(
             {
               populate: [
@@ -40,7 +20,7 @@ export const profilesAPI = apiSlice.injectEndpoints({
               encodeValuesOnly: true, // prettify URL
             }
           );
-          
+
           return `/users/me?${query}`;
         },
         async onQueryStarted(arg, { queryFulfilled, dispatch }) {
@@ -69,20 +49,6 @@ export const profilesAPI = apiSlice.injectEndpoints({
             method: "POST",
             body: formData,
           };
-        },
-        async onQueryStarted(arg, { queryFulfilled, dispatch }) {
-          try {
-            const result = await queryFulfilled;
-            // dispatch(
-            //   apiSlice.util.updateQueryData(
-            //     "getContacts",
-            //     undefined,
-            //     (draftContacts) => {
-            //       draftContacts?.data.unshift(result?.data?.data);
-            //     }
-            //   )
-            // );
-          } catch (error) {}
         },
       }),
       updateUserProfile: builder.mutation({
@@ -114,94 +80,55 @@ export const profilesAPI = apiSlice.injectEndpoints({
             body: formData,
           };
         },
-        async onQueryStarted(arg, { queryFulfilled, dispatch }) {
-          try {
-            const result = await queryFulfilled;
-            // dispatch(
-            //   apiSlice.util.updateQueryData(
-            //     "getContacts",
-            //     undefined,
-            //     (draftContacts) => {
-            //       draftContacts?.data.unshift(result?.data?.data);
-            //     }
-            //   )
-            // );
-          } catch (error) {}
-        },
       }),
-      getContact: builder.query({
-        query: (contactId) => `/contacts/${contactId}?populate=*`,
+      getUserContacts: builder.query({
+        query: () => {
+          
+          const query = qs.stringify(
+            {
+              populate: [
+                "contacts",
+                "profile",
+                "profile.profilePicture",
+                "contacts.author",
+                "contacts.image",
+              ],
+            },
+            {
+              encodeValuesOnly: true, // prettify URL
+            }
+          );
+
+          return `/users/me?${query}`;
+        }
       }),
-      updateContact: builder.mutation({
-        query: (data) => {
-          const { image, contactId, ...restData } = data;
-          const formData = new FormData();
-          if (image.length) {
-            formData.append("files.image", image[0], image[0]?.name);
-          }
-          formData.append("data", JSON.stringify(restData));
-
-          return {
-            url: `/contacts/${contactId}`,
-            method: "PUT",
-            body: formData,
-          };
-        },
-        async onQueryStarted(arg, { queryFulfilled, dispatch }) {
-          try {
-            const result = await queryFulfilled;
-
-            // update /contacts/:id data
-            dispatch(
-              apiSlice.util.updateQueryData(
-                "getContact",
-                arg?.contactId.toString(),
-                (draftContact) => result?.data
-              )
-            );
-
-            // update /contacts data
-            dispatch(
-              apiSlice.util.updateQueryData(
-                "getContacts",
-                undefined,
-                (draftContacts) => {
-                  const foundContact = draftContacts?.data.find(
-                    (contact) => contact.id == result?.data?.data?.id
-                  );
-                  foundContact.attributes = result?.data?.data?.attributes;
-                }
-              )
-            );
-          } catch (error) {}
-        },
-      }),
-      deleteContact: builder.mutation({
+      deleteUserContact: builder.mutation({
         query: (contactId) => ({
           url: `/contacts/${contactId}`,
           method: "DELETE",
         }),
         async onQueryStarted(arg, { queryFulfilled, dispatch }) {
           try {
+            
             const result = await queryFulfilled;
+            console.log(result, 'result')
 
-            // update /contacts data
+            // remove contact from user cached data
             dispatch(
               apiSlice.util.updateQueryData(
-                "getContacts",
+                "getUserContacts",
                 undefined,
                 (draftContacts) => {
+                  
                   // console.log(JSON.parse(JSON.stringify(draftContacts)), 'draftContacts')
-
-                  const filteredContacts = draftContacts?.data.filter(
+                  const filteredContacts = draftContacts?.contacts.filter(
                     (contact) => contact.id != result?.data?.data?.id
                   );
+                  draftContacts.contacts = filteredContacts;
+                  
+                  // draftContacts.meta.pagination.total =
+                  // draftContacts.meta.pagination.total - 1;
 
-                  draftContacts.data = filteredContacts;
-                  draftContacts.meta.pagination.total =
-                    draftContacts.meta.pagination.total - 1;
-
-                  // console.log(JSON.parse(JSON.stringify(draftContacts)), 'draftContacts')
                 }
               )
             );
@@ -212,4 +139,10 @@ export const profilesAPI = apiSlice.injectEndpoints({
   },
 });
 
-export const { useCreateUserProfileMutation, useUpdateUserProfileMutation, useGetUserProfileQuery } = profilesAPI;
+export const {
+  useGetUserProfileQuery,
+  useCreateUserProfileMutation,
+  useUpdateUserProfileMutation,
+  useGetUserContactsQuery,
+  useDeleteUserContactMutation
+} = profilesAPI;
