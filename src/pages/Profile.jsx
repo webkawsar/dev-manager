@@ -30,7 +30,7 @@ const Profile = () => {
     isSuccess: userProfileIsSuccess,
     isError: userProfileIsError,
     error: userProfileError,
-    refetch
+    refetch,
   } = useGetUserProfileQuery();
 
   const [createUserProfile, { data, isLoading, isSuccess, isError, error }] =
@@ -54,44 +54,34 @@ const Profile = () => {
   } = useForm({ resolver: yupResolver(schema) });
 
   const onSubmit = async (data) => {
-
     if (userProfileIsSuccess && userProfile?.profile?.id) {
-
-      console.log('onSubmit if')
-      updateUserProfile({ id: userProfile?.id, data });
-      
+      updateUserProfile({ id: userProfile?.profile?.id, data });
     } else {
-
-      console.log('onSubmit else')
       createUserProfile(data);
     }
   };
 
-  // fetch data after create or update
+  // fetch again data after create or update
   useEffect(() => {
-    if(isSuccess || updateIsSuccess) {
+    if (isSuccess || updateIsSuccess) {
       refetch();
     }
-  }, [isSuccess, updateIsSuccess])
+  }, [isSuccess, updateIsSuccess]);
 
   // load user profile side effects
   useEffect(() => {
-
     if (userProfileIsSuccess && userProfile?.profile) {
-      const {firstName, lastName} = userProfile?.profile;
+      const { firstName, lastName } = userProfile?.profile;
       reset({
         firstName,
-        lastName
-      })
+        lastName,
+      });
     }
-
-    console.log('Updated render')
 
   }, [userProfileIsSuccess, reset]);
 
   // create side effects
   useEffect(() => {
-    
     if (isError) {
       toast.error(error?.data?.error?.message ?? "Something went wrong!");
     }
@@ -100,20 +90,18 @@ const Profile = () => {
       setDisabledForm(true);
       toast.success("Profile added successfully");
     }
-    
   }, [isError, isSuccess]);
 
   // update side effects
   useEffect(() => {
-
     if (updateIsError) {
       toast.error(updateError?.data?.error?.message ?? "Something went wrong!");
     }
 
     if (updateIsSuccess) {
+      setDisabledForm(true);
       toast.success("Profile updated successfully");
     }
-    
   }, [updateIsError, updateIsSuccess]);
 
   // decide what to render
@@ -132,7 +120,6 @@ const Profile = () => {
   }
 
   if (userProfileIsSuccess) {
-
     content = (
       <Row>
         <Col xl="12">
@@ -242,7 +229,7 @@ const Profile = () => {
 
                 {!disabledForm && (
                   <Button type="submit" disabled={isSubmitting ? true : false}>
-                    Save
+                    {userProfileIsSuccess && userProfile?.profile?.id ? 'Update' : 'Save'}
                   </Button>
                 )}
               </Form>
