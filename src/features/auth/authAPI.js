@@ -38,8 +38,36 @@ export const authAPI = apiSlice.injectEndpoints({
           }
         },
       }),
+      changePassword: builder.mutation({
+        query: (data) => ({
+          url: `/auth/change-password`,
+          method: "POST",
+          body: data,
+        }),
+        async onQueryStarted(arg, {dispatch, queryFulfilled}) {
+          try {
+
+            const result = await queryFulfilled;
+            const { jwt, user } = result.data;
+
+            // update redux state
+            dispatch(
+              userLoggedIn({
+                token: jwt,
+                user,
+              })
+            );
+
+            // set data to local storage
+            localStorage.setItem("auth", JSON.stringify({ token: jwt, user }));
+            
+          } catch (error) {
+            
+          }
+        }
+      }),
     };
   },
 });
 
-export const { useRegisterMutation, useLoginMutation } = authAPI;
+export const { useRegisterMutation, useLoginMutation, useChangePasswordMutation } = authAPI;

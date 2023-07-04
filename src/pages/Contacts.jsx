@@ -42,6 +42,10 @@ const Contacts = () => {
     );
   }
 
+  if (isError) {
+    toast.error(error?.data?.message);
+  }
+
   if (isSuccess && data?.data?.length === 0) {
     content = (
       <Col sm>
@@ -58,9 +62,7 @@ const Contacts = () => {
     ));
   }
 
-  if (isError) {
-    toast.error(error?.data?.message);
-  }
+
 
   return (
     <>
