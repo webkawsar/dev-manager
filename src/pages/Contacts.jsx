@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { Card, Col, Pagination, Row } from "react-bootstrap";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import Contact from "../components/contacts/Contact";
+import { changePage } from "../features/contacts/contactSlice";
 import { useGetContactsQuery } from "../features/contacts/contactsAPI";
 import ContactsLoader from "../ui/ContactsLoader";
 import { formateContact } from "../utils/formateContact";
@@ -18,17 +20,24 @@ const Contacts = () => {
   const [page, setPage] = useState(1);
   const { data, isLoading, isSuccess, isError, error } =
     useGetContactsQuery(page);
+  const dispatch = useDispatch();
+
+
+  const handlePage = (count) => {
+    setPage(count);
+    dispatch(changePage(count));
+  }
 
   // decide what to render
   let content = null;
   if (isLoading) {
     content = (
-      <>
+      <Row className="g-3">
         <ContactsLoader />
         <ContactsLoader />
         <ContactsLoader />
         <ContactsLoader />
-      </>
+      </Row>
     );
   }
 
@@ -64,7 +73,7 @@ const Contacts = () => {
                 <Pagination.Item
                   key={count}
                   active={count === data?.meta?.pagination?.page}
-                  onClick={() => setPage(count)}
+                  onClick={() => handlePage(count)}
                 >
                   {count}{" "}
                 </Pagination.Item>

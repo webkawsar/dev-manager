@@ -21,7 +21,7 @@ export const contactsAPI = apiSlice.injectEndpoints({
           );
 
           return `/contacts?${query}`;
-        },
+        }
       }),
       addContact: builder.mutation({
         query: (contact) => {
@@ -103,30 +103,27 @@ export const contactsAPI = apiSlice.injectEndpoints({
           url: `/contacts/${contactId}`,
           method: "DELETE",
         }),
-        async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+        async onQueryStarted(contactId, { queryFulfilled, dispatch, getState }) {
           try {
             const result = await queryFulfilled;
+            const {page} = getState()?.contact;
 
-            // update /contacts data
+            // update /contacts data cache
             dispatch(
               apiSlice.util.updateQueryData(
                 "getContacts",
-                undefined,
+                page,
                 (draftContacts) => {
 
-                  // console.log(JSON.parse(JSON.stringify(draftContacts)), 'draftContacts')
-
                   const filteredContacts = draftContacts?.data.filter(
-                    (contact) => contact.id != result?.data?.data?.id
+                    (contact) => contact.id !== contactId
                   );
-                  
+
                   draftContacts.data = filteredContacts;
-                  draftContacts.meta.pagination.total = draftContacts.meta.pagination.total - 1;
-                  
-                  // console.log(JSON.parse(JSON.stringify(draftContacts)), 'draftContacts')
                 }
               )
             );
+
           } catch (error) {}
         },
       }),
