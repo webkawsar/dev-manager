@@ -21,7 +21,15 @@ export const contactsAPI = apiSlice.injectEndpoints({
           );
 
           return `/contacts?${query}`;
-        }
+        },
+        providesTags: (result, error, page) => result
+        ? [
+            // Provides a tag for each post in the current page,
+            // as well as the 'PARTIAL-LIST' tag.
+            ...result.data.map(({ id }) => ({ type: 'Posts', id })),
+            { type: 'Posts', id: 'PARTIAL-LIST' }
+          ]
+        : [{ type: 'Posts', id: 'PARTIAL-LIST' }],
       }),
       addContact: builder.mutation({
         query: (contact) => {
@@ -126,6 +134,10 @@ export const contactsAPI = apiSlice.injectEndpoints({
 
           } catch (error) {}
         },
+        invalidatesTags: (result, error, id) => [
+          { type: 'Posts', id },
+          { type: 'Posts', id: 'PARTIAL-LIST' },
+        ],
       }),
     };
   },

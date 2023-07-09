@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { Card, Col, Pagination, Row } from "react-bootstrap";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Contact from "../components/contacts/Contact";
 import { changePage } from "../features/contacts/contactSlice";
-import { useGetContactsQuery } from "../features/contacts/contactsAPI";
+import { useDeleteContactMutation, useGetContactsQuery } from "../features/contacts/contactsAPI";
 import ContactsLoader from "../ui/ContactsLoader";
 import { formateContact } from "../utils/formateContact";
 
@@ -17,16 +17,42 @@ const generateArr = (num) => {
 };
 
 const Contacts = () => {
-  const [page, setPage] = useState(1);
-  const { data, isLoading, isSuccess, isError, error } =
+  // const [page, setPage] = useState(1);
+  const { page } = useSelector(state => state.contact);
+  const { data, isLoading, isSuccess, isError, error, refetch } =
     useGetContactsQuery(page);
+  const [deleteContact, { isSuccess: deleteIsSuccess, isError: deleteIsError, error: deleteError }] =
+    useDeleteContactMutation();
   const dispatch = useDispatch();
-
+  
 
   const handlePage = (count) => {
-    setPage(count);
+    // setPage(count);
     dispatch(changePage(count));
-  }
+  };
+
+  const handleDelete = (id) => {
+    deleteContact(id);
+  };
+
+  useEffect(() => {
+    if (deleteIsError) {
+      toast.error(deleteError?.data?.error?.message ?? "Something went wrong!");
+    }
+
+    if (deleteIsSuccess) {
+      toast.success("Contact deleted successfully");
+    }
+  }, [deleteIsError, deleteIsSuccess]);
+
+
+  useEffect(() => {
+
+    if(data?.data?.length === 0 && data?.meta?.pagination?.page > 1) {
+      dispatch(changePage(page-1));
+    }
+
+  }, [data]);
 
   // decide what to render
   let content = null;
@@ -58,12 +84,17 @@ const Contacts = () => {
   }
 
   if (isSuccess && data?.data?.length) {
+
     const paginationArr = generateArr(data?.meta?.pagination?.pageCount || 1);
     content = (
       <>
         <Row className="g-3">
           {data.data.map((contact) => (
-            <Contact key={contact.id} contact={formateContact(contact)} />
+            <Contact
+              key={contact.id}
+              contact={formateContact(contact)}
+              handleDelete={handleDelete}
+            />
           ))}
         </Row>
         <div className="mt-5">

@@ -1,17 +1,13 @@
 import { format } from "date-fns";
-import React, { useEffect } from "react";
+import React from "react";
 import { Button, Card, Col, ListGroup, Row } from "react-bootstrap";
 import { FaEye, FaRegTrashAlt } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
-import { useDeleteContactMutation } from "../../features/contacts/contactsAPI";
 import formatImageUrl from "../../utils/formatImageUrl";
 
-const Contact = ({ contact }) => {
-  const [deleteContact, {data, isLoading, isSuccess, isError, error}] = useDeleteContactMutation();
+const Contact = ({ contact, handleDelete }) => {
   const { user } = useSelector(state => state.auth);
-  const dispatch = useDispatch();
 
   const {
     id,
@@ -25,22 +21,6 @@ const Contact = ({ contact }) => {
     bio,
     author,
   } = contact;
-
-  const handleDelete = (id) => {
-    deleteContact(id);    
-  };
-
-  useEffect(() => {
-
-    if(isError) {
-      toast.error(error?.data?.error?.message ?? "Something went wrong!");
-    }
-
-    if(isSuccess) {
-      toast.success("Contact deleted successfully");
-    }
-    
-  }, [isError, isSuccess])
 
   const isOwner = user?.id === author?.data?.id ? author?.data?.id : author?.id;
   return (
