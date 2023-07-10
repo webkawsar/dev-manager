@@ -34,10 +34,10 @@ const schema = yup
   .required();
 
 const defaultValues = {
-  fullName: "Kawsar Ahmed",
-  email: "web.kawsarahmed@gmail.com",
-  password: "123456@Ka",
-  confirmPassword: "123456@Ka",
+  fullName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
 };
 
 const Register = () => {

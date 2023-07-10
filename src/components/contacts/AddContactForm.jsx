@@ -39,12 +39,12 @@ const schema = yup
   .required();
 
 const defaultValue = {
-  firstName: "Kawsar",
-  lastName: "Ahmed",
-  email: "web.kawsarahmed@gmail.com",
-  profession: "developer",
-  bio: "Hi, This is Kawsar Ahmed",
-  gender: "male",
+  firstName: "",
+  lastName: "",
+  email: "",
+  profession: "",
+  bio: "",
+  gender: "",
   dob: new Date(),
 };
 
