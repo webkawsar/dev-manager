@@ -2,6 +2,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import React, { useEffect } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 import * as yup from "yup";
@@ -34,10 +35,10 @@ const schema = yup
   .required();
 
 const defaultValues = {
-  fullName: "",
-  email: "",
-  password: "",
-  confirmPassword: "",
+  fullName: "Kawsar Ahmed",
+  email: "web.kawsarahmed@gmail.com",
+  password: "123456",
+  confirmPassword: "123456",
 };
 
 const Register = () => {
@@ -50,6 +51,7 @@ const Register = () => {
   } = useForm({
     resolver: yupResolver(schema),
   });
+  const navigate = useNavigate();
 
   const onSubmit = (data) => {
     registerUser({
@@ -70,6 +72,7 @@ const Register = () => {
     if (isSuccess) {
       // show success msg
       toast.success("Confirm your account by clicking the email link");
+      navigate('/');
     }
   }, [isError, isSuccess]);
 
