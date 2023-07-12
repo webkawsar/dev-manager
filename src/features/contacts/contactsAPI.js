@@ -44,15 +44,21 @@ export const contactsAPI = apiSlice.injectEndpoints({
             body: formData,
           };
         },
-        async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+        async onQueryStarted(arg, { queryFulfilled, dispatch, getState }) {
           try {
+
+            const { page } = getState()?.contact;
             const result = await queryFulfilled;
+
             dispatch(
               apiSlice.util.updateQueryData(
                 "getContacts",
-                undefined,
+                page,
                 (draftContacts) => {
                   draftContacts?.data.unshift(result?.data?.data);
+
+                  // jodi page size er kom hoy tahole push hbe
+                  // jodi page size er beshi length hoy tahole first e push hobe ses thke ekta ber hoye jabe
                 }
               )
             );
@@ -77,9 +83,10 @@ export const contactsAPI = apiSlice.injectEndpoints({
             body: formData,
           };
         },
-        async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+        async onQueryStarted(arg, { queryFulfilled, dispatch, getState }) {
           try {
             const result = await queryFulfilled;
+            const { page } = getState()?.contact;
 
             // update /contacts/:id data
             dispatch(
@@ -94,7 +101,7 @@ export const contactsAPI = apiSlice.injectEndpoints({
             dispatch(
               apiSlice.util.updateQueryData(
                 "getContacts",
-                undefined,
+                page,
                 (draftContacts) => {
                   const foundContact = draftContacts?.data.find(
                     (contact) => contact.id == result?.data?.data?.id
