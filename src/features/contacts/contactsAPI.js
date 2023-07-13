@@ -49,16 +49,23 @@ export const contactsAPI = apiSlice.injectEndpoints({
 
             const { page } = getState()?.contact;
             const result = await queryFulfilled;
-
+            const pageSize = import.meta.env.VITE_PAGE_SIZE;
+            
             dispatch(
               apiSlice.util.updateQueryData(
                 "getContacts",
                 page,
                 (draftContacts) => {
-                  draftContacts?.data.unshift(result?.data?.data);
+                  
+                  let contacts = [ ...draftContacts?.data ];
+                  let removedContact = null;
+                  if(contacts.length < pageSize) {
+                    contacts.unshift(result?.data?.data);
+                  } else {
+                    removedContact = contacts.splice(0, 1, result?.data?.data);
+                  }
 
-                  // jodi page size er kom hoy tahole push hbe
-                  // jodi page size er beshi length hoy tahole first e push hobe ses thke ekta ber hoye jabe
+                  draftContacts.data = [ ...contacts ]
                 }
               )
             );
