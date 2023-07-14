@@ -34,11 +34,18 @@ const schema = yup
   })
   .required();
 
+// const defaultValues = {
+//   fullName: "Kawsar Ahmed",
+//   email: "web.kawsarahmed@gmail.com",
+//   password: "123456",
+//   confirmPassword: "123456",
+// };
+
 const defaultValues = {
-  fullName: "Kawsar Ahmed",
-  email: "web.kawsarahmed@gmail.com",
-  password: "123456",
-  confirmPassword: "123456",
+  fullName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
 };
 
 const Register = () => {
