@@ -62,7 +62,8 @@ export const contactsAPI = apiSlice.injectEndpoints({
                   if(contacts.length < pageSize) {
                     contacts.unshift(result?.data?.data);
                   } else {
-                    removedContact = contacts.splice(0, 1, result?.data?.data);
+                    contacts.pop();
+                    contacts.unshift(result?.data?.data);
                   }
 
                   draftContacts.data = [ ...contacts ]
