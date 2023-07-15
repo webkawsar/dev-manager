@@ -65,8 +65,19 @@ export const contactsAPI = apiSlice.injectEndpoints({
                     contacts.pop();
                     contacts.unshift(result?.data?.data);
                   }
-
-                  draftContacts.data = [ ...contacts ]
+                  
+                  const page = draftContacts.meta.pagination.page;
+                  const total = draftContacts.meta.pagination.total + 1;
+                  const pageCount = Math.ceil(total / pageSize);
+                  
+                  draftContacts.data = [ ...contacts ];
+                  draftContacts.meta.pagination = {
+                    page,
+                    total,
+                    pageSize,
+                    pageCount
+                  }
+                 
                 }
               )
             );

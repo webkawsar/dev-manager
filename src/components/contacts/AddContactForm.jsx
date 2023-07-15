@@ -38,26 +38,26 @@ const schema = yup
   })
   .required();
 
-// const defaultValue = {
-//   firstName: "Kawsar",
-//   lastName: "Ahmed",
-//   email: "web.kawsarahmed@gmail.com",
-//   profession: "developer",
-//   bio: "Hi, this is Kawsar Ahmed",
-//   gender: "male",
-//   dob: new Date(),
-// };
-
-
 const defaultValue = {
-  firstName: "",
-  lastName: "",
-  email: "",
-  profession: "",
-  bio: "",
+  firstName: "Kawsar",
+  lastName: "Ahmed",
+  email: "web.kawsarahmed@gmail.com",
+  profession: "developer",
+  bio: "Hi, this is Kawsar Ahmed",
   gender: "male",
   dob: new Date(),
 };
+
+
+// const defaultValue = {
+//   firstName: "",
+//   lastName: "",
+//   email: "",
+//   profession: "developer",
+//   bio: "",
+//   gender: "male",
+//   dob: new Date(),
+// };
 
 
 const AddContactForm = () => {
